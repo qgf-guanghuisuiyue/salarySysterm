@@ -1,4 +1,4 @@
-# salary-systerm
+# salary-system
 
 > A React.js project
 

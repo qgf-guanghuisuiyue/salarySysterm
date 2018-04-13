@@ -1,4 +1,4 @@
-# cloud-recruit
+# salary-system
 
 > A React.js project
 

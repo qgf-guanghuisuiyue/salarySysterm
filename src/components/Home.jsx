@@ -131,7 +131,7 @@ import * as Actions from 'actions';
     render(){
         const {routes,location} = this.props,
             pathname = location.pathname;
-            console.log(pathname)
+            // console.log(this.props)
         return(
             <div>
                 {pathname!=='/login' && pathname!=='login' && pathname!=='/forgetPsd' && pathname!=='forgetPsd'&&
@@ -161,9 +161,7 @@ import * as Actions from 'actions';
                         </Tabs>
                     </div>
                 }
-                {
-                    this.props.children
-                }
+                {this.props.children}
             </div>
         )
     }

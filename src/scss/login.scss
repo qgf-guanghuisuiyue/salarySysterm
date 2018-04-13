@@ -1,0 +1,131 @@
+.login-page{
+    width: 520px;
+    height: 430px;
+    position: absolute;
+    left: 50%;
+    top:50%;
+    margin-left: -260px;
+    margin-top: -260px;
+    // background: linear-gradient( #176B90, #52A6C8) ;
+    // background: -moz-linear-gradient( #176B90, #52A6C8) ;  
+    // background: -webkit-linear-gradient( #176B90, #52A6C8) ;  
+    // background: -o-linear-gradient( #176B90, #52A6C8) ;  
+    // background: -ms-linear-gradient( #176B90, #52A6C8) ; 
+    h1{
+        font-size: 32px;
+        letter-spacing:10px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .login{
+        width: 520px;
+        height: 350px;
+        box-shadow: 0px 0px  10px 1px #666;
+        
+        border-radius: 10px;
+        .login-top{
+            height: 50px;
+            width: 100%;
+            background: #C5E6EB;
+            //border-bottom: 1px solid #BBC9CC;
+            line-height: 50px;
+            text-align: center;
+            font-size: 23px;
+            font-weight: bold;
+            border-top-right-radius: 10px;
+            border-top-left-radius: 10px;
+        }
+        .login-content{
+            width: 100%;
+            height: 299px;
+            background: white;
+            padding-top: 30px;
+            text-align: center;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            .forgetpsd{
+                height: 30px;
+                width: 80%;
+                margin: 0 auto;
+                text-align: right;
+                font-size: 16px
+            }
+            label{
+                display: block;
+                text-align: center;
+                margin-bottom: 10px;
+                font-size: 18px;
+                span{
+                    display: inline-block;
+                    width: 110px;
+                    text-align: right
+                }
+                .ant-input{
+                    height: 35px;
+                    font-size: 16px
+                }
+                .anticon{
+                    font-size: 16px;
+                    top: 10px;
+                    position: absolute;
+                    left: 45px;
+                }
+                .yzm{
+                    font-size: 14px;
+                    display: inline-block;
+                    margin-left: 15px;
+                    border: 1px solid #CCD0DB;
+                    line-height: 33px;
+                    width: 116px;
+                    border-radius: 5px;
+                    padding: 0;
+                    background: #D7D7D7
+                }
+                .psw{
+                    position: absolute;
+                    top:3px;
+                    left: 66px
+                }
+            }
+            Button{
+                //margin-top: 20px;
+                background: #2B579A;
+                color: white;
+            }
+        }
+    }
+    .tips {
+        position: absolute;
+        background: rgba(0,0,0,.6);
+        color: #FFF;
+        z-index: 9999999;
+        font-size: 14px;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        text-align: center;
+        width: 150px;
+        height: 48px;
+        line-height: 48px;
+        margin: auto;
+        border-radius: 5px;
+    }
+    
+    @keyframes bounceIn {
+        0%{
+            opacity:0;
+            transform:scale(.5)
+        }
+        100%{
+            opacity:1;
+            transform:scale(1)
+        }
+    }
+     
+    .bounceIn {
+      animation-name: bounceIn;
+      animation-duration: .5s;
+    }
+  
+}

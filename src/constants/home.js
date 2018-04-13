@@ -1,0 +1,6 @@
+export const NEWS_LIST = "NEWS_LIST";
+export const SCROLLTO = "SCROLLTO";
+export const CANCELLISTINDEX = "CANCELLISTINDEX";
+export const GETPATH = "GETPATH";
+export const GETPAGE = "GETPAGE";
+export const CANCELCURRENTPAGE = "CANCELCURRENTPAGE";

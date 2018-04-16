@@ -24,11 +24,12 @@ import * as Actions from 'actions';
             panes:[
                 { title: '上传文件', key: '1' }
               ],
-            activeKey:"1",
+            activeKey:"1", //当前激活 tab 面板的 key
         }
     }
     newTabIndex = 0;
-    handleClick = (name) => {
+
+    handleClick = (name) => { //pn
         const panes = this.state.panes;
         for(let i=0;i<panes.length;i++){
             if(name===panes[i].title){
@@ -39,9 +40,11 @@ import * as Actions from 'actions';
         panes.push({ title: name, key: activeKey });
         this.setState({ panes, activeKey });
     }
-    onEdit = (targetKey) => {
+
+    onEdit = (targetKey) => { //新增和删除页签的回调，在 type="editable-card" 时有效
         this.remove(targetKey);
     }
+
     remove(targetKey) {
         let activeKey = this.state.activeKey;
         let lastIndex;
@@ -55,12 +58,15 @@ import * as Actions from 'actions';
           activeKey = panes[lastIndex].key;
         }
         this.setState({ panes, activeKey });
-      }
-    onChange = (activeKey) => {
+    }
+
+    onChange = (activeKey) => {//切换面板的回调
+        console.log(activeKey)
         this.setState({
             activeKey
         })
     }
+    
     componentDidMount(){
         const {location} = this.props,
         pathname = location.pathname;
@@ -131,7 +137,7 @@ import * as Actions from 'actions';
     render(){
         const {routes,location} = this.props,
             pathname = location.pathname;
-            // console.log(this.props)
+            console.log(this.props)
         return(
             <div>
                 {pathname!=='/login' && pathname!=='login' && pathname!=='/forgetPsd' && pathname!=='forgetPsd'&&
@@ -155,8 +161,19 @@ import * as Actions from 'actions';
                             onEdit={this.onEdit}
                         >
                             {this.state.panes.map(pane => <TabPane tab={
-                                <Link to={pane.title==="上传文件"?"upload":pane.title==="申请结果查询"?"apply":pane.title==="数据转换"?"dataSwitch":pane.title==="导入结果"?"leadingResult":pane.title==="受理查询"?'handle':pane.title==="失败结果查询"?'errorResult':pane.title==="基础管理"?'basicManage':pane.title==="模板文件"?'mouldFile':pane.title==="用户管理"?'userManage':pane.title==='权限设置'?"accessPermission":pane.title==="日志查询" && "log"}>{pane.title}</Link>} key={pane.key}>
-                                
+                                <Link to={pane.title==="上传文件"?"upload":
+                                    pane.title==="申请结果查询"?"apply":
+                                    pane.title==="数据转换"?"dataSwitch":
+                                    pane.title==="导入结果"?"leadingResult":
+                                    pane.title==="受理查询"?'handle':
+                                    pane.title==="失败结果查询"?'errorResult':
+                                    pane.title==="基础管理"?'basicManage':
+                                    pane.title==="模板文件"?'mouldFile':
+                                    pane.title==="用户管理"?'userManage':
+                                    pane.title==='权限设置'?"accessPermission":
+                                    pane.title==="日志查询" && "log"}>
+                                    {pane.title}
+                                </Link>} key={pane.key}>
                             </TabPane>)}
                         </Tabs>
                     </div>

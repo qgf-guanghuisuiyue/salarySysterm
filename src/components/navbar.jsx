@@ -16,7 +16,7 @@ import * as Actions from 'actions';
 
 
  export default class Home extends React.Component{
-    handleClick = (name) => {
+    handleClick = (name) => { //cn
         this.props.handleClick(name)
     }
     apply = [

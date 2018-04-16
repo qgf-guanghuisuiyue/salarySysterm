@@ -24,11 +24,12 @@ import * as Actions from 'actions';
             panes:[
                 { title: '上传文件', key: '1' }
               ],
-            activeKey:"1",
+            activeKey:"1", //当前激活 tab 面板的 key
         }
     }
     newTabIndex = 0;
-    handleClick = (name) => {
+
+    handleClick = (name) => { //pn
         const panes = this.state.panes;
         for(let i=0;i<panes.length;i++){
             if(name===panes[i].title){
@@ -39,9 +40,11 @@ import * as Actions from 'actions';
         panes.push({ title: name, key: activeKey });
         this.setState({ panes, activeKey });
     }
-    onEdit = (targetKey) => {
+
+    onEdit = (targetKey) => { //新增和删除页签的回调，在 type="editable-card" 时有效
         this.remove(targetKey);
     }
+
     remove(targetKey) {
         let activeKey = this.state.activeKey;
         let lastIndex;
@@ -55,12 +58,15 @@ import * as Actions from 'actions';
           activeKey = panes[lastIndex].key;
         }
         this.setState({ panes, activeKey });
-      }
-    onChange = (activeKey) => {
+    }
+
+    onChange = (activeKey) => {//切换面板的回调
+        console.log(activeKey)
         this.setState({
             activeKey
         })
     }
+    
     componentDidMount(){
         const {location} = this.props,
         pathname = location.pathname;
@@ -161,9 +167,7 @@ import * as Actions from 'actions';
                         </Tabs>
                     </div>
                 }
-                {
-                    this.props.children
-                }
+                {this.props.children}
             </div>
         )
     }

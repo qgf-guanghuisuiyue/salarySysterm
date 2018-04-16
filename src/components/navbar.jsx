@@ -54,7 +54,7 @@ import * as Actions from 'actions';
                                         const {path,name} = item;
                                         return <Menu.Item key={index+1}>
                                                     <Link to={path} style={{fontSize:14}} onClick={this.handleClick.bind(this,item.name)} >{item.name}</Link>
-                                            </Menu.Item>
+                                               </Menu.Item>
                                     })
                                 }
                                 </SubMenu>

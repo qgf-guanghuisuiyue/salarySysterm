@@ -22,9 +22,8 @@ import * as Actions from 'actions';
         return(
             <div className=" layout common">
                 <div className="dataSwitch">
-                    <h3>数据转换</h3>
+                    <h3>数据对比</h3>
                 </div>
-                
             </div>
         )
     }

@@ -1,0 +1,22 @@
+.leadingResult{
+    .ant-pagination{
+        float: none;
+        text-align: center
+    }
+    .result-table{
+        width: 1300px;
+        margin: 0 auto;
+        th{
+            text-align: center;
+            span{
+                font-size: 14px;
+            }
+        }
+        tr {
+            td{
+                text-align: center;
+                font-size: 14px;
+            }
+        }
+    }
+}

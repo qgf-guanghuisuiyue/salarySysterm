@@ -126,22 +126,7 @@ import * as Actions from 'actions';
                 });
             break;
         }
-        this.getzcfgInfoList()
-    }
-    getzcfgInfoList = () => {
-        AjaxByToken('/mobile/api/ad_show/getWxInfo',{
-            head: {
-                transcode: 'F00011',
-                type:"h"
-            },
-            data: {
-                startIndex:"0",
-                pageNum:"10"
-            }
-        })
-        .then(res=>{
-            console.log(res)
-        })
+        
     }
     
     render(){

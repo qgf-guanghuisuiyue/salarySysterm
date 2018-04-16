@@ -1,0 +1,25 @@
+.handle{
+    .people-select{
+        line-height: 3;
+        font-size: 14px
+    }
+    .handle-info{
+        span{
+            display: inline
+        }
+        .handle-date{
+            .ant-input{
+                width: 20%
+            }
+        }
+        li{
+            margin-top: 20px;
+        }
+        .date{
+            width: 70%;
+            .query-btn{
+                left: 200px
+            }
+        }
+    }
+}

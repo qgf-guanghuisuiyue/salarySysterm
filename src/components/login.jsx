@@ -8,6 +8,10 @@ import {Link} from 'react-router';
 import store from 'store';
 
 export default class LoginPage extends Component {
+    
+    static contextTypes = {
+        router: PropTypes.object
+    };
     state = {
         telphone: '',
         password: '',
@@ -44,6 +48,9 @@ export default class LoginPage extends Component {
             });
             return ;
         }
+        
+        this.context.router.push("apply")
+        //window.location.hash = "upload"
     }
     //获取验证码
     getYzm = () => {
@@ -70,6 +77,10 @@ export default class LoginPage extends Component {
             },1500);
         }
     }
+componentDidMount(){
+    console.log(this.context)
+}
+
     render() {
         const {telphone,password,yzm ,errMsg} = this.state;
         return (

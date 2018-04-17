@@ -16,6 +16,11 @@ import * as Actions from 'actions';
 
 
  export default class Home extends React.Component{
+     state = {
+        systemBackground:"",
+        applyBackground:"",
+        handleBackground:""
+     }
     handleClick = (name) => { //cn
         this.props.handleClick(name)
     }
@@ -36,8 +41,40 @@ import * as Actions from 'actions';
         {name:'权限设置',path:'accessPermission'},
         {name:'日志查询',path:'log'}
     ]
+    //navbar点击事件
+    onClick = (item) => {
+        this.makeBackground(item.keyPath[1])
+    }
+    //navbar修改背景色
+    makeBackground = (path) =>{
+        if(path==="upload" || path==="apply" ){
+            this.setState({
+                applyBackground:'rgb(0, 105, 159)',
+                handleBackground:"",
+                systemBackground:""
+            })
+        }else if(path==="dataSwitch" || path==="leadingResult" ||path==="handle" || path==="errorResult"){
+            this.setState({
+                handleBackground:'rgb(0, 105, 159)',
+                systemBackground:"",
+                applyBackground:""
+            })
+        }else if(path==="basicManage" || path==="mouldFile" ||path==="userManage" || path==="accessPermission" || path==="log"){
+            this.setState({
+                systemBackground:"rgb(0, 105, 159)",
+                applyBackground:"",
+                handleBackground:""
+            })
+        }
+    }
+    componentDidMount(){
+        const {routes} = this.props;
+        const path = routes[routes.length-1].path;
+        this.makeBackground(path);
+    }
     render(){
-        const {page , article } = this.props
+        const {page , article } = this.props;
+        const {applyBackground,handleBackground,systemBackground} = this.state;
         return(
                 <div className="homeContent">
                     <div className="header">
@@ -46,9 +83,10 @@ import * as Actions from 'actions';
                             <Menu
                                 mode="horizontal"
                                 theme="light"
-                                style={{width:400,height:'61px',position:"absolute",left:200,background:"#2B579A",top:0}}
+                                onClick= {this.onClick}
+                                style={{width:485,height:'61px',position:"absolute",left:200,background:"#0086C9",top:0}}
                             >
-                                <SubMenu key="apply" title="代发申请&nbsp;&nbsp;∨">
+                                <SubMenu key="apply" title={<a className="subMenuBk" style={{background:`${applyBackground}`}}>代发申请&nbsp;&nbsp;∨</a>}>
                                 {
                                     this.apply.map((item,index)=>{
                                         const {path,name} = item;
@@ -58,17 +96,17 @@ import * as Actions from 'actions';
                                     })
                                 }
                                 </SubMenu>
-                                <SubMenu key="handle" title="代发薪受理&nbsp;&nbsp;∨">
+                                <SubMenu key="handle" title={<a className="subMenuBk" style={{background:`${handleBackground}`}}>代发薪受理&nbsp;&nbsp;∨</a>}>
                                     {
                                         this.salaryHandle.map((item,index)=>{
                                             const {path,name} = item;
-                                            return <Menu.Item key={index+3}>
+                                            return <Menu.Item key={index+3} >
                                                         <Link to={path} style={{fontSize:14}} onClick={this.handleClick.bind(this,item.name)} >{item.name}</Link>
                                                 </Menu.Item>
                                         })
                                     }
                                 </SubMenu>
-                                <SubMenu key="manage" title="系统管理&nbsp;&nbsp;∨">
+                                <SubMenu key="basicManage" title={<a className="subMenuBk" style={{background:`${systemBackground}`}}>系统管理&nbsp;&nbsp;∨</a>}>
                                     {
                                         this.systemManage.map((item,index)=>{
                                             const {path,name} = item;
@@ -83,7 +121,7 @@ import * as Actions from 'actions';
                                 <li>用户名：邱光飞</li>
                                 <li>所属机构：上海分公司</li>
                                 <li>
-                                    <img src="static/images/u57.png"/>
+                                    注销
                                 </li>
                             </ul>
                         </div>

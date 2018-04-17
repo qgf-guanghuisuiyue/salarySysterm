@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
-import { Table , Button , Tooltip} from 'antd';
+import { Table , Button , Tooltip , Input, DatePicker , Icon} from 'antd';
 
 import {AjaxByToken} from 'utils/ajax';
 
@@ -71,9 +71,44 @@ import * as Actions from 'actions';
             sum:"2134",
             remark:"66666"
           }];
+          // 通过 rowSelection 对象表明需要行选择
+          const rowSelection = {
+            onChange(selectedRowKeys, selectedRows) {
+              console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            },
+            onSelect(record, selected, selectedRows) {
+              console.log(record, selected, selectedRows);
+            },
+            onSelectAll(selected, selectedRows, changeRows) {
+              console.log(selected, selectedRows, changeRows);
+            },
+          };
         return(
             <div className=" layout common">
-                <div className="dataSwitch">
+                <div className="error handle">
+                    <h2 className="File-title">代发薪申请受理查询</h2>
+                    <ul className="data-info handle-info">
+                        <li><span>公司名称：</span><Input className="input"/></li>
+                        <li className="date handle-date">
+                            <span className="date-title">代发申请日期：</span>
+                            <DatePicker/>
+                            <span className="date-to">To</span>
+                            <DatePicker/>
+                            <Button className="query-btn" type="primary">查询</Button>
+                        </li>
+                    </ul>
+                    
+                    <div className="list">
+                        <h2>列表</h2>
+                        <div className="people-select">
+                            <Icon type="retweet" />&nbsp;&nbsp;生成银行代发文件
+                        </div>
+                    </div>
+                    <div className="err-table">
+                        <Table rowSelection={rowSelection} columns={columns} dataSource={data} bordered={true}/>
+                    </div>
+                </div>
+                {/* <div className="dataSwitch">
                     <h2 className="File-title">数据对比</h2>
                     <ul className="data-info">
                         <li><span>批次号：</span><span>1212121</span></li>
@@ -103,7 +138,8 @@ import * as Actions from 'actions';
                         </ul>
                         <Table columns={columns} dataSource={data} bordered={true}/>
                     </div>
-                </div>
+                </div> */}
+
             </div>
         )
     }

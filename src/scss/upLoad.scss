@@ -1,5 +1,11 @@
 .upLoad{
-    .upLoad-input {
-        
+    .handle-block {
+        .upLoad-btn {
+            margin-left: 10px;
+            font-size: 16px;
+            &.upLoad-submit {
+                margin-left: 20px;
+            }
+        }
     }
 }

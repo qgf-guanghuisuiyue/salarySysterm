@@ -62,3 +62,27 @@ a:link{
     padding-right: 50px;
     padding-top: 10px;
 }
+
+.inline-block {
+    vertical-align: top;
+    display: inline-block;
+}
+
+.handle-block {
+    width: 85%;
+    margin: 20px auto;
+    .title {
+        margin-right: 10px;
+        margin-left: 30px;
+        font-size: 16px;
+    }
+}
+.table-area {
+    margin: 20px;
+    .control {
+        padding: 20px 0 20px 20px;
+        font-size: 14px;
+        border: 1px solid #E9E9E9;
+        border-bottom: none;
+    }
+}

@@ -84,7 +84,7 @@ import * as Actions from 'actions';
                                 mode="horizontal"
                                 theme="light"
                                 onClick= {this.onClick}
-                                style={{width:485,height:'61px',position:"absolute",left:200,background:"#0086C9",top:0}}
+                                className="menu"
                             >
                                 <SubMenu key="apply" title={<a className="subMenuBk" style={{background:`${applyBackground}`}}>代发申请&nbsp;&nbsp;∨</a>}>
                                 {

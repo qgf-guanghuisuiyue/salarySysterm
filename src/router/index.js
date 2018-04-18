@@ -142,6 +142,17 @@ const ForgetPsd = {
         }, 'ForgetPsd')
     } 
 }
+// 引入生成银行代发文件路由组件
+const CreateFile = {
+    path: 'createFile',
+    breadcrumbName: '生成银行代发文件',
+    onEnter:requireAuthHook,
+    getComponent(nextState,cb){
+        require.ensure([], (require) => {
+            cb(null, require('components/dataSwitch/switchFile').default)
+        }, 'SwitchFile')
+    } 
+}
 
 /*路由配置*/
 const RouteConfig = {
@@ -216,7 +227,8 @@ const RouteConfig = {
                     MouldFile,
                     UserManage,
                     AccessPermission,
-                    Log
+                    Log,
+                    CreateFile
                 ]
           //} ]
 }

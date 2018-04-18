@@ -129,7 +129,14 @@ import * as Actions from 'actions';
                         </div>
                     </div>
                     <div className="err-table">
-                        <Table rowSelection={rowSelection} columns={columns} dataSource={data} bordered={true}/>
+                        <Table 
+                          rowSelection={rowSelection} 
+                          columns={columns} 
+                          dataSource={data} 
+                          bordered={true}
+                          scroll={{y:500}}
+                          pagination={false}
+                        />
                     </div>
                 </div>
             </div>

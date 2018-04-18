@@ -1,21 +1,48 @@
-.leadingResult{
-    .ant-pagination{
-        float: none;
-        text-align: center
-    }
-    .result-table{
-        width: 1300px;
-        margin: 0 auto;
-        th{
-            text-align: center;
-            span{
-                font-size: 14px;
+
+@media (min-width:640px) and (max-width: 960px) {
+    .leadingResult{
+        .ant-pagination{
+            float: none;
+            text-align: center
+        }
+        .result-table{
+            width: 960px;
+            margin: 0 auto;
+            th{
+                text-align: center;
+                span{
+                    font-size: 14px;
+                }
+            }
+            tr {
+                td{
+                    text-align: center;
+                    font-size: 14px;
+                }
             }
         }
-        tr {
-            td{
+    }
+}
+@media (min-width:1050px) {
+    .leadingResult{
+        .ant-pagination{
+            float: none;
+            text-align: center
+        }
+        .result-table{
+            width: 1300px;
+            margin: 0 auto;
+            th{
                 text-align: center;
-                font-size: 14px;
+                span{
+                    font-size: 14px;
+                }
+            }
+            tr {
+                td{
+                    text-align: center;
+                    font-size: 14px;
+                }
             }
         }
     }

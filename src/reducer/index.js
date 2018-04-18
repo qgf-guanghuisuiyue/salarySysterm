@@ -1,8 +1,8 @@
 import {combineReducers} from 'redux';
-import Home from './home';
+import DataSwitch from './dataSwitch';
 
 const rootReducer = combineReducers({
-    Home
+    DataSwitch
 });
 
 export default rootReducer;

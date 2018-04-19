@@ -11,11 +11,11 @@ let cancel = [];
 export const AjaxByPost = (uri, data) => {
     return new Promise(function(resolve, reject) {
         axios({
-            url: `${uri}`,
+            url: `PayAgent/${uri}`,
             method: 'post',
             data: merge(data,{
                 head:{
-                    type:'h'
+                    type:'web'
                 }
             }),
             header: {
@@ -29,9 +29,9 @@ export const AjaxByPost = (uri, data) => {
         })
         .then(response => {
             const {data} = response;
-            const { returnCode, returnMsg } = data;
-            if (returnCode === 'AAAAAAA' && returnMsg==="查询成功!") {
-                resolve(omit(data,['returnCode','returnMsg']));
+            const { code, msg } = data;
+            if (code === 'AAAAAA' && msg==="成功"||"登出成功") {
+                resolve(omit(data,['code','msg']));
             }else{
                 reject(response);
             }

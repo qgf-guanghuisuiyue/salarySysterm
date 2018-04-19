@@ -7,15 +7,15 @@ import * as Actions from 'actions';
 import {Link} from 'react-router';
 import store from 'store';
 
-export default class LoginPage extends Component {
+export class LoginPage extends Component {
     
     static contextTypes = {
         router: PropTypes.object
     };
     state = {
-        telphone: '',
-        password: '',
-        yzm: '',
+        phone: '',
+        pwd: '',
+        code: '',
         errMsg: '',
     }
     onChange = (field,e)=> {
@@ -25,48 +25,50 @@ export default class LoginPage extends Component {
     }
     //登录
     toLogin = () => {
-        const {telphone,password,yzm} = this.state;
+        const {phone,pwd,code} = this.state;
         const myreg=/^[1][3,4,5,7,8][0-9]{9}$/;
-        if(telphone.length == 0){
+        if(phone.length == 0){
             this.setState({
                 errMsg: '手机号不能为空！'
             });
             return ;
-        } else if (!myreg.test(telphone)){
+        } else if (!myreg.test(phone)){
             this.setState({
                 errMsg: '手机号格式错误！'
             });
             return ;
-        }else if(password.length == 0) {
+        }else if(pwd.length == 0) {
             this.setState({
                 errMsg: '密码不能为空！'
             });
             return ;
-        }else if(yzm.length == 0) {
+        }else if(code.length == 0) {
             this.setState({
                 errMsg: '验证码不能为空！'
             });
             return ;
         }
         
-        this.context.router.push("apply")
+        // this.context.router.push("/")
         //window.location.hash = "upload"
+        this.props.userLogin({phone,pwd,code},this.context);
     }
     //获取验证码
     getYzm = () => {
-        const {telphone} = this.state;
+        const {code, phone} = this.state;
         const myreg=/^[1][3,4,5,7,8][0-9]{9}$/;
-        if(telphone.length == 0){
+        if(phone.length == 0){
             this.setState({
                 errMsg: '手机号不能为空！'
             });
             return ;
-        } else if (!myreg.test(telphone)){
+        } else if (!myreg.test(phone)){
             this.setState({
                 errMsg: '手机号格式错误！'
             });
             return ;
         }
+        this.props.getLoginCode({phone: phone});
     }
     componentWillUpdate(nextProps,nextState) {
         if(nextState.errMsg !== ''){
@@ -82,7 +84,7 @@ componentDidMount(){
 }
 
     render() {
-        const {telphone,password,yzm ,errMsg} = this.state;
+        const {phone,pwd,code ,errMsg} = this.state;
         return (
             <div style={{width:"100%",height:"100%",background: 'linear-gradient( #176B90, #52A6C8)'}}>
             <div className="login-page">
@@ -97,8 +99,8 @@ componentDidMount(){
                                 <Input 
                                     style={{width:"60%"}} 
                                     placeholder="请输入手机号"
-                                    value={telphone}
-                                    onChange={this.onChange.bind(this,'telphone')}
+                                    value={phone}
+                                    onChange={this.onChange.bind(this,'phone')}
                                     onPressEnter={this.toLogin}
                                 />
                             </label><br/>
@@ -107,8 +109,8 @@ componentDidMount(){
                                 <Input 
                                     style={{width:"60%"}} 
                                     placeholder="请输入密码"
-                                    value={password}
-                                    onChange={this.onChange.bind(this,'password')}
+                                    value={pwd}
+                                    onChange={this.onChange.bind(this,'pwd')}
                                     onPressEnter={this.toLogin}
                                 />
                             </label><br/>
@@ -117,8 +119,8 @@ componentDidMount(){
                                 <Input  
                                     style={{width:"35%"}}
                                     placeholder="请输入验证码"
-                                    value={yzm}
-                                    onChange={this.onChange.bind(this,'yzm')}
+                                    value={code}
+                                    onChange={this.onChange.bind(this,'code')}
                                     onPressEnter={this.toLogin}
                                 />
                                 <a
@@ -148,14 +150,16 @@ componentDidMount(){
     }
 }
 
-// const mapStateToProps = state => ({
-    
-// })
-// const mapDispatchToProps = dispatch => ({
-   
-// })
+const mapStateToProps = state => ({
+    loaddone: state.Login.loaddone 
+})
+const mapDispatchToProps = dispatch => ({
+    getLoginCode: bindActionCreators(Actions.loginActions.getLoginCode, dispatch),
+    userLogin: bindActionCreators(Actions.loginActions.userLogin, dispatch),
+    hideLoading: bindActionCreators(Actions.loginActions.hideLoading, dispatch),
+})
 
-// export default connect(
-//     mapStateToProps,
-//     mapDispatchToProps
-// )(LoginPage);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(LoginPage);

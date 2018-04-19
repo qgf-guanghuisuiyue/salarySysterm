@@ -5,8 +5,8 @@ var config = require('../config')
 var proxyMiddleware = require('http-proxy-middleware')
 
 var proxyTable =  {
-      '/mobile': {target:'http://192.168.1.251:8089/'}
-    }
+    '/PayAgent': {target:'http://192.168.1.251:8098/'}
+}
 
 app.use(compression());
 

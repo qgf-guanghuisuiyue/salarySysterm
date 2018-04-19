@@ -79,6 +79,8 @@ import * as Actions from 'actions';
             activeKey
         })
     }
+
+    
     
     componentDidMount(){
         const {location} = this.props,
@@ -149,12 +151,12 @@ import * as Actions from 'actions';
    
     
     render(){
-        const {routes,location} = this.props,
+        const {routes,location, userLoginout} = this.props,
             pathname = location.pathname;
         return(
             <div>
                 {pathname!=='/login' && pathname!=='login' && pathname!=='/forgetPsd' && pathname!=='forgetPsd'&&
-                    <NavbarComponent handleClick={this.handleClick.bind(this)} routes={routes}/>
+                    <NavbarComponent handleClick={this.handleClick.bind(this)} routes={routes} userLoginout={userLoginout}/>
                 }
                 {pathname!=='/login' && pathname!=='login' &&
                     <div className="breadName layout">{routes[routes.length - 1 ].breadcrumbName} </div>
@@ -201,7 +203,7 @@ const mapStateToProps = state => ({
     
 })
 const mapDispatchToProps = dispatch => ({
-    
+    userLoginout: bindActionCreators(Actions.loginActions.userLoginout, dispatch)    
 })
 
 export default connect(

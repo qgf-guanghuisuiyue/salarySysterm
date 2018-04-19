@@ -101,11 +101,18 @@ import * as Actions from 'actions';
                     <div className="list">
                         <h2>列表</h2>
                         <div className="people-select">
-                            <Icon type="retweet" />&nbsp;&nbsp;生成银行代发文件
+                            <Icon type="retweet" />&nbsp;&nbsp;<Link to="createFile">生成银行代发文件</Link>
                         </div>
                     </div>
                     <div className="err-table">
-                        <Table rowSelection={rowSelection} columns={columns} dataSource={data} bordered={true}/>
+                        <Table 
+                            rowSelection={rowSelection} 
+                            columns={columns} 
+                            dataSource={data} 
+                            bordered={true} 
+                            scroll={{y:500}}
+                            pagination={false}
+                        />
                     </div>
                 </div>
                 {/* <div className="dataSwitch">

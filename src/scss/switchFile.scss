@@ -1,0 +1,40 @@
+.switchFile{
+    margin: 20px 0 20px;
+    background: #EEF1F6;
+    // span{
+    //     display: inline-block;
+    // }
+    .switchFile-select{
+        float: left;
+        padding-left: 75px;
+        .select-name{
+            display: inline-block;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .selectSecond{
+            display: inline-block;
+            margin-left: 50px
+        }
+    }
+    .ant-select{
+        width: 150px
+    }
+}
+.File{
+    margin: 20px 0px 20px 0px;
+    background: #EEF1F6;
+    padding-left: 75px;
+    height: 50px;
+    span{
+        font-weight: bold;
+        font-size: 14px;
+        line-height: 50px;
+    }
+    a{
+        display: inline-block;
+        margin: 0px 20px 0px 20px;
+        font-size: 14px;
+        line-height: 50px
+    }
+}

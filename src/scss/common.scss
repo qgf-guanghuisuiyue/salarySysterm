@@ -1,67 +1,139 @@
-body{
-    background: #EBEBEB;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-}
 
-.layout{
-    margin: 0 auto
-}
-a {
-    text-decoration: none;
-    color: #666
-}
-a:link{
-    text-decoration:none;
-}
-.common{
-    width: 1350px;
-    height: 700px;
-    //border: 1px solid #E9E9E9;
-    background: white;
-    //padding-top: 20px;
-}
-.breadName{
-    font-size: 16px;
-    line-height: 50px;
-    width: 1350px;
-}
-.File-title{
-    width: 100%;
-    //background: white;
-    background: #eef1f6;
-    padding-left: 20px;
-}
-.data-info{
-    width: 100%;
-    overflow: hidden;
-    padding-left: 30px;
-    .ant-input{
-        width: 60%
+@media (min-width:640px) and (max-width: 1350px) {
+    .common{
+        width: 960px;
+        height: 750px;
+        //border: 1px solid #E9E9E9;
+        background: white;
+        //padding-top: 20px;
     }
-    li{
-        float: left;
-        margin-top: 20px;
-        width: 300px;
-        span{
-            font-size: 14px;
-            display: inline-block;
-            width: 100px;
-            text-align: right;
+    .breadName{
+        font-size: 16px;
+        line-height: 50px;
+        width: 960px;
+    }
+    body{
+        background: #EBEBEB;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+    }
+    
+    .layout{
+        margin: 0 auto
+    }
+    a {
+        text-decoration: none;
+        color: #666
+    }
+    a:link{
+        text-decoration:none;
+    }
+    
+    .File-title{
+        width: 100%;
+        //background: white;
+        background: #eef1f6;
+        padding-left: 20px;
+    }
+    .data-info{
+        width: 100%;
+        overflow: hidden;
+        padding-left: 30px;
+        .ant-input{
+            width: 60%
         }
-        span:first-child {
-            font-weight: bold
-        }
-        span:nth-child(2) {
-            display: inline;
+        li{
+            float: left;
+            margin-top: 20px;
+            width: 270px;
+            span{
+                font-size: 14px;
+                display: inline-block;
+                width: 100px;
+                text-align: right;
+            }
+            span:first-child {
+                font-weight: bold
+            }
+            span:nth-child(2) {
+                display: inline;
+            }
         }
     }
+    .File-btn{
+        width: 100%;
+        height: 50px;
+        text-align: right;
+        padding-right: 50px;
+        padding-top: 10px;
+    }
 }
-.File-btn{
-    width: 100%;
-    height: 50px;
-    text-align: right;
-    padding-right: 50px;
-    padding-top: 10px;
+@media (min-width:1050px) {
+    .common{
+        width: 1350px;
+        height: 750px;
+        //border: 1px solid #E9E9E9;
+        background: white;
+        //padding-top: 20px;
+    }
+    .breadName{
+        font-size: 16px;
+        line-height: 50px;
+        width: 1350px;
+    }
+    body{
+        background: #EBEBEB;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+    }
+    
+    .layout{
+        margin: 0 auto
+    }
+    a {
+        text-decoration: none;
+        color: #666
+    }
+    a:link{
+        text-decoration:none;
+    }
+    
+    .File-title{
+        width: 100%;
+        //background: white;
+        background: #eef1f6;
+        padding-left: 20px;
+    }
+    .data-info{
+        width: 100%;
+        overflow: hidden;
+        padding-left: 30px;
+        .ant-input{
+            width: 60%
+        }
+        li{
+            float: left;
+            margin-top: 20px;
+            width: 300px;
+            span{
+                font-size: 14px;
+                display: inline-block;
+                width: 100px;
+                text-align: right;
+            }
+            span:first-child {
+                font-weight: bold
+            }
+            span:nth-child(2) {
+                display: inline;
+            }
+        }
+    }
+    .File-btn{
+        width: 100%;
+        height: 50px;
+        text-align: right;
+        padding-right: 50px;
+        padding-top: 10px;
+    }
 }
 
 .inline-block {

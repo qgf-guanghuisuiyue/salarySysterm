@@ -1,24 +1,54 @@
-.handle{
-    .people-select{
-        line-height: 3;
-        font-size: 14px
-    }
-    .handle-info{
-        span{
-            display: inline
+@media (min-width:640px) and (max-width: 1050px) {
+    .handle{
+        .people-select{
+            line-height: 3;
+            font-size: 14px
         }
-        .handle-date{
-            .ant-input{
-                width: 20%
+        .handle-info{
+            span{
+                display: inline
+            }
+            .handle-date{
+                .ant-input{
+                    width: 20%
+                }
+            }
+            li{
+                margin-top: 20px;
+            }
+            .date{
+                width: 70%;
+                .query-btn{
+                    left: 100px
+                }
             }
         }
-        li{
-            margin-top: 20px;
+    }
+}
+
+@media (min-width:1050px) {
+    .handle{
+        .people-select{
+            line-height: 3;
+            font-size: 14px
         }
-        .date{
-            width: 70%;
-            .query-btn{
-                left: 200px
+        .handle-info{
+            span{
+                display: inline
+            }
+            .handle-date{
+                .ant-input{
+                    width: 20%
+                }
+            }
+            li{
+                margin-top: 20px;
+            }
+            .date{
+                width: 70%;
+                .query-btn{
+                    left: 200px
+                }
             }
         }
     }

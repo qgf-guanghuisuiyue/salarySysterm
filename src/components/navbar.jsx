@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {PropTypes}from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
@@ -16,6 +16,10 @@ import * as Actions from 'actions';
 
 
  export default class Home extends React.Component{
+    static contextTypes = {
+        router: PropTypes.object
+    }
+
      state = {
         systemBackground:"",
         applyBackground:"",
@@ -67,6 +71,11 @@ import * as Actions from 'actions';
             })
         }
     }
+
+    userLoginout = () => { //cn
+        this.props.userLoginout(this.context);
+    }
+
     componentDidMount(){
         const {routes} = this.props;
         const path = routes[routes.length-1].path;
@@ -120,7 +129,7 @@ import * as Actions from 'actions';
                             <ul className="userInfo">
                                 <li>用户名：邱光飞</li>
                                 <li>所属机构：上海分公司</li>
-                                <li>
+                                <li onClick={this.userLoginout}>
                                     注销
                                 </li>
                             </ul>

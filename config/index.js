@@ -19,7 +19,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/mobile': {target:'http://192.168.1.251:8089/'}
+      '/PayAgent': {target:'http://192.168.1.251:8098/'}
     },
     cssSourceMap: true
   },

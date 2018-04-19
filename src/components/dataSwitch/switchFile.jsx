@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
-import DataCompareModal from './dataCompare'
+import DataCompareModal from './dataCompareModal'
 
 import { Table , Button , Tooltip , Select} from 'antd';
 import {AjaxByToken} from 'utils/ajax';

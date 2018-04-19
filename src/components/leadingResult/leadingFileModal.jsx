@@ -3,9 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
 
-import LeadingFileModal from './leadingResult/leadingFileModal';
-import { Table , Button , Tooltip , Input , DatePicker ,Icon ,Modal} from 'antd';
-const confirm = Modal.confirm;
+import { Table , Button , Tooltip , Input , DatePicker ,Icon , Modal} from 'antd';
 import {AjaxByToken} from 'utils/ajax';
 
 //redux
@@ -14,27 +12,15 @@ import { connect } from 'react-redux';
 import * as Actions from 'actions';
 
 
- class LeadingResult extends React.Component{
+ class LeadingFile extends React.Component{
     constructor(){
         super();
         this.state={
             
         }
     }
-    showLeadingFileModal = () => {
-      this.props.showLeadingFileModal()
-    }
-    showConfirm = () => {
-      confirm({
-        title: '是否确认该批次的代发结果',
-        style:{top:'30%'},
-        onOk() {
-          console.log('确定');
-        },
-        onCancel() {},
-      });
-    }
     render(){
+        const {isLeadingFileModal} = this.props;
         const columns = [
             {
             title: '序号',
@@ -123,58 +109,50 @@ import * as Actions from 'actions';
           };
           
         return(
-            <div className="layout common">
-                <div className="error handle">
-                    <h2 className="File-title">导入结果处理</h2>
-                    <ul className="data-info handle-info">
-                        <li><span>公司名称：</span><Input className="input"/></li>
-                        <li className="date handle-date">
-                            <span className="date-title">申请日期：</span>
-                            <DatePicker/>
-                            <span className="date-to">To</span>
-                            <DatePicker/>
-                            <Button className="query-btn" type="primary">查询</Button>
-                        </li>
-                    </ul>
-                    
-                    <div className="list">
-                        <h2>列表</h2>
-                        <div className="people-select">
-                            <Button style={{marginRight:30}} onClick={this.showLeadingFileModal}>
-                              <Icon type="upload" />
-                              导入代发结果文件
-                            </Button> 
-                            <Button onClick={this.showConfirm}>
-                              <Icon type="check-circle" />
-                              结果确认
-                            </Button>  
-                        </div>
-                    </div>
-                    <div className="err-table">
-                        <Table 
-                          rowSelection={rowSelection} 
-                          columns={columns} 
-                          dataSource={data} 
-                          bordered={true}
-                          scroll={{y:500}}
-                          pagination={false}
-                        />
-                    </div>
-                </div>
-                <LeadingFileModal/>
-            </div>
+          <Modal
+                title={<h2>导入结果代发文件</h2>}
+                wrapClassName="vertical-center-modal"
+                visible={isLeadingFileModal}
+                width={1360}
+                footer={false}
+                onCancel={() => this.props.hideLeadingFileModal()}
+          >
+              <div className="leadingResult">
+                  <ul className="data-info">
+                      <li><span>批次号：</span><span>1212121</span></li>
+                      <li><span>公司名称：</span><span>海擎金融信息服务有限公司</span></li>
+                      <li><span>代发文件名：</span><span>厄齐尔</span></li>
+                      <li><span>总笔数：</span><span>123</span></li>
+                      <li><span>总金额：</span><span>321</span></li>
+                      <li><span>申请日期：</span><span>2018-04-16</span></li>
+                      <li><span>处理状态：</span><span>受理中</span></li>
+                  </ul>
+                  <div className="File-btn">
+                      <Button type="primary">导入结果文件</Button>
+                  </div>
+                  <div className="result-table">
+                      <Table 
+                        rowSelection={rowSelection} 
+                        columns={columns} 
+                        dataSource={data} 
+                        bordered={true}
+                        scroll={{y:500}}
+                        pagination={false}
+                      />
+                  </div>
+              </div>
+          </Modal>
         )
     }
 }
 const mapStateToProps = state => ({
-    
+  isLeadingFileModal: state.LeadingResult.isLeadingFileModal
 })
 const mapDispatchToProps = dispatch => ({
-  showLeadingFileModal: bindActionCreators(Actions.LeadingResultActions.showLeadingFileModal, dispatch),
   hideLeadingFileModal: bindActionCreators(Actions.LeadingResultActions.hideLeadingFileModal, dispatch),
 })
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(LeadingResult);
+)(LeadingFile);

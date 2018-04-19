@@ -43,6 +43,13 @@
             }
             li{
                 margin-top: 20px;
+                .resultSelect{
+                    .ant-select-arrow{
+                        display: inline-block;
+                        width: 9px;
+                        height: 9px
+                    }
+                }
             }
             .date{
                 width: 70%;

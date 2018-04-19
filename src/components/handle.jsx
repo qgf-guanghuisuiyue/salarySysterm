@@ -9,7 +9,7 @@ import {AjaxByToken} from 'utils/ajax';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from 'actions';
-import { Table , Button , Input , DatePicker , Icon} from 'antd';
+import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
 
  class Handle extends React.Component{
     constructor(){
@@ -109,10 +109,17 @@ import { Table , Button , Input , DatePicker , Icon} from 'antd';
             <div className="layout common">
                 <div className="error handle">
                     <h2 className="File-title">代发薪申请受理查询</h2>
-                    <ul className="data-info handle-info">
+                    <ul className="data-info handle-info" >
+                        <li style={{marginLeft:100}}><span>批次号：</span><Input/></li>
                         <li><span>公司名称：</span><Input className="input"/></li>
+                        <li>
+                            <span className="select-name">处理结果：</span>
+                            <Select className="resultSelect" defaultValue="选择" style={{width:180}}>
+                                <Option value="lucy">选择</Option>
+                            </Select>
+                        </li>
                         <li className="date handle-date">
-                            <span className="date-title">代发申请日期：</span>
+                            <span className="date-title">申请日期：</span>
                             <DatePicker/>
                             <span className="date-to">To</span>
                             <DatePicker/>
@@ -122,11 +129,11 @@ import { Table , Button , Input , DatePicker , Icon} from 'antd';
                     
                     <div className="list">
                         <h2>列表</h2>
-                        <div className="people-select">
+                        {/* <div className="people-select">
                             <Icon type="retweet" />&nbsp;&nbsp;生成银行代发文件
-                        </div>
+                        </div> */}
                     </div>
-                    <div className="err-table">
+                    <div className="err-table" style={{marginTop:20}}>
                         <Table 
                           rowSelection={rowSelection} 
                           columns={columns} 

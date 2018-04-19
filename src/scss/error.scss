@@ -59,6 +59,10 @@
                 border-left: none;
                 border-right: none;
                 padding-left: 10px;
+                .ant-btn{
+                    top:50%;
+                    margin-top: -14px;
+                }
                 .ant-checkbox-wrapper{
                     top:50%;
                     margin-top: -8px
@@ -67,7 +71,7 @@
         }
     }
 }
-@media (min-width:1350px) {
+@media (min-width:1050px) {
     .error{
         .ant-pagination{
             float: none;
@@ -127,10 +131,32 @@
                 border: 1px solid #eef1f6;
                 border-left: none;
                 border-right: none;
+                .ant-btn{
+                    top:50%;
+                    margin-top: -14px;
+                }
                 .ant-checkbox-wrapper{
                     top:50%;
                     margin-top: -8px
                 }
+            }
+        }
+    }
+    .handWork{
+        top:50%;
+        margin-top: -95px;
+        .anticon{
+            display: none
+        }
+        .ant-input{
+            width: 75%
+        }
+        .ant-confirm-btns{
+            float: none;
+            margin: 30px auto 10px;
+            text-align: center;
+            .ant-btn{
+                margin: 0 15px;
             }
         }
     }

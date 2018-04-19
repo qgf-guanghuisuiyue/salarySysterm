@@ -3,7 +3,8 @@ import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
 
-import { Table , Button , Input , DatePicker , Checkbox} from 'antd';
+import { Table , Button , Input , DatePicker , Checkbox , Icon , Modal} from 'antd';
+const confirm = Modal.confirm;
 import {AjaxByToken} from 'utils/ajax';
 
 //redux
@@ -18,6 +19,21 @@ import * as Actions from 'actions';
         this.state={
             
         }
+    }
+    onChange = (e) => {
+      console.log(e.target.value)
+    }
+    handle = () => {
+        confirm({
+            title:"手工处理" ,
+            content:<label>处理备注：<Input onChange={this.onChange}/></label>,
+            className:"handWork",
+            okText:"保存",
+            onOk() {
+                console.log('确定');
+              },
+            onCancel() {},
+        });
     }
     render(){
         const columns = [
@@ -111,9 +127,18 @@ import * as Actions from 'actions';
                 <div className="error">
                     <h2 className="File-title">失败交易查询</h2>
                     <ul className="data-info err-info">
-                        <li><span>批次号：</span><Input/></li>
-                        <li><span>公司名称：</span><Input/></li>
-                        <li><span>姓名：</span><Input/></li><br/>
+                        <li>
+                            <span>批次号：</span>
+                            <Input/>
+                        </li>
+                        <li>
+                            <span>公司名称：</span>
+                            <Input/>
+                        </li>
+                        <li>
+                            <span>姓名：</span>
+                            <Input/>
+                        </li>
                     </ul>
                     <div className="date">
                         <span className="date-title">代发申请日期：</span>
@@ -125,7 +150,7 @@ import * as Actions from 'actions';
                     <div className="list">
                         <h2>列表</h2>
                         <div className="people-select">
-                            <Checkbox>手工处理</Checkbox>
+                            <Button onClick= {this.handle}><Icon type="check-circle" />手工处理</Button>
                         </div>
                     </div>
                     <div className="err-table">

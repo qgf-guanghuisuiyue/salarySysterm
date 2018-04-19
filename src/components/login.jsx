@@ -49,7 +49,7 @@ export default class LoginPage extends Component {
             return ;
         }
         
-        this.context.router.push("apply")
+        this.context.router.push("upload")
         //window.location.hash = "upload"
     }
     //获取验证码

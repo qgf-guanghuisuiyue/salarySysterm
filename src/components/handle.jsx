@@ -123,7 +123,7 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
                             <DatePicker/>
                             <span className="date-to">To</span>
                             <DatePicker/>
-                            <Button className="query-btn" type="primary">查询</Button>
+                            <Button className="query-btn" type="primary" style={{left:288}}>查询</Button>
                         </li>
                     </ul>
                     

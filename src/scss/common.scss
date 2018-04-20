@@ -159,4 +159,21 @@
         border-bottom: none;
     }
 }
+.ant-table-thead{
+    tr{
+        th{
+            background: #0086C9;
+            color: white;
+            text-align: center
+        }
+        
+    }
+}
+.ant-table-tbody{
+    tr{
+        td{
+            text-align: center
+        }
+    }
+}
 

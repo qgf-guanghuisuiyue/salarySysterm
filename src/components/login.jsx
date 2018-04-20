@@ -1,5 +1,5 @@
 import React, {Component,PropTypes} from 'react';
-import {Input,Button,Icon} from 'antd';
+import {Input,Button,Icon,Spin} from 'antd';
 // redux
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
@@ -17,6 +17,7 @@ export class LoginPage extends Component {
         pwd: '',
         code: '',
         errMsg: '',
+        loaddone:false
     }
     onChange = (field,e)=> {
         this.setState({
@@ -48,9 +49,6 @@ export class LoginPage extends Component {
             });
             return ;
         }
-        
-        // this.context.router.push("/")
-        //window.location.hash = "upload"
         this.props.userLogin({phone,pwd,code},this.context);
     }
     //获取验证码
@@ -79,79 +77,91 @@ export class LoginPage extends Component {
             },1500);
         }
     }
-componentDidMount(){
-    console.log(this.context)
-}
+    componentWillReceiveProps(nextProps){
+        if(nextProps.msg){
+            this.setState({
+                errMsg: nextProps.msg
+            })
+        }
+        this.setState({
+            loaddone:nextProps.loaddone
+        })
+    }
 
     render() {
-        const {phone,pwd,code ,errMsg} = this.state;
+        const {phone,pwd,code ,errMsg , loaddone} = this.state;
         return (
             <div style={{width:"100%",height:"100%",background: 'linear-gradient( #176B90, #52A6C8)'}}>
-            <div className="login-page">
-                    <h1>91薪宝管理系统</h1>
-                    <div className="login">
-                        <div className="login-top">
-                            用户登录
-                        </div>
-                        <div className="login-content">
-                            <label>
-                                <span>手机号：</span>
-                                <Input 
-                                    style={{width:"60%"}} 
-                                    placeholder="请输入手机号"
-                                    value={phone}
-                                    onChange={this.onChange.bind(this,'phone')}
-                                    onPressEnter={this.toLogin}
-                                />
-                            </label><br/>
-                            <label>
-                                <span>登录密码：</span>
-                                <Input 
-                                    style={{width:"60%"}} 
-                                    placeholder="请输入密码"
-                                    value={pwd}
-                                    onChange={this.onChange.bind(this,'pwd')}
-                                    onPressEnter={this.toLogin}
-                                />
-                            </label><br/>
-                            <label>
-                                <span>手机验证码：</span>
-                                <Input  
-                                    style={{width:"35%"}}
-                                    placeholder="请输入验证码"
-                                    value={code}
-                                    onChange={this.onChange.bind(this,'code')}
-                                    onPressEnter={this.toLogin}
-                                />
-                                <a
-                                className="yzm"
-                                    onClick={this.getYzm}
+                <div className="login-page">
+                        <h1>91薪宝管理系统</h1>
+                        <div className="login">
+                            <div className="login-top">
+                                用户登录
+                            </div>
+                            <div className="login-content">
+                                <label>
+                                    <span>手机号：</span>
+                                    <Input 
+                                        style={{width:"60%"}} 
+                                        placeholder="请输入手机号"
+                                        value={phone}
+                                        onChange={this.onChange.bind(this,'phone')}
+                                        onPressEnter={this.toLogin}
+                                    />
+                                </label><br/>
+                                <label>
+                                    <span>登录密码：</span>
+                                    <Input 
+                                        style={{width:"60%"}} 
+                                        placeholder="请输入密码"
+                                        value={pwd}
+                                        onChange={this.onChange.bind(this,'pwd')}
+                                        onPressEnter={this.toLogin}
+                                    />
+                                </label><br/>
+                                <label>
+                                    <span>手机验证码：</span>
+                                    <Input  
+                                        style={{width:"35%"}}
+                                        placeholder="请输入验证码"
+                                        value={code}
+                                        onChange={this.onChange.bind(this,'code')}
+                                        onPressEnter={this.toLogin}
+                                    />
+                                    <a 
+                                        className="yzm"
+                                        onClick={this.getYzm}
+                                    >
+                                        获取验证码
+                                    </a>
+                                </label>
+                                <div className="forgetpsd">
+                                    <Link to = "forgetPsd" style={{color:"#0271BC"}}>忘记密码？</Link>
+                                </div>
+                                <Button 
+                                    style={{width:"80%",height:45,fontSize:18}} 
+                                    onClick={this.toLogin}
+                                    loading={loaddone}
                                 >
-                                    获取验证码
-                                </a>
-                            </label>
-                            <div className="forgetpsd"><Link to = "forgetPsd" style={{color:"#0271BC"}}>忘记密码？</Link></div>
-                            <Button 
-                                style={{width:"80%",height:45,fontSize:18}} 
-                                onClick={this.toLogin}
-                            >
-                                安全登录
-                            </Button>
+                                    安全登录
+                                </Button>
+                            </div>
                         </div>
+                    <div 
+                        className="tips bounceIn" 
+                        style={{display: errMsg !== '' ? '' : 'none'}}
+                    >
+                        {errMsg}
                     </div>
-                <div className="tips bounceIn" style={{
-                    display: errMsg !== '' ? '' : 'none'
-                }}>
-                    {errMsg}
                 </div>
-            </div>
             </div>
         );
     }
 }
 
 const mapStateToProps = state => ({
-    loaddone: state.Login.loaddone 
+    loaddone: state.Login.loaddone,
+    msg: state.Login.msg 
 })
 const mapDispatchToProps = dispatch => ({
     getLoginCode: bindActionCreators(Actions.loginActions.getLoginCode, dispatch),

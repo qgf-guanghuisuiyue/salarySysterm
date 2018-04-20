@@ -147,7 +147,22 @@
                 position:absolute;
                 left:200px;
                 background:#0086C9;
-                top:0
+                top:0;
+                .ant-menu-submenu{
+                    .ant-menu{
+                        li{
+                            a{
+                                text-align: center
+                            }
+                            a:hover{
+                                color: white;
+                            } 
+                        }
+                        li:hover{
+                            background: #0086C9;
+                        }
+                    }
+                }
             }
             .ant-menu-horizontal{
                 z-index: 100

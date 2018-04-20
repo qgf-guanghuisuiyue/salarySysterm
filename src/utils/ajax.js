@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import store from 'store';
 // lodash
 import merge from 'lodash/merge';
 import omit from 'lodash/omit';
@@ -30,8 +30,8 @@ export const AjaxByPost = (uri, data) => {
         .then(response => {
             const {data} = response;
             const { code, msg } = data;
-            if (code === 'AAAAAA' && msg==="成功"||"登出成功") {
-                resolve(omit(data,['code','msg']));
+            if (code === 'AAAAAA') {
+                resolve(omit(data,['code']));
             }else{
                 reject(response);
             }
@@ -43,6 +43,8 @@ export const AjaxByPost = (uri, data) => {
     
 }
 export const AjaxByToken = (uri, data) => {
-    return AjaxByPost(uri,data);
+    // 获取本地存储的token
+    const token = store.get('token');
+    return AjaxByPost(uri, merge(data, { data: token }));
 }
 

@@ -10,6 +10,7 @@ import pick from 'lodash/pick';
 const USER_LOGIN = {type:types.USER_LOGIN};
 const LOGIN_START = {type:types.LOGIN_START};
 const LOGIN_DONE = {type:types.LOGIN_DONE};
+const SEND_SUCCESSFUL = {type:types.SEND_SUCCESSFUL};
 
 export const getLoginCode = (data) => (dispatch, getState) => {
     AjaxByPost('api/user/getLoginCode',{
@@ -19,9 +20,10 @@ export const getLoginCode = (data) => (dispatch, getState) => {
         data: data
     })
     .then(res=>{
-        console.log(res)
+        dispatch({...SEND_SUCCESSFUL,msg:res.msg}) 
     },err=>{
         console.log(err);
+        dispatch({...SEND_SUCCESSFUL,msg:err.data.msg})
     });
 }
 
@@ -40,8 +42,8 @@ export const userLogin = (userInfo={},context) => (dispatch,getState) => {
         store.set('token',data);
         context.router.push('/');
     },err=>{
-        console.log(err);
         dispatch(LOGIN_DONE);
+        dispatch({...SEND_SUCCESSFUL,msg:err.data.msg})
     });
 }
 
@@ -51,7 +53,6 @@ export const hideLoading = () => (dispatch,getState) => {
 
 export const userLoginout = (context) => (dispatch,getState) => {
     const token = store.get('token');
-    console.log(token)
     AjaxByPost('api/user/loginout',{
         head: {
             transcode: 'S000002'
@@ -60,7 +61,6 @@ export const userLoginout = (context) => (dispatch,getState) => {
     })
     .then(res=>{
         store.remove('token')
-        console.log(res, context)
         context.router.push('/login'); 
     });
 }

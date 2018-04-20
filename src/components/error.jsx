@@ -32,7 +32,6 @@ import * as Actions from 'actions';
             onOk() {
                 console.log('确定');
               },
-            onCancel() {},
         });
     }
     render(){
@@ -150,17 +149,17 @@ import * as Actions from 'actions';
                     <div className="list">
                         <h2>列表</h2>
                         <div className="people-select">
-                            <Button onClick= {this.handle}><Icon type="check-circle" />手工处理</Button>
+                            <Button type="primary" onClick= {this.handle}><Icon type="check-circle" />手工处理</Button>
                         </div>
                     </div>
                     <div className="err-table">
                         <Table 
-                          rowSelection={rowSelection} 
-                          columns={columns} 
-                          dataSource={data} 
-                          bordered={true}
-                          scroll={{y:500}}
-                          pagination={false}
+                            rowSelection={rowSelection} 
+                            columns={columns} 
+                            dataSource={data} 
+                            bordered={true}
+                            scroll={{y:500}}
+                            pagination={false}
                         />
                     </div>
                 </div>

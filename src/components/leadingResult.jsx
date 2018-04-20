@@ -140,11 +140,11 @@ import * as Actions from 'actions';
                     <div className="list">
                         <h2>列表</h2>
                         <div className="people-select">
-                            <Button style={{marginRight:30}} onClick={this.showLeadingFileModal}>
+                            <Button type="primary" style={{marginRight:30}} onClick={this.showLeadingFileModal}>
                               <Icon type="upload" />
                               导入代发结果文件
                             </Button> 
-                            <Button onClick={this.showConfirm}>
+                            <Button type="primary" onClick={this.showConfirm}>
                               <Icon type="check-circle" />
                               结果确认
                             </Button>  

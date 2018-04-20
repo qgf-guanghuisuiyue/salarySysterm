@@ -13,13 +13,22 @@ import * as Actions from 'actions';
 
 
  class UploadPage extends React.Component{
-    constructor(){
-        super();
-        this.state={
-            
-        }
-    }
+     state = {
+        fileList: [],
+     }
+
+     onFileChange = (info) => {
+        let fileList = info.fileList;
+        this.setState({fileList})
+     }
+
+     onFileRemove = (file) => {
+        let {response} = file;
+        console.log(file)
+     }
+    
     render(){
+        const {fileList} = this.state;
         const columns = [
             {
             title: '序号',
@@ -90,9 +99,15 @@ import * as Actions from 'actions';
                         <div className="inline-block">
                             <span className="title">文件名:</span>
                             <Input style={{width: 200}}/>
-                            <Upload className="upLoad-btn upLoad-choose">
-                                <Button>
-                                upload
+                            <Upload className="upLoad-btn upLoad-choose"
+                                    name='file'
+                                    action={`${prefixUri}/api/web/file/uploadFile`}
+                                    onChange={this.onFileChange}
+                                    onRemove={this.onFileRemove}
+                                    fileList={fileList}
+                            >
+                                <Button className="upLoad-btn upLoad-submit" type="primary">
+                                    上传
                                 </Button>
                             </Upload>
                         </div>
@@ -100,7 +115,6 @@ import * as Actions from 'actions';
                             <span className="title">期望代发日期：</span>
                             <DatePicker />
                         </div>  
-                        <Button className="upLoad-btn upLoad-submit" type="primary">上传</Button>
                     </div>
                     <div className="handle-block">
                         <span className="title">模版文件下载：</span>
@@ -125,7 +139,8 @@ const mapStateToProps = state => ({
     
 })
 const mapDispatchToProps = dispatch => ({
-   
+    // showFileModal: bindActionCreators(Actions.UploadActions.showFileModal, dispatch),
+    // hideFileModal: bindActionCreators(Actions.UploadActions.hideFileModal, dispatch),
 })
 
 export default connect(

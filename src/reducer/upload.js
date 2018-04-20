@@ -8,8 +8,8 @@ import {
 const initialState = {
     upLoadModal: {
         visiable: false,
-        isLoading: false,
-    }
+    },
+    isFileLoading: false
 };
 
 export default function upload(state = initialState,actions){
@@ -19,9 +19,9 @@ export default function upload(state = initialState,actions){
         case HIDE_FILE_MODAL: 
             return {...state, upLoadModal: {...state.upLoadModal, visiable: false}};
         case UPLOAD_FILE_START: 
-            return {...state, upLoadModal: {...state.upLoadModal, isLoading: true}}; 
+            return {...state, isFileLoading: true}; 
         case UPLOAD_FILE_DONE: 
-            return {...state, upLoadModal: {...state.upLoadModal, isLoading: false}}; 
+            return {...state, isFileLoading: false}; 
         default: 
             return state;
     }

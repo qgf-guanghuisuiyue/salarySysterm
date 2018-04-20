@@ -15,6 +15,9 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import reducer from './reducer';
 
+
+window.prefixUri = 'PayAgent';
+
 // 创建一个store
 const store = createStore(
     reducer,

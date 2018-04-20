@@ -21,6 +21,15 @@ import * as Actions from 'actions';
         endOpen: false,
     };
 
+    params = {
+        skip: 0,
+        count: 10
+    }
+
+    componentDidMount() {
+        this.props.getApplyList(this.params)
+    }
+
     disabledStartDate = (startValue) => {
         const endValue = this.state.endValue;
         if (!startValue || !endValue) {
@@ -65,56 +74,71 @@ import * as Actions from 'actions';
         console.log(`selected ${value}`);
     }
 
+
     render(){
         const { startValue, endValue, endOpen } = this.state;
+        const {apply_list} = this.props;
         const columns = [
             {
             title: '序号',
             dataIndex: 'key',
             }, {
-            title: '姓名',
-            dataIndex: 'name',
+            title: '批次号',
+            dataIndex: 'batchno',
             render: text => <a href="#">{text}</a>,
           }, {
-            title: '卡号',
-            dataIndex: 'age',
+            title: '公司名称',
+            dataIndex: 'corpname',
           }, {
-            title: '银行名称',
-            dataIndex: 'address',
+            title: '文件名称',
+            dataIndex: 'payapplyfilename',
           }, {
-            title: '开户行',
-            dataIndex: 'bank',
+            title: '总笔数',
+            dataIndex: 'totalcount',
           }, {
-            title: '金额',
-            dataIndex: 'sum',
+            title: '总金额',
+            dataIndex: 'totalamount',
           }, {
-            title: '备注',
-            dataIndex: 'remark',
+            title: '申请时间',
+            dataIndex: 'applydate',
+          }, {
+            title: '期望代发时间',
+            dataIndex: 'exptpaydate',
+          }, {
+            title: '申请结果',
+            dataIndex: 'status',
           }];
+
         const data = [{
             key: '1',
-            name: '胡彦斌',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
+            batchNo: "HY20180201",
+            corpName: "海银会",
+            payApplyFileName: "2018年2月代发薪.xls",
+            totalCount: "1210",
+            totalAmount: "5,430,532.00",
+            applyDate: "",
+            exptPayDate: "",
+            status: "2"
           }, {
             key: '2',
-            name: '胡彦祖',
-            age: 4212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
+            batchNo: "HY20180201",
+            corpName: "海银会",
+            payApplyFileName: "2018年2月代发薪.xls",
+            totalCount: "1210",
+            totalAmount: "5,430,532.00",
+            applyDate: "",
+            exptPayDate: "",
+            status: "2"
           }, {
             key: '3',
-            name: '李大嘴',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
+            batchNo: "HY20180201",
+            corpName: "海银会",
+            payApplyFileName: "2018年2月代发薪.xls",
+            totalCount: "1210",
+            totalAmount: "5,430,532.00",
+            applyDate: "",
+            exptPayDate: "",
+            status: "2"
           }];
         return(
             <div className="layout common">
@@ -164,7 +188,11 @@ import * as Actions from 'actions';
                     </div>
                     <h2 className="File-title">列表</h2>
                     <div className="table-area">
-                        <Table columns={columns} dataSource={data} bordered={true}/>
+                        <Table 
+                            columns={columns}
+                            dataSource={apply_list}
+                            bordered={true}
+                        />
                     </div>
                 </div>
             </div>
@@ -172,10 +200,10 @@ import * as Actions from 'actions';
     }
 }
 const mapStateToProps = state => ({
-    
+    apply_list: state.Apply.apply_list,
 })
 const mapDispatchToProps = dispatch => ({
-   
+    getApplyList: bindActionCreators(Actions.ApplyActions.getApplyList, dispatch)
 })
 
 export default connect(

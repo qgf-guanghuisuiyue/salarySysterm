@@ -3,6 +3,7 @@ import axios from 'axios';
 // lodash
 import merge from 'lodash/merge';
 import omit from 'lodash/omit';
+import store from 'store';
 
 
 const CancelToken = axios.CancelToken;
@@ -30,8 +31,8 @@ export const AjaxByPost = (uri, data) => {
         .then(response => {
             const {data} = response;
             const { code, msg } = data;
-            if (code === 'AAAAAA' && msg==="成功"||"登出成功") {
-                resolve(omit(data,['code','msg']));
+            if (code === 'AAAAAA') {
+                resolve(omit(data,['code']));
             }else{
                 reject(response);
             }
@@ -43,6 +44,7 @@ export const AjaxByPost = (uri, data) => {
     
 }
 export const AjaxByToken = (uri, data) => {
+    const token = store.get('token');
     return AjaxByPost(uri,data);
 }
 

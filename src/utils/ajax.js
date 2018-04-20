@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import store from 'store';
 // lodash
 import merge from 'lodash/merge';
 import omit from 'lodash/omit';
@@ -44,7 +44,8 @@ export const AjaxByPost = (uri, data) => {
     
 }
 export const AjaxByToken = (uri, data) => {
+    // 获取本地存储的token
     const token = store.get('token');
-    return AjaxByPost(uri,data);
+    return AjaxByPost(uri, merge(data, { data: token }));
 }
 

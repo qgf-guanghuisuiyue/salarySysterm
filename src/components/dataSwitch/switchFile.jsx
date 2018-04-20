@@ -1,8 +1,7 @@
-import React from 'react';
-import axios from 'axios';
+import React, {Component,PropTypes} from 'react';
 import moment from 'moment';
 import {Link} from 'react-router';
-import DataCompareModal from './dataCompare'
+import DataCompareModal from './dataCompareModal'
 
 import { Table , Button , Tooltip , Select} from 'antd';
 import {AjaxByToken} from 'utils/ajax';
@@ -20,8 +19,14 @@ import * as Actions from 'actions';
             
         }
     }
+    static contextTypes = {
+        router: PropTypes.object
+    };
     showFileModal = () => {
       this.props.showFileModal()
+    }
+    goBack = () => {
+      this.context.router.push('dataSwitch')
     }
     render(){
         const columns = [
@@ -128,7 +133,7 @@ import * as Actions from 'actions';
                         </div>
                         <Button type="primary" onClick={this.showFileModal}>数据转换</Button>&nbsp;&nbsp;
                         <Button type="primary">生成代发文件</Button>&nbsp;&nbsp;
-                        <Button type="primary">直接退回</Button>
+                        <Button type="primary" onClick= {this.goBack}>直接退回</Button>
                     </div>
                     <div className="File">
                         <span>银行代发文件：</span>

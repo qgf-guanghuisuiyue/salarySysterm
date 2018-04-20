@@ -52,56 +52,56 @@
         }
     }
 }
-
-.dataSwitch{
-    overflow: hidden;
-    .ant-pagination{
-        float: none;
-        text-align: center
-    }
-    .table-left,.table-right{
-        width: 640px;
-        th{
-            text-align: center;
-            span{
-                font-size: 14px;
-            }
+@media (min-width: 1050px) {
+    .dataSwitch{
+        overflow: hidden;
+        .ant-pagination{
+            float: none;
+            text-align: center
         }
-        tr {
-            td{
+        .table-left,.table-right{
+            width: 640px;
+            th{
                 text-align: center;
-                font-size: 14px;
-            }
-        }
-        .table-head{
-            width: 100%;
-            overflow: hidden;
-            font-size: 14px;
-            height: 50px;
-            border: 1px solid #E9E9E9;
-            border-bottom: none;
-            padding-left: 20px;
-            li{
-                float: left;
-                margin-right: 50px;
-                height: 100%;
-                line-height: 50px;
                 span{
-                    line-height: 50px;
+                    font-size: 14px;
                 }
-                span:first-child{
-                    font-weight: bold;
+            }
+            tr {
+                td{
+                    text-align: center;
+                    font-size: 14px;
+                }
+            }
+            .table-head{
+                width: 100%;
+                overflow: hidden;
+                font-size: 14px;
+                height: 50px;
+                border: 1px solid #E9E9E9;
+                border-bottom: none;
+                padding-left: 20px;
+                li{
+                    float: left;
+                    margin-right: 50px;
+                    height: 100%;
+                    line-height: 50px;
+                    span{
+                        line-height: 50px;
+                    }
+                    span:first-child{
+                        font-weight: bold;
+                    }
                 }
             }
         }
-    }
-    .table-left{
-        float: left;
-        margin-left: 20px; 
-    }
-    .table-right{
-        float: right;
-
-        margin-right: 20px;
+        .table-left{
+            float: left;
+            margin-left: 10px; 
+        }
+        .table-right{
+            float: right;
+            margin-right: 10px;
+        }
     }
 }

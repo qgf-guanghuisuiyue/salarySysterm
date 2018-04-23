@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
+import columns from 'data/table-columns/apply';
 
 import {AjaxByToken} from 'utils/ajax';
 import {Input, Button, DatePicker, Table, Select } from 'antd';
@@ -74,72 +75,31 @@ import * as Actions from 'actions';
         console.log(`selected ${value}`);
     }
 
+    getColumns = () => {
+        columns[0].render = (text,record,index) => {           
+            return  <Link>{index+1}</Link>
+        }
+        columns[columns.length-1].render = (text,record,index)=>{
+            return <Link>明细</Link>;
+        }
+        return columns;
+    }
 
     render(){
         const { startValue, endValue, endOpen } = this.state;
-        const {apply_list} = this.props;
-        const columns = [
-            {
-            title: '序号',
-            dataIndex: 'key',
-            }, {
-            title: '批次号',
-            dataIndex: 'batchno',
-            render: text => <a href="#">{text}</a>,
-          }, {
-            title: '公司名称',
-            dataIndex: 'corpname',
-          }, {
-            title: '文件名称',
-            dataIndex: 'payapplyfilename',
-          }, {
-            title: '总笔数',
-            dataIndex: 'totalcount',
-          }, {
-            title: '总金额',
-            dataIndex: 'totalamount',
-          }, {
-            title: '申请时间',
-            dataIndex: 'applydate',
-          }, {
-            title: '期望代发时间',
-            dataIndex: 'exptpaydate',
-          }, {
-            title: '申请结果',
-            dataIndex: 'status',
-          }];
-
-        const data = [{
-            key: '1',
-            batchNo: "HY20180201",
-            corpName: "海银会",
-            payApplyFileName: "2018年2月代发薪.xls",
-            totalCount: "1210",
-            totalAmount: "5,430,532.00",
-            applyDate: "",
-            exptPayDate: "",
-            status: "2"
-          }, {
-            key: '2',
-            batchNo: "HY20180201",
-            corpName: "海银会",
-            payApplyFileName: "2018年2月代发薪.xls",
-            totalCount: "1210",
-            totalAmount: "5,430,532.00",
-            applyDate: "",
-            exptPayDate: "",
-            status: "2"
-          }, {
-            key: '3',
-            batchNo: "HY20180201",
-            corpName: "海银会",
-            payApplyFileName: "2018年2月代发薪.xls",
-            totalCount: "1210",
-            totalAmount: "5,430,532.00",
-            applyDate: "",
-            exptPayDate: "",
-            status: "2"
-          }];
+        const {applyList} = this.props;
+        // 通过 rowSelection 对象表明需要行选择
+        const rowSelection = {
+            onChange(selectedRowKeys, selectedRows) {
+              console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            },
+            onSelect(record, selected, selectedRows) {
+              console.log(record, selected, selectedRows);
+            },
+            onSelectAll(selected, selectedRows, changeRows) {
+              console.log(selected, selectedRows, changeRows);
+            },
+          };
         return(
             <div className="layout common">
                 {/* 申请结果查询 */}
@@ -189,8 +149,10 @@ import * as Actions from 'actions';
                     <h2 className="File-title">列表</h2>
                     <div className="table-area">
                         <Table 
-                            columns={columns}
-                            dataSource={apply_list}
+                            loading={applyList.isLoading}
+                            rowSelection={rowSelection}
+                            columns={this.getColumns()}
+                            dataSource={applyList.list}
                             bordered={true}
                         />
                     </div>
@@ -200,7 +162,7 @@ import * as Actions from 'actions';
     }
 }
 const mapStateToProps = state => ({
-    apply_list: state.Apply.apply_list,
+    applyList: state.Apply.applyList,
 })
 const mapDispatchToProps = dispatch => ({
     getApplyList: bindActionCreators(Actions.ApplyActions.getApplyList, dispatch)

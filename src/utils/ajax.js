@@ -3,7 +3,6 @@ import store from 'store';
 // lodash
 import merge from 'lodash/merge';
 import omit from 'lodash/omit';
-import store from 'store';
 
 
 const CancelToken = axios.CancelToken;
@@ -38,7 +37,7 @@ export const AjaxByPost = (uri, data) => {
             }
         })
         .catch(function(response,e) {
-            console.log('网络错误',response.message);
+            console.log('网络错误',response);
         })
     });
     

@@ -13,12 +13,7 @@ import * as Actions from 'actions';
 
 
  class LeadingResult extends React.Component{
-    constructor(){
-        super();
-        this.state={
-            
-        }
-    }
+    
     static contextTypes = {
         router: PropTypes.object
     };

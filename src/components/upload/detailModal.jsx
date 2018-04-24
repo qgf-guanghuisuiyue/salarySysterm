@@ -5,6 +5,7 @@ import {Link} from 'react-router';
 
 import { Table , Button , Tooltip , Select ,Modal} from 'antd';
 import {AjaxByToken} from 'utils/ajax';
+import columns from 'data/table-columns/detailmodal';
 
 //redux
 import {bindActionCreators} from 'redux';
@@ -13,92 +14,51 @@ import * as Actions from 'actions';
 
 
  class DetailModalComponent extends React.Component{
-    
+
+    _getColumns() {
+        columns[0].render = (text,record,index) => {           
+            return  <a>{index+1}</a>
+        }
+        return columns;
+    }
+
     render(){ 
-        const {detailListModal} = this.props;
-        const columns = [
-            {
-            title: '序号',
-            dataIndex: 'key',
-            }, {
-            title: '姓名',
-            dataIndex: 'name',
-          }, {
-            title: '卡号',
-            dataIndex: 'code',
-          }, {
-            title: '开户行',
-            dataIndex: 'bank',
-          }, {
-            title: '金额',
-            dataIndex: 'sum',
-          }, {
-            title: '备注',
-            dataIndex: 'remark',
-          }];
-        const data = [{
-            key: '1',
-            name: '胡彦斌',
-            code: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }, {
-            key: '2',
-            code: '胡彦祖',
-            age: 4212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }, {
-            key: '3',
-            name: '李大嘴',
-            code: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }];
+        const {detailList, record} = this.props;
+        console.log(detailList)
         return(
                 <Modal
-                    title={<h2>数据对比</h2>}
+                    title={<h2>列表</h2>}
                     wrapClassName="vertical-center-modal"
-                    visible={detailListModal.visible}
+                    visible={detailList.visible}
+                    width={1000}
                     footer={false}
                     onCancel={() => this.props.hideDetailModal()}
                 >
                     <div className="dataSwitch">
                         <ul className="data-info">
-                            <li><span>批次号：</span><span>1212121</span></li>
-                            <li><span>公司名称：</span><span>121212</span></li>
-                            <li><span>代发文件名：</span><span>12121212</span></li>
-                            <li><span>总笔数</span><span>12121212</span></li>
-                            <li><span>总金额</span><span>12121212</span></li>
-                            <li><span>申请日期：</span><span>1212121</span></li>
+                            <li><span>批次号：</span><span>{record.batchno}</span></li>
+                            <li><span>公司名称：</span><span>{record.corpname}</span></li>
+                            <li><span>代发文件名：</span><span>{record.payapplyfilename}</span></li>
+                            <li><span>总笔数</span><span>{record.totalcount}</span></li>
+                            <li><span>总金额</span><span>{record.totalamount}</span></li>
+                            <li><span>申请日期：</span><span>{record.applydate}</span></li>
                         </ul>
-                        <div className="File-btn">
-                            <Tooltip title="先检查是否已完成数据的转换">
-                                <Button type="primary">提交</Button>
-                            </Tooltip>
-                            
-                        </div>
-                        <div>
                             <Table 
-                                columns={columns} 
-                                dataSource={data} 
+                                columns={this._getColumns()} 
+                                dataSource={detailList.list} 
                                 bordered={true}
-                                pagination={false}
+                                pagination={{
+                                    defaultPageSize:5,
+                                    count: detailList.count
+                                }}
                             />
-                        </div>
                     </div>
                 </Modal>
         )
     }
 }
 const mapStateToProps = state => ({
-    detailListModal: state.Apply.detailListModal,
+    detailList: state.Apply.detailList,
 })
 const mapDispatchToProps = dispatch => ({
     hideDetailModal: bindActionCreators(Actions.ApplyActions.hideDetailModal, dispatch),

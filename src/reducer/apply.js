@@ -15,12 +15,14 @@ const initialState = {
     isUploadSucc: false,
     applyList: {
         isLoading: false,
-        list: []
+        list: [],
+        count: 0,
     },
-    detailListModal: {
+    detailList: {
         visible: false,
         isLoading: false,
-        list: []
+        list: [],
+        count: 0
     }
 };
 
@@ -35,17 +37,17 @@ export default function upload(state = initialState,actions){
         case APPLY_LIST_DONE: 
             return {...state, applyList: {...state.applyList, isLoading: false}};
         case GET_APPLY_LIST: 
-            return {...state, applyList: {...state.applyList, list: actions.list}}; 
+            return {...state, applyList: {...state.applyList, list: actions.list, count: actions.sum}}; 
         case SHOW_DETAIL_MODAL: 
-            return {...state, detailListModal: {...state.detailListModal, visible: true}}; 
+            return {...state, detailList: {...state.detailList, visible: true}}; 
         case HIDE_DETAIL_MODAL: 
-            return {...state, detailListModal: {...state.detailListModal, visible: false}}; 
+            return {...state, detailList: {...state.detailList, visible: false}}; 
         case DETAIL_LIST_START: 
-            return {...state, detailListModal: {...state.detailListModal, isLoading: true}}; 
+            return {...state, detailList: {...state.detailList, isLoading: true}}; 
         case DETAIL_LIST_DONE: 
-            return {...state, detailListModal: {...state.detailListModal, isLoading: false}}; 
+            return {...state, detailList: {...state.detailList, isLoading: false}}; 
         case GET_DETAIL_LIST: 
-            return {...state, detailListModal: {...state.detailListModal, list: actions.list}}; 
+            return {...state, detailList: {...state.detailList, list: actions.list, count: actions.sum}}; 
         default: 
             return state;
     }

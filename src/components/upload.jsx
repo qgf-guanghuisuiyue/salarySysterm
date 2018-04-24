@@ -20,7 +20,8 @@ import * as Actions from 'actions';
         batchNoList: [],
         error: false,
         errorMsg: '',
-        exptPayDate: null
+        exptPayDate: null,
+        record: {}
      }
 
     params = {
@@ -105,8 +106,12 @@ import * as Actions from 'actions';
         })
     }
     
-    showDetailModal = () => {
-        this.props.showDetailModal()
+    showDetailModal = (record) => {
+        const {payAgentApplyDetaillist} = this.props;
+        this.props.showDetailModal({...this.params,
+            batchNo: record.batchno
+        }, payAgentApplyDetaillist);
+        this.setState({record})
     }
  
     getColumns = () => {
@@ -114,7 +119,7 @@ import * as Actions from 'actions';
             return  <Link>{index+1}</Link>
         }
         columns[columns.length-1].render = (text,record,index)=>{
-            return <Link onClick={this.showDetailModal}>明细</Link>;
+            return <a onClick={this.showDetailModal.bind(this,record)}>明细</a>;
         }
         return columns;
     }
@@ -123,7 +128,6 @@ import * as Actions from 'actions';
         let batchNoList = selectedRows.map((item,index) => {
             return item.batchno;
         })
-        console.log(batchNoList)        
         this.setState({batchNoList})
     }
 
@@ -138,17 +142,9 @@ import * as Actions from 'actions';
         this.props.payAgentDel({"batchNo":batchNoList}, getApplyList);
     }
 
-    handleOk = () => {
-
-    }
-    
-    handleCancel = () => {
-
-    }
-
     render(){
-        const {fileList,error,errorMsg, payAgentApplyDetaillist} = this.state;
-        const {applyList, detailListModal} = this.props;
+        const {fileList,error,errorMsg, record} = this.state;
+        const {applyList, detailList} = this.props;
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
            onChange: this.onSelectChange,
@@ -227,10 +223,14 @@ import * as Actions from 'actions';
                             columns={this.getColumns()}
                             dataSource={applyList.list}
                             bordered
+                            pagination={{
+                                defaultPageSize:5,
+                                count: applyList.count
+                            }}
                         />
                     </div>
                 </div>
-                <DetailModalComponent/>
+                <DetailModalComponent record={record}/>
             </div>
         )
     }
@@ -246,8 +246,8 @@ const mapDispatchToProps = dispatch => ({
     payAgentCommit: bindActionCreators(Actions.ApplyActions.payAgentCommit, dispatch),
     payAgentApply: bindActionCreators(Actions.ApplyActions.payAgentApply, dispatch),
     payAgentDel: bindActionCreators(Actions.ApplyActions.payAgentDel, dispatch),
-    payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),
     showDetailModal: bindActionCreators(Actions.ApplyActions.showDetailModal, dispatch),
+    payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),    
 })
 
 export default connect(

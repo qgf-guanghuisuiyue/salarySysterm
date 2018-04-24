@@ -115,7 +115,7 @@ import * as Actions from 'actions';
                         />
                     </div>
                 </div>
-                {isLoading && <LoadingComponent/>}
+                {isLoading && <Spin delay={5000}/>}
             </div>
         )
     }

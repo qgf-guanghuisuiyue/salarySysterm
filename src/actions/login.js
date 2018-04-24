@@ -43,7 +43,7 @@ export const userLogin = (userInfo={},context) => (dispatch,getState) => {
         context.router.push('/');
     },err=>{
         dispatch(LOGIN_DONE);
-        dispatch({...SEND_SUCCESSFUL,msg:err.data.msg})
+        //dispatch({...SEND_SUCCESSFUL,msg:err.data.msg})
     });
 }
 

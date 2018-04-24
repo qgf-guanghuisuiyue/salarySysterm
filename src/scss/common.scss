@@ -43,8 +43,8 @@
         }
         li{
             float: left;
-            margin-top: 20px;
-            width: 270px;
+            //margin-top: 20px;
+            width: 350px;
             span{
                 font-size: 14px;
                 display: inline-block;
@@ -55,7 +55,7 @@
                 font-weight: bold
             }
             span:nth-child(2) {
-                display: inline;
+                display: inline-block;
             }
         }
     }
@@ -70,7 +70,8 @@
 @media (min-width:1050px) {
     .common{
         width: 1350px;
-        height: 750px;
+        min-height: 750px;
+        max-height: 1000px;
         //border: 1px solid #E9E9E9;
         background: white;
         //padding-top: 20px;

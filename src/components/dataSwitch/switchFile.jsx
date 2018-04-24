@@ -6,17 +6,22 @@ import DataCompareModal from './dataCompareModal'
 import { Table , Button , Tooltip , Select} from 'antd';
 import {AjaxByToken} from 'utils/ajax';
 
+import columns from 'data/table-columns/createFile';
+import LoadingComponent from '../loading';
+import bank from 'data/bank';
 //redux
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from 'actions';
 
 
- class LeadingResult extends React.Component{
+ class SwitchFile extends React.Component{
     constructor(){
         super();
         this.state={
-            
+            batchNo:"",
+            bankName:"",
+            pay_way:"1"
         }
     }
     static contextTypes = {
@@ -28,110 +33,92 @@ import * as Actions from 'actions';
     goBack = () => {
       this.context.router.push('dataSwitch')
     }
+    getColumns = () => {
+        columns[0].render = (record , text , index) =>{
+            return <span>{index + 1}</span>
+        }
+        return columns
+    }
+    componentDidMount(){
+      const {batchno} = this.props.location.query;
+      this.setState({
+        batchNo:batchno
+      })
+      //调取代发申请人员信息接口
+        this.props.getPayagentDetail({batchNo:batchno,count:"10",skip:"0"})
+    }
+    // componentWillReceiveProps(nextProps){
+    //     console.log(nextProps)
+    // }
+    //页码回调
+    onChangePagination = (page) => {
+        const {batchno} = this.props.location.query;
+        const skip = page*10-10;
+        this.props.getPayagentDetail({batchNo:batchno,count:"10",skip})
+    }
+    handleChange = (field,value) => {
+        this.setState({
+            [field]:value
+        })
+    }
+    dataSwitch = () => {
+        const {batchNo , bankName , pay_way} = this.state;
+        this.props.dataSwitch({batchNo , bankName , pay_way});
+    }
     render(){
-        const columns = [
-            {
-            title: '序号',
-            dataIndex: 'key',
-            width:50
-            }, {
-            title: '银行代发文件',
-            dataIndex: 'name',
-            width:150,
-            render: text => <a href="#">{text}</a>,
-          }, {
-            title: '代发银行',
-            dataIndex: 'age',
-            width:150,
-          }, {
-            title: '代发方式',
-            dataIndex: 'address',
-            width:150,
-          }, {
-            title: '代发文件生成日期',
-            dataIndex: 'bank',
-            width:150,
-          }, {
-            title: '代发结果文件',
-            dataIndex: 'sum',
-            width:150,
-          }, {
-            title: '结果文件上传日期',
-            dataIndex: 'remark',
-            width:150,
-          }, {
-            title: '代发结果',
-            dataIndex: 'result',
-            width:150,
-          }];
-        const data = [{
-            key: '1',
-            name: '胡彦斌',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666",
-            result:"成功"
-          }, {
-            key: '2',
-            name: '胡彦祖',
-            age: 4212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666",
-            result:"成功"
-          }, {
-            key: '3',
-            name: '李大嘴',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666",
-            result:"成功"
-          }];
-          
-          // 通过 rowSelection 对象表明需要行选择
-          const rowSelection = {
-            onChange(selectedRowKeys, selectedRows) {
-              console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
-            onSelect(record, selected, selectedRows) {
-              console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-              console.log(selected, selectedRows, changeRows);
-            },
-          };
-          
+        const { isLoading , payagentDetail,isSwitchLoading ,switchSuccess} = this.props;
+        const {tblPayApplyModel , list , size} = payagentDetail;
+        const {bankName , pay_way} = this.state;
         return(
             <div className="layout common">
                 <div className="leadingResult">
                     <h2 className="File-title">生成银行代发文件</h2>
-                    <ul className="data-info">
-                        <li><span>批次号：</span><span>1212121</span></li>
-                        <li><span>公司名称：</span><span>海擎金融信息服务有限公司</span></li>
-                        <li><span>代发文件名：</span><span>厄齐尔</span></li>
-                        <li><span>总笔数：</span><span>123</span></li>
-                        <li><span>总金额：</span><span>321</span></li>
-                        <li><span>申请日期：</span><span>2018-04-16</span></li>
-                        <li><span>处理状态：</span><span>受理中</span></li>
+                    <ul className="data-info switchFileUl">
+                        <li><span>批次号：</span><span>{tblPayApplyModel?tblPayApplyModel.batchno:""}</span></li>
+                        <li><span>公司名称：</span><span>{tblPayApplyModel?tblPayApplyModel.corpname:""}</span></li>
+                        <li><span>代发文件名：</span><span>{tblPayApplyModel?tblPayApplyModel.payapplyfilename:""}</span></li>
+                        <li><span>总笔数：</span><span>{tblPayApplyModel?tblPayApplyModel.totalcount:""}</span></li>
+                        <li style={{height:30}}><span>总金额：</span><span>{tblPayApplyModel?tblPayApplyModel.totalamount:""}</span></li>
+                        <li><span>申请日期：</span><span>{tblPayApplyModel?moment(tblPayApplyModel.applydate).format("YYYY-MM-DD"):""}</span></li>
+                        <li><span>处理状态：</span><span>{tblPayApplyModel?tblPayApplyModel.status===0?"全部成功":tblPayApplyModel.status===1?"部分成功":tblPayApplyModel.status===2?"待处理":tblPayApplyModel.status===3?"处理中":tblPayApplyModel.status===4 ? "拒绝处理":"暂无":""}</span></li>
                     </ul>
                     <div className="File-btn switchFile">
                         <div className="switchFile-select">
                             <span className="select-name">银行：</span>
-                            <Select defaultValue="招商银行">
-                              <Option value="lucy">招商银行</Option>
+                            <Select defaultValue="招商银行" onChange={this.handleChange.bind(this,"bankName")}>
+                                {
+                                    bank.map((item, index)=>{
+                                        return (<Option value={item.text}>{item.text}</Option>)
+                                    })
+                                }
+                              
                             </Select>
                             <span className="select-name selectSecond">代发方式：</span>
-                            <Select defaultValue="公对私">
-                              <Option value="lucy">公对私</Option>
-                              <Option value="lucy">私对私</Option>
+                            <Select defaultValue="公对私" onChange={this.handleChange.bind(this,"pay_way")}>
+                              <Option value="1">公对私</Option>
+                              <Option value="2">私对私</Option>
                             </Select>
                         </div>
-                        <Button type="primary" onClick={this.showFileModal}>数据转换</Button>&nbsp;&nbsp;
+                        {
+                            !switchSuccess && 
+                            <Button 
+                                type="primary" 
+                                loading={isSwitchLoading} 
+                                onClick={this.dataSwitch}
+                            >
+                                数据转换
+                            </Button>
+                        }
+                        {
+                            switchSuccess && 
+                            <Button 
+                                type="primary" 
+                                onClick={this.showFileModal}
+                            >
+                                数据转换结果核对
+                            </Button>
+                            }
+                        &nbsp;&nbsp;
                         <Button type="primary">生成代发文件</Button>&nbsp;&nbsp;
                         <Button type="primary" onClick= {this.goBack}>直接退回</Button>
                     </div>
@@ -143,29 +130,39 @@ import * as Actions from 'actions';
                     </div>
                     <div className="result-table">
                         <Table 
-                            rowSelection={rowSelection} 
-                            columns={columns} 
-                            dataSource={data} 
+                            columns={this.getColumns()} 
+                            dataSource={list?list:[]} 
                             bordered={true}
-                            scroll={{y:400}}
-                            pagination={false}
+                            loading={isLoading}
+                            pagination={{
+                                total:size,
+                                defaultPageSize: 10,
+                                onChange:this.onChangePagination
+                            }}
                         />
                     </div>
                 </div>
+                {isLoading && <LoadingComponent style={{top:700}}/>}
                 <DataCompareModal/>
             </div>
         )
     }
 }
 const mapStateToProps = state => ({
-   isFileModal: state.DataSwitch.isFileModal
+   isFileModal: state.DataSwitch.isFileModal,
+   isLoading: state.DataSwitch.isLoading,
+   payagentDetail: state.DataSwitch.payagentDetail,
+   isSwitchLoading:state.DataSwitch.isSwitchLoading,
+   switchSuccess: state.DataSwitch.switchSuccess
 })
 const mapDispatchToProps = dispatch => ({
    showFileModal: bindActionCreators(Actions.DataSwitchActions.showFileModal, dispatch),
-   hideFileModal: bindActionCreators(Actions.DataSwitchActions.hideFileModal, dispatch)
+   hideFileModal: bindActionCreators(Actions.DataSwitchActions.hideFileModal, dispatch),
+   getPayagentDetail: bindActionCreators(Actions.DataSwitchActions.getPayagentDetail, dispatch),
+   dataSwitch: bindActionCreators(Actions.DataSwitchActions.dataSwitch, dispatch)
 })
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(LeadingResult);
+)(SwitchFile);

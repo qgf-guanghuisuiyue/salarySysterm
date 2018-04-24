@@ -1,12 +1,3 @@
-import React from 'react';
-import moment from 'moment';
-// 格式化时间
-const renderTime = (text,record,index) => {
-    return moment(text).format('YYYY-MM-DD');
-}
-const renderTextWithATag = (text, record, index) => {
-    return <a href="javascript:;" title={text}>{text}</a>
-}
 
 module.exports = [
     {
@@ -22,7 +13,7 @@ module.exports = [
     {
         title: '公司名称',
         dataIndex: 'corpname',
-        width:200
+        width:170
     }, 
     {
         title: '代发申请文件名称',
@@ -37,7 +28,7 @@ module.exports = [
     {
         title: '总金额',
         dataIndex: 'totalamount',
-        width:100
+        width:150
     }, 
     {
         title: '申请时间',

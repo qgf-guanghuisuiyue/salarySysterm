@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
-import { Table , Button , Tooltip , Input, DatePicker , Icon ,Spin} from 'antd';
+import { Table , Button , Tooltip , Input, DatePicker , Icon ,Spin ,notification } from 'antd';
 
 import columns from 'data/table-columns/dataSwitch';
 import LoadingComponent from './loading';
@@ -19,9 +19,12 @@ import * as Actions from 'actions';
         this.state={
             corpName:"",
             startDate:"",
-            endDate:""
+            endDate:"",
+            current:"",
+            batchno:""
         }
     }
+    skip = 0;
     onChange = (e) => {
         this.setState({
             corpName:e.target.value
@@ -29,38 +32,59 @@ import * as Actions from 'actions';
     }
     dateChange = (field,value,dateString) => {
         this.setState({
-            [field]:dateString
+            [field]:moment(value).format("YYYYMMDD")
         })
     }
     queryList = () => {
         const {corpName , startDate , endDate} = this.state;
-        this.props.getDataSwitchList({corpName , startDate , endDate,skip:'0',count:'10'})
+        const skip = this.skip;
+        this.props.getDataSwitchList({corpName , startDate , endDate,skip,count:'10'})
     }
     getColumns = () => {
         columns[0].render = (text,record,index) => {           
             return  <a>{index+1}</a>
+        }
+        columns[columns.length-2].render = (text,record,index) => {
+            return  <span>{record.status===0?"全部成功":record.status===1?"部分成功":record.status===2?"待处理":record.status===3?"处理中":record.status===4 ? "拒绝处理":"暂无"}</span>
         }
         columns[columns.length-1].render = (text,record,index)=>{
             return <a>明细</a>;
         }
         return columns;
     }
-    render(){
-        const {corpName , startDate , endDate} = this.state;
-        const {isLoading} = this.props;
-        const data = this.props.dataSwitchList.list;
+    //页码回调
+    onChangePagination = (page) => {
+        this.setState({
+            current:page
+        })
+        this.skip = page * 10 - 10;
+        this.queryList();
+    }
+    rowSelection = () =>{
+         const _this = this;
         // 通过 rowSelection 对象表明需要行选择
-        const rowSelection = {
-        onChange(selectedRowKeys, selectedRows) {
-                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
-        onSelect(record, selected, selectedRows) {
-                console.log(record, selected, selectedRows);
-            },
-        onSelectAll(selected, selectedRows, changeRows) {
-                console.log(selected, selectedRows, changeRows);
-            },
+         return {
+            type:'radio',
+            onSelect(record, selected, selectedRows) {
+                    _this.setState({
+                        batchno:record.batchno
+                    })
+                }
         };
+     } 
+     createFile = () => {
+         const {batchno} = this.state;
+         if(!batchno){
+            notification.warning({
+                message: '请选择代发申请文件'
+              });
+            }
+     }
+    render(){
+        const {corpName , startDate , endDate ,current ,batchno} = this.state;
+        const {isLoading , dataSwitchList={}} = this.props,
+                data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
+                count = dataSwitchList.count;//总条数        
         return(
             <div className=" layout common">
                 <div className="error handle">
@@ -95,23 +119,31 @@ import * as Actions from 'actions';
                             </Button>
                         </li>
                     </ul>
-                    
                     <div className="list">
                         <h2>列表</h2>
                         <div className="people-select">
-                            <Button type="primary">
+                            <Button 
+                                type="primary"
+                                onClick= {this.createFile}
+                            >
                                 <Icon type="retweet" />&nbsp;
-                                <Link to="createFile">生成银行代发文件</Link>
+                                <Link to={batchno?`createFile?batchno=${batchno}`:"dataSwitch"}>生成银行代发文件</Link>
                             </Button> 
                         </div>
                     </div>
                     <div className="err-table">
                         <Table 
-                            rowSelection={rowSelection} 
+                            rowSelection={this.rowSelection()} 
                             columns={this.getColumns()} 
                             dataSource={data} 
                             bordered={true} 
-                            loading={false}
+                            loading={isLoading}
+                            pagination={{
+                                defaultPageSize: 5,
+                                total: count,
+                                current: current,
+                                onChange:this.onChangePagination
+                            }}
                         />
                     </div>
                 </div>
@@ -125,9 +157,8 @@ const mapStateToProps = state => ({
     isLoading: state.DataSwitch.isLoading
 })
 const mapDispatchToProps = dispatch => ({
-    getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch)
+    getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch),
 })
-
 export default connect(
     mapStateToProps,
     mapDispatchToProps

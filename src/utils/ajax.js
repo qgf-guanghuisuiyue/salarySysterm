@@ -45,7 +45,7 @@ export const AjaxByPost = (uri, data) => {
             }
         })
         .catch(function(response,e) {
-            console.log('网络错误',response.message);
+            console.log('网络错误',response);
         })
     });
     

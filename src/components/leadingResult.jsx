@@ -15,12 +15,7 @@ import * as Actions from 'actions';
 
 
  class LeadingResult extends React.Component{
-    constructor(){
-        super();
-        this.state={
-            
-        }
-    }
+    
     showLeadingFileModal = () => {
       this.props.showLeadingFileModal()
     }

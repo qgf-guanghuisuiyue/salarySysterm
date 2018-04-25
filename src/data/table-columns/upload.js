@@ -5,6 +5,7 @@ module.exports = [
     }, {
         title: '批次号',
         dataIndex: 'batchno',
+        render: text => <a href="#">{text}</a>,
     }, {
         title: '公司名称',
         dataIndex: 'corpname',

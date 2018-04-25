@@ -58,6 +58,21 @@
                 display: inline-block;
             }
         }
+        &.switchFileUl{
+            li{
+                height: 50px;
+                span:nth-child(1){
+                    display: inline-block;
+                    float: left;
+                }
+                span:nth-child(2){
+                    display: inline-block;
+                    width: 200px;
+                    float: left;
+                    text-align: left
+                }
+            }
+        }
     }
     .File-btn{
         width: 100%;

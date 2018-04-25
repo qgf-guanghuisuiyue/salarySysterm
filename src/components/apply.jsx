@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
-import columns from 'data/table-columns/apply';
+import columns from 'data/table-columns/upload';
 
 import {AjaxByToken} from 'utils/ajax';
 import {Input, Button, DatePicker, Table, Select } from 'antd';
@@ -17,9 +17,10 @@ import * as Actions from 'actions';
 
  class Apply extends React.Component{
     state = {
-        startValue: null,
-        endValue: null,
+        startDate: null,
+        endDate: null,
         endOpen: false,
+        corpName: ''
     };
 
     params = {
@@ -31,20 +32,26 @@ import * as Actions from 'actions';
         this.props.getApplyList(this.params)
     }
 
-    disabledStartDate = (startValue) => {
-        const endValue = this.state.endValue;
-        if (!startValue || !endValue) {
+    disabledStartDate = (startDate) => {
+        const endDate = this.state.endDate;
+        if (!startDate || !endDate) {
             return false;
         }
-        return startValue.valueOf() > endValue.valueOf();
+        return startDate.valueOf() > endDate.valueOf();
     }
 
-    disabledEndDate = (endValue) => {
-        const startValue = this.state.startValue;
-        if (!endValue || !startValue) {
+    disabledEndDate = (endDate) => {
+        const startDate = this.state.startDate;
+        if (!endDate || !startDate) {
             return false;
         }
-        return endValue.valueOf() <= startValue.valueOf();
+        return endDate.valueOf() <= startDate.valueOf();
+    }
+
+    onHandleChange = (e) => {
+        this.setState({
+            corpName:e.target.value
+        })
     }
 
     onChange = (field, value) => {
@@ -54,11 +61,11 @@ import * as Actions from 'actions';
     }
 
     onStartChange = (value) => {
-        this.onChange('startValue', value);
+        this.onChange('startDate', value);
     }
 
     onEndChange = (value) => {
-        this.onChange('endValue', value);
+        this.onChange('endDate', value);
     }
 
     handleStartOpenChange = (open) => {
@@ -71,8 +78,10 @@ import * as Actions from 'actions';
         this.setState({ endOpen: open });
     }
 
-    handleChange = (value) => {
-        console.log(`selected ${value}`);
+    queryList = () => {
+        const {corpName , startDate , endDate} = this.state;
+        const skip = this.skip;
+        this.props.getDataSwitchList({...this.params, corpName , startDate , endDate})
     }
 
     getColumns = () => {
@@ -86,8 +95,11 @@ import * as Actions from 'actions';
     }
 
     render(){
-        const { startValue, endValue, endOpen } = this.state;
+        const { startDate, endDate, endOpen, corpName } = this.state;
         const {applyList} = this.props;
+        const {isLoading , dataSwitchList={}} = this.props,
+        data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
+        count = dataSwitchList.count;//总条数   
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
             onChange(selectedRowKeys, selectedRows) {
@@ -107,8 +119,12 @@ import * as Actions from 'actions';
                     <h2 className="File-title">代发结果查询</h2>
                     <div className="handle-block">
                         <div className="inline-block">
-                            <span className="title">批次号:</span>
-                            <Input style={{width: 200}}/>
+                            <span className="title">公司名称:</span>
+                            <Input 
+                                style={{width: 200}}
+                                value={corpName}
+                                onChange = {this.onHandleChange}
+                            />
                             
                         </div>
                         <div className="inline-block">
@@ -116,8 +132,8 @@ import * as Actions from 'actions';
                             <DatePicker
                                 disabledDate={this.disabledStartDate}
                                 showTime
-                                format="YYYY-MM-DD HH:mm:ss"
-                                value={startValue}
+                                format="YYYY-MM-DD"
+                                value={startDate}
                                 placeholder="Start"
                                 onChange={this.onStartChange}
                                 onOpenChange={this.handleStartOpenChange}
@@ -126,34 +142,32 @@ import * as Actions from 'actions';
                             <DatePicker
                                 disabledDate={this.disabledEndDate}
                                 showTime
-                                format="YYYY-MM-DD HH:mm:ss"
-                                value={endValue}
+                                format="YYYY-MM-DD"
+                                value={endDate}
                                 placeholder="End"
                                 onChange={this.onEndChange}
                                 open={endOpen}
                                 onOpenChange={this.handleEndOpenChange}
                             />
                         </div>  
-                    </div>
-                    <div className="handle-block">
-                        <span className="title">处理结果：</span>
-                        <Select defaultValue="option1" style={{ width: 120 }} onChange={this.handleChange}>
-                            <Option value="option1">option1</Option>
-                            <Option value="option2">option2</Option>
-                            <Option value="option3">option3</Option>
-                        </Select>
-                    </div>
-                    <div className="handle-block" style={{textAlign: "right"}}>
-                        <Button type="primary">查询</Button>
+                        <Button 
+                           type="primary" 
+                           style={{marginLeft: 100}}
+                           onClick={this.queryList}
+                        >查询</Button>
                     </div>
                     <h2 className="File-title">列表</h2>
                     <div className="table-area">
                         <Table 
-                            loading={applyList.isLoading}
+                            loading={isLoading}
                             rowSelection={rowSelection}
                             columns={this.getColumns()}
-                            dataSource={applyList.list}
-                            bordered={true}
+                            dataSource={data}
+                            bordered
+                            pagination={{
+                                defaultPageSize:5,
+                                count: count
+                            }}
                         />
                     </div>
                 </div>
@@ -162,10 +176,13 @@ import * as Actions from 'actions';
     }
 }
 const mapStateToProps = state => ({
+    dataSwitchList: state.DataSwitch.dataSwitchList,
+    isLoading: state.DataSwitch.isLoading,
     applyList: state.Apply.applyList,
 })
 const mapDispatchToProps = dispatch => ({
-    getApplyList: bindActionCreators(Actions.ApplyActions.getApplyList, dispatch)
+    getApplyList: bindActionCreators(Actions.ApplyActions.getApplyList, dispatch),
+    getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch),
 })
 
 export default connect(

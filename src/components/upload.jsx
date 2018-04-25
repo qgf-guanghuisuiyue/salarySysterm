@@ -1,8 +1,7 @@
 import React from 'react';
-import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
-import columns from 'data/table-columns/apply';
+import columns from 'data/table-columns/upload';
 import DetailModalComponent from './upload/detailModal';
 
 import {AjaxByToken} from 'utils/ajax';
@@ -33,13 +32,22 @@ import * as Actions from 'actions';
         this.props.getApplyList(this.params)
     }
 
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.isUploadSucc){
+            this.setState({
+                fileList: []
+            })
+        }
+    }
+
+
     triggerError = (error,errorMsg='文件类型不支持！') => {
         this.setState({error,errorMsg});
     }
 
     // 文件上传之前的钩子函数
     onFilebeforeUpload = (file) => {
-        const matchName = /(\.html|\.xls|\.xlsx|\.xlsm|.zip|.mht|.htm|.docx|.doc)$/i,
+        const matchName = /(\.xls|\.xlsx|\.xlsm|.zip)$/i,
             {error,fileList} = this.state,
             {name,size} = file;
         // 判断是否已经上传过文件(单次只能上传一个文件)
@@ -79,7 +87,7 @@ import * as Actions from 'actions';
 
     uploadDemo = () => {
         let {fileList, exptPayDate} = this.state,
-            {payAgentApply, isUploadSucc, getApplyList} = this.props;
+            {payAgentApply, getApplyList} = this.props;
         // 判断是否上传了文件
         if(fileList.length === 0){
             this.triggerError(true,'请选择上传文件！');
@@ -91,13 +99,7 @@ import * as Actions from 'actions';
             return ;
         }
         const {data} = response;
-        payAgentApply({"fileName":data,"exptPayDate":exptPayDate}, getApplyList);
-        console.log(isUploadSucc)
-        if(isUploadSucc){
-            this.setState({
-                fileList: []
-            })
-        }
+        payAgentApply({"fileName":data,"exptPayDate":exptPayDate}, getApplyList)
     }
 
     onDateChange = (date, dateString) => {

@@ -24,7 +24,6 @@ import * as Actions from 'actions';
 
     render(){ 
         const {detailList, record} = this.props;
-        console.log(detailList)
         return(
                 <Modal
                     title={<h2>列表</h2>}
@@ -35,7 +34,7 @@ import * as Actions from 'actions';
                     onCancel={() => this.props.hideDetailModal()}
                 >
                     <div className="dataSwitch">
-                        <ul className="data-info">
+                        <ul className="data-info switchFileUl">
                             <li><span>批次号：</span><span>{record.batchno}</span></li>
                             <li><span>公司名称：</span><span>{record.corpname}</span></li>
                             <li><span>代发文件名：</span><span>{record.payapplyfilename}</span></li>

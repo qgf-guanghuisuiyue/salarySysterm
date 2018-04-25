@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
 import { Table , Button , Tooltip , Input, DatePicker , Icon ,Spin ,notification } from 'antd';
@@ -20,8 +19,8 @@ import * as Actions from 'actions';
             corpName:"",
             startDate:"",
             endDate:"",
-            current:"",
-            batchno:""
+            batchno:"",
+            page:1
         }
     }
     skip = 0;
@@ -41,23 +40,29 @@ import * as Actions from 'actions';
         this.props.getDataSwitchList({corpName , startDate , endDate,skip,count:'10'})
     }
     getColumns = () => {
+        const {page} = this.state;
         columns[0].render = (text,record,index) => {           
-            return  <a>{index+1}</a>
+            return  <a>{(index+1)+(page-1)*5}</a>
         }
         columns[columns.length-2].render = (text,record,index) => {
             return  <span>{record.status===0?"全部成功":record.status===1?"部分成功":record.status===2?"待处理":record.status===3?"处理中":record.status===4 ? "拒绝处理":"暂无"}</span>
         }
         columns[columns.length-1].render = (text,record,index)=>{
-            return <a>明细</a>;
+            return <a onClick = {this.checkDetail.bind(this,record)}>明细</a>;
         }
         return columns;
+    }
+    //明细查询
+    checkDetail = (record) => {
+        console.log(record)
+        //this.props.getDetail({batchNo:batchno , count:10 , skip:0})
     }
     //页码回调
     onChangePagination = (page) => {
         this.setState({
-            current:page
+            page
         })
-        this.skip = page * 10 - 10;
+        this.skip = page * 5 - 5;
         this.queryList();
     }
     rowSelection = () =>{
@@ -72,19 +77,21 @@ import * as Actions from 'actions';
                 }
         };
      } 
-     createFile = () => {
+    createFile = () => {
          const {batchno} = this.state;
          if(!batchno){
             notification.warning({
                 message: '请选择代发申请文件'
-              });
-            }
-     }
+            });
+         }else{
+            window.location.hash = `#/createFile?batchno=${batchno}`
+         }
+    }
     render(){
-        const {corpName , startDate , endDate ,current ,batchno} = this.state;
+        const {corpName , startDate , endDate  ,batchno} = this.state;
         const {isLoading , dataSwitchList={}} = this.props,
                 data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
-                count = dataSwitchList.count;//总条数        
+                count = dataSwitchList.count;//总条数 
         return(
             <div className=" layout common">
                 <div className="error handle">
@@ -126,8 +133,8 @@ import * as Actions from 'actions';
                                 type="primary"
                                 onClick= {this.createFile}
                             >
-                                <Icon type="retweet" />&nbsp;
-                                <Link to={batchno?`createFile?batchno=${batchno}`:"dataSwitch"}>生成银行代发文件</Link>
+                                <Icon type="retweet" />
+                                生成银行代发文件
                             </Button> 
                         </div>
                     </div>
@@ -141,7 +148,6 @@ import * as Actions from 'actions';
                             pagination={{
                                 defaultPageSize: 5,
                                 total: count,
-                                current: current,
                                 onChange:this.onChangePagination
                             }}
                         />
@@ -158,6 +164,7 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
     getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch),
+    getDetail: bindActionCreators(Actions.DataSwitchActions.getDetail, dispatch)
 })
 export default connect(
     mapStateToProps,

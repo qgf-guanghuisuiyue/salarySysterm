@@ -21,9 +21,7 @@ import * as Actions from 'actions';
     constructor(){
         super();
         this.state={
-            panes:[
-                { title: '上传文件', key: 'upload' }
-              ],
+            panes:[{ title: '上传文件', key: 'upload' }],
             activeKey:"upload", //当前激活 tab 面板的 key
         }
     }
@@ -79,9 +77,6 @@ import * as Actions from 'actions';
             activeKey
         })
     }
-
-    
-    
     componentDidMount(){
         const {location} = this.props,
         pathname = location.pathname;
@@ -141,6 +136,12 @@ import * as Actions from 'actions';
                     panes:[{ title: '日志查询', key: 'log' }]
                 });
             break;
+            case "/createFile":
+                this.setState({
+                    panes:[{ title: '银行代发文件', key: 'createFile' }]
+                });
+            break;
+            
             default:
                 this.setState({
                     panes:[{ title: '上传文件', key: 'upload' }]
@@ -148,22 +149,39 @@ import * as Actions from 'actions';
             break;
         }    
     }
-   
+   componentWillReceiveProps(nextProps,nextState){
+        const {pathname} = nextProps.location;
+        switch (pathname) {
+            case "/createFile":
+                this.setState({
+                    panes:[{ title: '银行代发文件', key: 'createFile' }]
+                });
+            break;
+        }    
+   }
     
     render(){
         const {routes,location, userLoginout} = this.props,
             pathname = location.pathname;
         return(
             <div>
-                {pathname!=='/login' && pathname!=='login' && pathname!=='/forgetPsd' && pathname!=='forgetPsd'&&
-                    <NavbarComponent handleClick={this.handleClick.bind(this)} routes={routes} userLoginout={userLoginout}/>
+                {pathname!=='/login' && pathname!=='login' && pathname!=='/forgetPsd' && pathname!=='forgetPsd' &&
+                    <NavbarComponent 
+                        handleClick={this.handleClick.bind(this)} 
+                        routes={routes} 
+                        userLoginout={userLoginout}
+                    />
                 }
                 {pathname!=='/login' && pathname!=='login' &&
-                    <div className="breadName layout">{routes[routes.length - 1 ].breadcrumbName} </div>
+                    <div className="breadName layout">
+                        {routes[routes.length - 1 ].breadcrumbName} 
+                    </div>
                 }
                 {
                     pathname==='/' && !routes[routes.length - 1 ].path &&
-                    <div className="breadName layout">{routes[routes.length - 2 ].breadcrumbName} </div>
+                    <div className="breadName layout">
+                        {routes[routes.length - 2 ].breadcrumbName} 
+                    </div>
                 } 
                 {
                     pathname!=='/login' && pathname!=='login'  && pathname!=='/forgetPsd' && pathname!=='forgetPsd' &&
@@ -176,21 +194,28 @@ import * as Actions from 'actions';
                             onEdit={this.onEdit}
                             onTabClick={this.onTabClick}
                         >
-                            {this.state.panes.map(pane => <TabPane tab={
-                                <Link to={pane.title==="上传文件"?"upload"
-                                :pane.title==="申请结果查询"?"apply"
-                                :pane.title==="数据转换"?"dataSwitch"
-                                :pane.title==="导入结果"?"leadingResult"
-                                :pane.title==="受理查询"?'handle'
-                                :pane.title==="失败结果查询"?'errorResult'
-                                :pane.title==="基础管理"?'basicManage'
-                                :pane.title==="模板文件"?'mouldFile'
-                                :pane.title==="用户管理"?'userManage'
-                                :pane.title==='权限设置'?"accessPermission"
-                                :pane.title==="日志查询" && "log"} 
-                                activeClassName='active'>{pane.title}</Link>} 
-                                key={pane.key}>
-                            </TabPane>)}
+                            {
+                                this.state.panes.map(pane => <TabPane 
+                                    tab={
+                                        <Link to={pane.title==="上传文件"?"upload"
+                                            :pane.title==="申请结果查询"?"apply"
+                                            :pane.title==="数据转换"?"dataSwitch"
+                                            :pane.title==="导入结果"?"leadingResult"
+                                            :pane.title==="受理查询"?'handle'
+                                            :pane.title==="失败结果查询"?'errorResult'
+                                            :pane.title==="基础管理"?'basicManage'
+                                            :pane.title==="模板文件"?'mouldFile'
+                                            :pane.title==="用户管理"?'userManage'
+                                            :pane.title==='权限设置'?"accessPermission"
+                                            :pane.title==="日志查询" && "log"} 
+                                            activeClassName='active'>
+                                            {pane.title}
+                                        </Link>
+                                    } 
+                                        key={pane.key}
+                                    >
+                                </TabPane>)
+                            }
                         </Tabs>
                     </div>
                 }

@@ -78,11 +78,11 @@ export class LoginPage extends Component {
         }
     }
     componentWillReceiveProps(nextProps){
-        // if(nextProps.msg){
-        //     this.setState({
-        //         errMsg: nextProps.msg
-        //     })
-        // }
+        if(nextProps.msg){
+            this.setState({
+                errMsg: nextProps.msg
+            })
+        }
         this.setState({
             loaddone:nextProps.loaddone
         })

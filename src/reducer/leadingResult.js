@@ -7,7 +7,7 @@ const initialState = {
     isLeadingFileModal:false
 };
 
-export default function home(state = initialState,actions){
+export default function leadingResult(state = initialState,actions){
     switch(actions.type){
         case SHOW_LEADINGFILE_MODAL: 
             return {...state,isLeadingFileModal:true}; 

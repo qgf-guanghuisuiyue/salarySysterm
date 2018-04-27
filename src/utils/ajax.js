@@ -8,6 +8,11 @@ import {notification } from 'antd';
 const CancelToken = axios.CancelToken;
 let cancel = [];
 
+export const cancelRequest = function() {
+    cancel = [];
+}
+
+
 export const AjaxByPost = (uri, data) => {
     return new Promise(function(resolve, reject) {
         axios({

@@ -93,6 +93,9 @@
 @media (min-width:1050px) {
     .homeContent{
         width: 100%;
+        position: fixed;
+        top:0;
+        z-index: 100;
         .header{
             height: 60px;
             width: 100%;
@@ -122,27 +125,28 @@
             }
             .userInfo{
                 position: absolute;
-                width: 435px;
+                width: 400px;
                 height: 100%;
                 right: 0;
                 li{
                     float: left;
                     height: 100%;
                     line-height: 60px;
-                    font-size: 18px;
+                    font-size: 16px;
                     color: white;
-                    margin-right: 30px;
+                    margin-right: 38px;
+                }
+                li:last-child{
+                    padding: 0px 10px 0px 10px;
+                    margin-right: 0;
                     cursor: pointer;
-                    img{
-                        display: block;
-                        position: absolute;
-                        top: 50%;
-                        margin-top: -10px
-                    }
+                }
+                li:last-child:hover{
+                    background: rgb(0, 105, 159)
                 }
             }
             .menu{
-                width:485px;
+                width:500px;
                 height:61px;
                 position:absolute;
                 left:200px;
@@ -215,4 +219,5 @@
 }
 .active{
     color: #0566FA;
+    font-weight: bolder
 }

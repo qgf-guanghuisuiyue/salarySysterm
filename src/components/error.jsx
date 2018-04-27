@@ -158,8 +158,7 @@ import * as Actions from 'actions';
                             columns={columns} 
                             dataSource={data} 
                             bordered={true}
-                            scroll={{y:500}}
-                            pagination={false}
+                            pagination={true}
                         />
                     </div>
                 </div>

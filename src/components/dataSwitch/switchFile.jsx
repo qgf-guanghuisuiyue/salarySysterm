@@ -1,14 +1,15 @@
 import React, {Component,PropTypes} from 'react';
 import moment from 'moment';
 import {Link} from 'react-router';
-import DataCompareModal from './dataCompareModal'
 
 import { Table , Button , Tooltip , Select} from 'antd';
-import {AjaxByToken} from 'utils/ajax';
+
+import DataCompareModal from './dataCompareModal';
+import LoadingComponent from '../loading';
 
 import columns from 'data/table-columns/createFile';
-import LoadingComponent from '../loading';
 import bank from 'data/bank';
+
 //redux
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
@@ -21,7 +22,8 @@ import * as Actions from 'actions';
         this.state={
             batchNo:"",
             bankName:"",
-            pay_way:"1"
+            pay_way:"1",
+            page:1
         }
     }
     static contextTypes = {
@@ -34,8 +36,9 @@ import * as Actions from 'actions';
       this.context.router.push('dataSwitch')
     }
     getColumns = () => {
+        const {page} = this.state;
         columns[0].render = (record , text , index) =>{
-            return <span>{index + 1}</span>
+            return <span>{(index + 1)+(page-1)*10}</span>
         }
         return columns
     }
@@ -47,13 +50,13 @@ import * as Actions from 'actions';
       //调取代发申请人员信息接口
         this.props.getPayagentDetail({batchNo:batchno,count:"10",skip:"0"})
     }
-    // componentWillReceiveProps(nextProps){
-    //     console.log(nextProps)
-    // }
     //页码回调
     onChangePagination = (page) => {
         const {batchno} = this.props.location.query;
         const skip = page*10-10;
+        this.setState({
+            page
+        })
         this.props.getPayagentDetail({batchNo:batchno,count:"10",skip})
     }
     handleChange = (field,value) => {
@@ -63,12 +66,23 @@ import * as Actions from 'actions';
     }
     dataSwitch = () => {
         const {batchNo , bankName , pay_way} = this.state;
-        this.props.dataSwitch({batchNo , bankName , pay_way});
+        const {getPayagentDetail} = this.props;
+        this.props.dataSwitch({batchNo , bankName , pay_way},getPayagentDetail);
+    }
+    createPayFile = () => {
+        const {batchno} = this.props.location.query;
+        this.props.createPayFile({batchNo:batchno})
     }
     render(){
-        const { isLoading , payagentDetail,isSwitchLoading ,switchSuccess} = this.props;
-        const {tblPayApplyModel , list , size} = payagentDetail;
-        const {bankName , pay_way} = this.state;
+        const { 
+            isLoading , 
+            payagentDetail,
+            isSwitchLoading ,
+            isFileModal ,
+            createFileLoading
+        } = this.props;
+        const {tblPayApplyModel , tblPayInfo={} , list , size} = payagentDetail;
+        const {batchno} = this.props.location.query;
         return(
             <div className="layout common">
                 <div className="leadingResult">
@@ -91,7 +105,6 @@ import * as Actions from 'actions';
                                         return (<Option value={item.text}>{item.text}</Option>)
                                     })
                                 }
-                              
                             </Select>
                             <span className="select-name selectSecond">代发方式：</span>
                             <Select defaultValue="公对私" onChange={this.handleChange.bind(this,"pay_way")}>
@@ -100,7 +113,7 @@ import * as Actions from 'actions';
                             </Select>
                         </div>
                         {
-                            !switchSuccess && 
+                            !tblPayInfo.activeflag && 
                             <Button 
                                 type="primary" 
                                 loading={isSwitchLoading} 
@@ -110,16 +123,26 @@ import * as Actions from 'actions';
                             </Button>
                         }
                         {
-                            switchSuccess && 
+                            tblPayInfo.activeflag && 
                             <Button 
                                 type="primary" 
                                 onClick={this.showFileModal}
                             >
                                 数据转换结果核对
                             </Button>
-                            }
+                        }
                         &nbsp;&nbsp;
-                        <Button type="primary">生成代发文件</Button>&nbsp;&nbsp;
+
+                        <Tooltip title="先检查是否已完成数据的转换">
+                            <Button 
+                                type="primary" 
+                                loading={createFileLoading} 
+                                onClick={this.createPayFile}
+                            >
+                                生成代发文件
+                            </Button>
+                        </Tooltip> 
+                        &nbsp;&nbsp;
                         <Button type="primary" onClick= {this.goBack}>直接退回</Button>
                     </div>
                     <div className="File">
@@ -142,8 +165,8 @@ import * as Actions from 'actions';
                         />
                     </div>
                 </div>
-                {isLoading && <LoadingComponent style={{top:700}}/>}
-                <DataCompareModal/>
+                {isLoading && <LoadingComponent/>}
+                {isFileModal && <DataCompareModal batchNo={batchno}/>}
             </div>
         )
     }
@@ -153,13 +176,14 @@ const mapStateToProps = state => ({
    isLoading: state.DataSwitch.isLoading,
    payagentDetail: state.DataSwitch.payagentDetail,
    isSwitchLoading:state.DataSwitch.isSwitchLoading,
-   switchSuccess: state.DataSwitch.switchSuccess
+   createFileLoading: state.DataSwitch.createFileLoading
 })
 const mapDispatchToProps = dispatch => ({
    showFileModal: bindActionCreators(Actions.DataSwitchActions.showFileModal, dispatch),
    hideFileModal: bindActionCreators(Actions.DataSwitchActions.hideFileModal, dispatch),
    getPayagentDetail: bindActionCreators(Actions.DataSwitchActions.getPayagentDetail, dispatch),
-   dataSwitch: bindActionCreators(Actions.DataSwitchActions.dataSwitch, dispatch)
+   dataSwitch: bindActionCreators(Actions.DataSwitchActions.dataSwitch, dispatch),
+   createPayFile: bindActionCreators(Actions.DataSwitchActions.createPayFile, dispatch)
 })
 
 export default connect(

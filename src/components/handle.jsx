@@ -139,8 +139,7 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
                           columns={columns} 
                           dataSource={data} 
                           bordered={true}
-                          scroll={{y:500}}
-                          pagination={false}
+                          pagination={true}
                         />
                     </div>
                 </div>

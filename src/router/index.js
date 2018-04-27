@@ -1,5 +1,5 @@
 
-import {requireAuthHook} from '../hook';
+import {requireAuthHook , onLeavePage} from '../hook';
 
 
 
@@ -17,6 +17,7 @@ const UpLoadPage = {
     path: 'upload',
     breadcrumbName: '代发申请 ＞ 上传文件',
     onEnter:requireAuthHook,
+    onLeave:onLeavePage,
     getComponent(nextState,cb){
         require.ensure([], (require) => {
             cb(null, require('components/upload').default)
@@ -28,6 +29,7 @@ const ApplyPage = {
     path: 'apply',
     breadcrumbName: '代发申请 ＞ 申请结果查询',
     onEnter:requireAuthHook,
+    onLeave:onLeavePage,
     getComponent(nextState,cb){
         require.ensure([], (require) => {
             cb(null, require('components/apply').default)
@@ -39,6 +41,7 @@ const DataSwitchPage = {
     path: 'dataSwitch',
     breadcrumbName: '代发薪受理 ＞ 数据转换',
     onEnter:requireAuthHook,
+    onLeave:onLeavePage,
     getComponent(nextState,cb){
         require.ensure([], (require) => {
             cb(null, require('components/dataSwitch').default)
@@ -50,6 +53,7 @@ const Handle = {
     path: 'handle',
     breadcrumbName: '代发薪受理 ＞ 受理查询',
     onEnter:requireAuthHook,
+    onLeave:onLeavePage,
     getComponent(nextState,cb){
         require.ensure([], (require) => {
             cb(null, require('components/handle').default)
@@ -61,6 +65,7 @@ const LeadingResult = {
     path: 'leadingResult',
     breadcrumbName: '代发薪受理 ＞ 导入结果',
     onEnter:requireAuthHook,
+    onLeave:onLeavePage,
     getComponent(nextState,cb){
         require.ensure([], (require) => {
             cb(null, require('components/leadingResult').default)
@@ -72,6 +77,7 @@ const ErrorResult = {
     path: 'errorResult',
     breadcrumbName: '代发薪受理 ＞ 失败结果',
     onEnter:requireAuthHook,
+    onLeave:onLeavePage,
     getComponent(nextState,cb){
         require.ensure([], (require) => {
             cb(null, require('components/error').default)
@@ -83,6 +89,7 @@ const BasicManage = {
     path: 'basicManage',
     breadcrumbName: '系统管理 ＞ 基础管理',
     onEnter:requireAuthHook,
+    onLeave:onLeavePage,
     getComponent(nextState,cb){
         require.ensure([], (require) => {
             cb(null, require('components/basicManage').default)
@@ -94,6 +101,7 @@ const MouldFile = {
     path: 'mouldFile',
     breadcrumbName: '系统管理 ＞ 模板文件',
     onEnter:requireAuthHook,
+    onLeave:onLeavePage,
     getComponent(nextState,cb){
         require.ensure([], (require) => {
             cb(null, require('components/mouldFile').default)
@@ -105,6 +113,7 @@ const UserManage = {
     path: 'userManage',
     breadcrumbName: '系统管理 ＞ 用户管理',
     onEnter:requireAuthHook,
+    onLeave:onLeavePage,
     getComponent(nextState,cb){
         require.ensure([], (require) => {
             cb(null, require('components/userManage').default)
@@ -116,6 +125,7 @@ const AccessPermission = {
     path: 'accessPermission',
     breadcrumbName: '系统管理 ＞ 权限设置',
     onEnter:requireAuthHook,
+    onLeave:onLeavePage,
     getComponent(nextState,cb){
         require.ensure([], (require) => {
             cb(null, require('components/accessPermission').default)
@@ -127,6 +137,7 @@ const Log = {
     path: 'log',
     breadcrumbName: '系统管理 ＞ 日志查询',
     onEnter:requireAuthHook,
+    onLeave:onLeavePage,
     getComponent(nextState,cb){
         require.ensure([], (require) => {
             cb(null, require('components/log').default)
@@ -145,8 +156,9 @@ const ForgetPsd = {
 // 引入生成银行代发文件路由组件
 const CreateFile = {
     path: 'createFile',
-    breadcrumbName: '生成银行代发文件',
+    breadcrumbName: '代发薪受理 ＞ 数据转换 ＞ 生成银行代发文件',
     onEnter:requireAuthHook,
+    onLeave:onLeavePage,
     getComponent(nextState,cb){
         require.ensure([], (require) => {
             cb(null, require('components/dataSwitch/switchFile').default)
@@ -156,81 +168,33 @@ const CreateFile = {
 
 /*路由配置*/
 const RouteConfig = {
-    //path: '/',
-        // onEnter:requireAuthHook,
-        // //onLeave:onLeavePage,
-        // getChildRoutes(partialNextState, cb) {
-        //     require.ensure([], (require) => {
-        //         cb(null, [
-        //             LoginPage,
-        //             UpLoadPage,
-        //             ApplyPage,
-        //             DataSwitchPage,
-        //             Handle,
-        //             LeadingResult,
-        //             ErrorResult,
-        //             BasicManage,
-        //             MouldFile,
-        //             UserManage,
-        //             AccessPermission,
-        //             Log
-        //         ])
-        //     })
-        // },
-        // getComponent(nextState,cb){
-        //     require.ensure([], (require) => {
-        //         cb(null, require('components/Home').default)
-        //     }, 'HomePage')
-        // } 
-
-        //childRoutes: [ {
-            path: '/',
-            breadcrumbName:'代发申请 ＞ 上传文件',
-            //onEnter:requireAuthHook,
-            component: require('components/Home').default,
-            indexRoute: {
-                onEnter:requireAuthHook,
-                getComponent(nextState,cb){
-                    require.ensure([], (require) => {
-                        cb(null, require('components/upload').default)
-                    }, 'UpLoadPage')
-                } 
-            },
-            // getChildRoutes(partialNextState, cb) {
-            //     require.ensure([], (require) => {
-            //         cb(null, [
-            //             LoginPage,
-            //             UpLoadPage,
-            //             ApplyPage,
-            //             DataSwitchPage,
-            //             Handle,
-            //             LeadingResult,
-            //             ErrorResult,
-            //             BasicManage,
-            //             MouldFile,
-            //             UserManage,
-            //             AccessPermission,
-            //             Log
-            //         ])
-            //     })
-            // },
-            childRoutes: [
-                    LoginPage,
-                    ForgetPsd,
-                    UpLoadPage,
-                    ApplyPage,
-                    DataSwitchPage,
-                    Handle,
-                    LeadingResult,
-                    ErrorResult,
-                    BasicManage,
-                    MouldFile,
-                    UserManage,
-                    AccessPermission,
-                    Log,
-                    CreateFile
-                ]
-          //} ]
+    path: '/',
+    breadcrumbName:'代发申请 ＞ 上传文件',
+    component: require('components/Home').default,
+    indexRoute: {
+        onEnter:requireAuthHook,
+        getComponent(nextState,cb){
+            require.ensure([], (require) => {
+                cb(null, require('components/upload').default)
+            }, 'UpLoadPage')
+        } 
+    },
+    childRoutes: [
+        LoginPage,
+        ForgetPsd,
+        UpLoadPage,
+        ApplyPage,
+        DataSwitchPage,
+        Handle,
+        LeadingResult,
+        ErrorResult,
+        BasicManage,
+        MouldFile,
+        UserManage,
+        AccessPermission,
+        Log,
+        CreateFile
+    ]
 }
 
 module.exports = RouteConfig;

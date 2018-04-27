@@ -8,7 +8,9 @@ import {
     HIDE_DETAIL_MODAL,
     GET_DETAIL_LIST,
     UPLOAD_START,
-    UPLOAD_DONE
+    UPLOAD_DONE,
+    SHOW_ACCEPT_DETAIL_MODAL,
+    HIDE_ACCEPT_DETAIL_MODAL
 } from '../constants/apply';
 
 const initialState = {
@@ -23,7 +25,8 @@ const initialState = {
         isLoading: false,
         list: [],
         count: 0
-    }
+    },
+    acceptDetailVisible: false
 };
 
 export default function upload(state = initialState,actions){
@@ -48,6 +51,10 @@ export default function upload(state = initialState,actions){
             return {...state, detailList: {...state.detailList, isLoading: false}}; 
         case GET_DETAIL_LIST: 
             return {...state, detailList: {...state.detailList, list: actions.list, count: actions.sum}}; 
+        case SHOW_ACCEPT_DETAIL_MODAL: 
+            return {...state, acceptDetailVisible: true}; 
+        case HIDE_ACCEPT_DETAIL_MODAL: 
+            return {...state, acceptDetailVisible: false};     
         default: 
             return state;
     }

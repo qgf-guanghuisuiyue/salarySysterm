@@ -5,6 +5,7 @@ import Upload from './upload';
 import Apply from './apply';
 import DataSwitch from './dataSwitch';
 import LeadingResult from './leadingResult';
+import System from './system';
 
 const rootReducer = combineReducers({
     DataSwitch,
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
     Home,
     Upload,
     Apply,
-    DataSwitch
+    DataSwitch,
+    System
 });
 
 export default rootReducer;

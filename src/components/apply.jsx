@@ -3,6 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
 import columns from 'data/table-columns/upload';
+import AcceptDetailModalComponent from './apply/acceptDetailModal';
 
 import {AjaxByToken} from 'utils/ajax';
 import {Input, Button, DatePicker, Table, Select } from 'antd';
@@ -20,7 +21,8 @@ import * as Actions from 'actions';
         startDate: null,
         endDate: null,
         endOpen: false,
-        corpName: ''
+        corpName: '',
+        record: {}
     };
 
     params = {
@@ -84,18 +86,26 @@ import * as Actions from 'actions';
         this.props.getDataSwitchList({...this.params, corpName , startDate , endDate})
     }
 
+    showAcceptDetailModal = (record) => {
+        const {getPayagentDetail} = this.props;
+        this.props.showAcceptDetailModal({...this.params,
+            batchNo: record.batchno
+        }, getPayagentDetail);
+        this.setState({record})
+    }
+
     getColumns = () => {
         columns[0].render = (text,record,index) => {           
             return  <Link>{index+1}</Link>
         }
         columns[columns.length-1].render = (text,record,index)=>{
-            return <Link>明细</Link>;
+            return <a onClick={this.showAcceptDetailModal.bind(this,record)}>明细</a>;
         }
         return columns;
     }
 
     render(){
-        const { startDate, endDate, endOpen, corpName } = this.state;
+        const { startDate, endDate, endOpen, corpName, record } = this.state;
         const {applyList} = this.props;
         const {isLoading , dataSwitchList={}} = this.props,
         data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
@@ -171,6 +181,7 @@ import * as Actions from 'actions';
                         />
                     </div>
                 </div>
+                <AcceptDetailModalComponent  record={record}/>
             </div>
         )
     }
@@ -183,6 +194,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     getApplyList: bindActionCreators(Actions.ApplyActions.getApplyList, dispatch),
     getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch),
+    showAcceptDetailModal: bindActionCreators(Actions.ApplyActions.showAcceptDetailModal, dispatch),
+    getPayagentDetail: bindActionCreators(Actions.DataSwitchActions.getPayagentDetail, dispatch),
 })
 
 export default connect(

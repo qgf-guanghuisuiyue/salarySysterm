@@ -1,0 +1,8 @@
+/**
+ * 系统管理
+ */
+
+//系统参数列表查询
+export const PARAMETER_LIST_START = "PARAMETER_LIST_START";
+export const PARAMETER_LIST_DONE = "PARAMETER_LIST_DONE";
+export const GET_PARAMETER_LIST = "GET_PARAMETER_LIST";

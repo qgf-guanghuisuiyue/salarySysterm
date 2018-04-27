@@ -2,9 +2,11 @@ import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
+import columns from 'data/table-columns/basic';
 
 import {AjaxByToken} from 'utils/ajax';
-import {Input, Button, Table} from 'antd';
+import {Select, Button, Table} from 'antd';
+const Option = Select.Option;
 
 //redux
 import {bindActionCreators} from 'redux';
@@ -13,75 +15,52 @@ import * as Actions from 'actions';
 
 
  class BasicManage extends React.Component{
-    constructor(){
-        super();
-        this.state={
-            
-        }
-    }
-    render(){
-        const columns = [
-            {
-            title: '序号',
-            dataIndex: 'key',
-            }, {
-            title: '姓名',
-            dataIndex: 'name',
-            render: text => <a href="#">{text}</a>,
-          }, {
-            title: '卡号',
-            dataIndex: 'age',
-          }, {
-            title: '银行名称',
-            dataIndex: 'address',
-          }, {
-            title: '开户行',
-            dataIndex: 'bank',
-          }, {
-            title: '金额',
-            dataIndex: 'sum',
-          }, {
-            title: '备注',
-            dataIndex: 'remark',
-          }];
-        const data = [{
-            key: '1',
-            name: '胡彦斌',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }, {
-            key: '2',
-            name: '胡彦祖',
-            age: 4212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }, {
-            key: '3',
-            name: '李大嘴',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }];
 
-          // 通过 rowSelection 对象表明需要行选择
-          const rowSelection = {
-            onChange(selectedRowKeys, selectedRows) {
-              console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
-            onSelect(record, selected, selectedRows) {
-              console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-              console.log(selected, selectedRows, changeRows);
-            },
-          };
+    state = {
+      type: '',
+      value: ''
+    }
+
+    params = {
+      skip: 0,
+      count: 10
+    }
+
+    onHandleChange = (field, value) => {
+      this.setState({
+          [field]: value
+      })
+    }
+
+    searchChange = () => {
+      console.log('search')
+      const {
+        type,
+        value
+      } = this.state;
+      this.props.getParameterList({...this.params, type, value})
+    }
+
+    saveParameter = () => {
+      this.props.parameterSave()
+    }
+
+    render(){
+
+        const {parameter} = this.props;
+        console.log(parameter.list)
+        // 通过 rowSelection 对象表明需要行选择
+        const rowSelection = {
+          onChange(selectedRowKeys, selectedRows) {
+            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+          },
+          onSelect(record, selected, selectedRows) {
+            console.log(record, selected, selectedRows);
+          },
+          onSelectAll(selected, selectedRows, changeRows) {
+            console.log(selected, selectedRows, changeRows);
+          },
+        };
         return(
             <div className=" layout common">
                 {/* 基础管理 */}
@@ -90,21 +69,52 @@ import * as Actions from 'actions';
                     <div className="handle-block">
                         <div className="inline-block">
                             <span className="title">参数类型:</span>
-                            <Input style={{width: 200}}/>
+                            <Select style={{width: 200}}
+                                    placeholder='请选择参数类型'
+                                    onChange={this.onHandleChange.bind(this, 'type')}
+                            >
+                              <Option value="1">公司参数</Option>
+                              <Option value="2">系统参数</Option>
+                            </Select>
                         </div>
                         <div className="inline-block">
-                            <span className="title">参数值</span>
-                            <Input style={{width: 200}}/>
+                            <span className="title">公司名称</span>
+                            <Select  style={{width: 200}}
+                                    placeholder='请选择公司'
+                                    onChange={this.onHandleChange.bind(this, 'value')}
+                            >
+                                    {
+                                        [
+                                            '海银会', 
+                                            '银都',
+                                            '零点花花',
+                                            '西藏新路驰迅'
+                                        ].map((item , index)=>{
+                                            return <Option key={index} value={item}>{item}</Option>
+                                        })
+                                    }
+                            </Select>
                         </div>  
-                        <Button type="primary" style={{marginLeft: 20}}>查询</Button>
+                        <Button type="primary" 
+                                style={{marginLeft: 20}}
+                                onClick={this.searchChange}
+                        >查询</Button>
                     </div>
                     <h2 className="File-title">列表</h2>
                     <div className="table-area">
                         <div className="control">
-                            <Button icon="plus-square" style={{marginRight: 50}}>新增</Button>
+                            <Button 
+                                icon="plus-square" 
+                                style={{marginRight: 50}}
+                                onClick={this.saveParameter}
+                              >新增</Button>
                             <Button icon="delete">删除</Button>
                         </div>
-                        <Table rowSelection={rowSelection} columns={columns} dataSource={data} bordered={true}/>
+                        <Table 
+                          rowSelection={rowSelection} 
+                          columns={columns} 
+                          dataSource={parameter.list} 
+                          bordered={true}/>
                     </div>
                 </div>
             </div>
@@ -112,10 +122,11 @@ import * as Actions from 'actions';
     }
 }
 const mapStateToProps = state => ({
-    
+    parameter: state.System.parameter,
 })
 const mapDispatchToProps = dispatch => ({
-   
+    getParameterList: bindActionCreators(Actions.SystemActions.getParameterList, dispatch),
+    parameterSave: bindActionCreators(Actions.SystemActions.parameterSave, dispatch),
 })
 
 export default connect(

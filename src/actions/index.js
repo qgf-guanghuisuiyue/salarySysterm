@@ -4,6 +4,7 @@ import * as UploadActions from './upload';
 import * as ApplyActions from './apply';
 import * as DataSwitchActions from './dataSwitch';
 import * as LeadingResultActions from './leadingResult';
+import * as SystemActions from './system';
 
 module.exports = {
     loginActions,
@@ -11,5 +12,6 @@ module.exports = {
     UploadActions,
     ApplyActions,
     DataSwitchActions,
-    LeadingResultActions
+    LeadingResultActions,
+    SystemActions
 }

@@ -38,18 +38,28 @@
         line-height: 50px
     }
 }
-// .switchFileUl{
-//     li{
-//         height: 70px;
-//         span:nth-child(1){
-//             display: inline-block;
-//             float: left;
-//         }
-//         span:nth-child(2){
-//             display: inline-block;
-//             width: 200px;
-//             float: left;
-//             text-align: left
-//         }
-//     }
-// }
+
+.refuse-modal{
+    .ant-modal-footer{
+        text-align: center;
+        .ant-btn{
+            margin-left: 30px;
+            width: 100px
+        }
+    }
+}
+.edit-modal{
+    .ant-modal-body{
+        text-align: center;
+        .bankModal{
+            label{
+                font-weight: bold;
+            }
+                .ant-input{
+                    width: 80%;
+                    margin-bottom: 20px;
+                    height: 35px
+                }
+        }
+    }
+}

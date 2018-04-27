@@ -1,0 +1,18 @@
+#nprogress {
+    &.top0 {
+        .bar {
+            top: 0px;
+        }
+        .spinner {
+            top: 15px;
+        }
+    }
+    &.top60 {
+        .bar {
+            top: 60px;
+        }
+        .spinner {
+            top: 65px;
+        }
+    }
+}

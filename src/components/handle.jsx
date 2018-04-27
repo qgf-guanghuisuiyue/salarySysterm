@@ -18,6 +18,10 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
             
         }
     }
+    componentDidMount(){
+        NProgress.start()
+        NProgress.done()
+    }
     render(){
         const columns = [
             {
@@ -108,7 +112,7 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
         return(
             <div className="layout common">
                 <div className="error handle">
-                    <h2 className="File-title">代发薪申请受理查询</h2>
+                    <h2 className="File-title">受理查询</h2>
                     <ul className="data-info handle-info" >
                         <li style={{marginLeft:100}}><span>批次号：</span><Input/></li>
                         <li><span>公司名称：</span><Input className="input"/></li>

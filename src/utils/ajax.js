@@ -14,6 +14,7 @@ export const cancelRequest = function() {
 
 
 export const AjaxByPost = (uri, data) => {
+    NProgress.start()
     return new Promise(function(resolve, reject) {
         axios({
             url: `PayAgent/${uri}`,
@@ -33,6 +34,7 @@ export const AjaxByPost = (uri, data) => {
             })
         })
         .then(response => {
+            NProgress.done()
             const {data} = response;
             const { code, msg } = data;
             if (code !== 'AAAAAA') {
@@ -50,6 +52,7 @@ export const AjaxByPost = (uri, data) => {
             }
         })
         .catch(function(response,e) {
+            NProgress.done()
             console.log('网络错误',response);
         })
     });

@@ -45,10 +45,9 @@ const CREATE_FILE_DONE = {type:types.CREATE_FILE_DONE};
             data: data
         })
         .then(res=>{
-            console.log(res)
-            //dispatch({...GET_DATASWITCH_LIST,dataSwitchList:res.data})
+            // dispatch({...GET_DATASWITCH_LIST,dataSwitchList:res.data})
         },err=>{
-            //dispatch({...HIDE_LOADING})
+            dispatch({...HIDE_LOADING})
         });
     }
     //代发申请人员信息

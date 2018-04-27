@@ -3,6 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
 import columns from 'data/table-columns/basic';
+import SaveParameterModal from './basicManage/saveParameterModal';
 
 import {AjaxByToken} from 'utils/ajax';
 import {Select, Button, Table} from 'antd';
@@ -25,6 +26,17 @@ import * as Actions from 'actions';
       skip: 0,
       count: 10
     }
+
+    _getColumns() {
+      columns[columns.length-1].render = (text,record,index)=>{
+        return <a onClick={this.showParameterModal.bind(this,record)}>明细</a>;
+    }
+    return columns;
+  }
+
+  showParameterModal = (record) => {
+    console.log(record)
+  }
 
     onHandleChange = (field, value) => {
       this.setState({
@@ -112,7 +124,7 @@ import * as Actions from 'actions';
                         </div>
                         <Table 
                           rowSelection={rowSelection} 
-                          columns={columns} 
+                          columns={this._getColumns()} 
                           dataSource={parameter.list} 
                           bordered={true}/>
                     </div>

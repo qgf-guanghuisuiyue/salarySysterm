@@ -20,8 +20,10 @@ import * as Actions from 'actions';
         error: false,
         errorMsg: '',
         exptPayDate: null,
-        record: {}
-     }
+        record: {},
+        page: 1
+    }
+     
 
     params = {
         skip: 0,
@@ -104,7 +106,7 @@ import * as Actions from 'actions';
 
     onDateChange = (date, dateString) => {
         this.setState({
-            exptPayDate: moment(date).format('yyyyMMdd')
+            exptPayDate: moment(date).format('YYYYMMDD')
         })
     }
     
@@ -118,12 +120,27 @@ import * as Actions from 'actions';
  
     getColumns = () => {
         columns[0].render = (text,record,index) => {           
-            return  <Link>{index+1}</Link>
+            return  <Link>{index+1+(this.state.page-1)*5}</Link>
+        }
+        columns[columns.length-2].render = (text,record,index) => {
+            return  <span>{record.status===0?"成功":record.status===1?"未处理":record.status===2?"处理中":record.status===3?"失败":"暂无"}</span>
         }
         columns[columns.length-1].render = (text,record,index)=>{
             return <a onClick={this.showDetailModal.bind(this,record)}>明细</a>;
         }
         return columns;
+    }
+
+    //页码回调
+    onChangePagination = (page) => {
+        this.setState({
+            page
+        })
+        const {record} = this.state;
+        const {batchno} = record;
+        const {payAgentApply} = this.props;
+        this.param.skip = page * 5 - 5;
+        payAgentApply({batchNo:batchno,count:5,skip:this.param.skip})
     }
     
     onSelectChange = (selectedRowKeys, selectedRows) => {
@@ -144,9 +161,12 @@ import * as Actions from 'actions';
         this.props.payAgentDel({"batchNo":batchNoList}, getApplyList);
     }
 
+    
+
     render(){
         const {fileList,error,errorMsg, record} = this.state;
-        const {applyList, detailList} = this.props;
+        const {applyList, detailList, payAgentApplyDetaillist} = this.props;
+        const {applyData} = applyList;
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
            onChange: this.onSelectChange,
@@ -174,7 +194,7 @@ import * as Actions from 'actions';
                                 beforeUpload={this.onFilebeforeUpload}
                             >
                                 <Button className="upLoad-btn upLoad-submit" type="primary">
-                                    上传
+                                    选择文件
                                 </Button>
                             </Upload>
                         </div>
@@ -217,22 +237,23 @@ import * as Actions from 'actions';
                             <Button 
                                 icon="check-circle"
                                 onClick={this.handlePayAgentCommit}
-                            >提交</Button>
+                            >确认代发</Button>
                         </div>
                         <Table 
                             loading={applyList.isLoading}
                             rowSelection={rowSelection}
                             columns={this.getColumns()}
-                            dataSource={applyList.list}
+                            dataSource={applyData.list}
                             bordered
                             pagination={{
                                 defaultPageSize:5,
-                                count: applyList.count
+                                total: applyData.sum,
+                                onChange: this.onChangePagination
                             }}
                         />
                     </div>
                 </div>
-                <DetailModalComponent record={record}/>
+                <DetailModalComponent record={record}  payAgentApplyDetaillist={payAgentApplyDetaillist}/>
             </div>
         )
     }
@@ -242,8 +263,6 @@ const mapStateToProps = state => ({
     applyList: state.Apply.applyList
 })
 const mapDispatchToProps = dispatch => ({
-    // showFileModal: bindActionCreators(Actions.UploadActions.showFileModal, dispatch),
-    // hideFileModal: bindActionCreators(Actions.UploadActions.hideFileModal, dispatch),
     getApplyList: bindActionCreators(Actions.ApplyActions.getApplyList, dispatch),
     payAgentCommit: bindActionCreators(Actions.ApplyActions.payAgentCommit, dispatch),
     payAgentApply: bindActionCreators(Actions.ApplyActions.payAgentApply, dispatch),

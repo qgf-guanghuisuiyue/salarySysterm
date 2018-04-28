@@ -10,7 +10,11 @@ import {
     SHOW_SWITCH_LOADING,
     DATA_RESULT_CHECK,
     CREATE_FILE_START,
-    CREATE_FILE_DONE
+    CREATE_FILE_DONE,
+    SHOW_REFUSE_MODAL,
+    HIDE_REFUSE_MODAL,
+    SHOW_EDIT_MODAL,
+    HIDE_EDIT_MODAL
 } from '../constants/dataSwitch';
 
 const initialState = {
@@ -21,7 +25,10 @@ const initialState = {
     payagentDetail:{},
     isSwitchLoading:false,
     resultData:{},
-    createFileLoading:false
+    createFileLoading:false,
+    isRefuseModal:false,
+    isEditModal:false,
+    title:""
 };
 
 export default function dataSwitch(state = initialState,actions){
@@ -47,7 +54,15 @@ export default function dataSwitch(state = initialState,actions){
         case CREATE_FILE_START: 
             return {...state,createFileLoading:true};
         case CREATE_FILE_DONE: 
-            return {...state,createFileLoading:false};     
+            return {...state,createFileLoading:false};
+        case SHOW_REFUSE_MODAL: 
+            return {...state,isRefuseModal:true}; 
+        case HIDE_REFUSE_MODAL: 
+            return {...state,isRefuseModal:false};
+        case SHOW_EDIT_MODAL: 
+            return {...state,isEditModal:true,title:actions.title}; 
+        case HIDE_EDIT_MODAL: 
+            return {...state,isEditModal:false};     
         default: 
             return state;
     }

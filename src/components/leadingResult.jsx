@@ -15,7 +15,10 @@ import * as Actions from 'actions';
 
 
  class LeadingResult extends React.Component{
-    
+    componentDidMount(){
+        NProgress.start()
+        NProgress.done()
+    }
     showLeadingFileModal = () => {
       this.props.showLeadingFileModal()
     }
@@ -34,75 +37,53 @@ import * as Actions from 'actions';
             {
             title: '序号',
             dataIndex: 'key',
+            width:50
             }, {
-            title: '银行代发文件',
-            dataIndex: 'name',
-            render: text => <a href="#">{text}</a>,
+            title: '批次号',
+            dataIndex: 'batchno',
+            width:100
           }, {
-            title: '代发银行',
-            dataIndex: 'age',
+            title: '公司名称',
+            dataIndex: 'corpname',
+            width:150
           }, {
-            title: '代发方式',
-            dataIndex: 'address',
+            title: '代发申请文件名称',
+            dataIndex: 'payapplyfilename',
+            width:150
           }, {
-            title: '代发文件生成日期',
-            dataIndex: 'bank',
+            title: '总笔数',
+            dataIndex: 'totalcount',
+            width:100
           }, {
-            title: '代发结果文件',
-            dataIndex: 'sum',
+            title: '总金额',
+            dataIndex: 'totalamount',
+            width:100
           }, {
-            title: '结果文件上传日期',
-            dataIndex: 'remark',
+            title: '申请时间',
+            dataIndex: 'applytime',
+            width:100
           }, {
-            title: '代发结果',
+            title: '成功笔数',
+            dataIndex: 'succcount',
+            width:100
+          }, {
+            title: '失败笔数',
+            dataIndex: 'failcount',
+            width:100
+          }, {
+            title: '失败金额',
             dataIndex: 'result',
+            width:100
+          }, {
+            title: '处理状态',
+            dataIndex: 'status',
+            width:100
+          }, {
+            title: '',
+            dataIndex: 'detail',
+            width:100
           }];
-        const data = [{
-            key: '1',
-            name: '胡彦斌',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666",
-            result:"成功"
-          }, {
-            key: '2',
-            name: '胡彦祖',
-            age: 4212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666",
-            result:"成功"
-          }, {
-            key: '3',
-            name: '李大嘴',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666",
-            result:"成功"
-          }, {
-            key: '4',
-            name: '李大嘴',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666",
-            result:"成功"
-          }, {
-            key: '5',
-            name: '李大嘴',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666",
-            result:"成功"
-          }];
+        const data = [];
           
           // 通过 rowSelection 对象表明需要行选择
           const rowSelection = {

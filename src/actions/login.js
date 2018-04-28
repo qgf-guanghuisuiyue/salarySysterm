@@ -13,6 +13,7 @@ const LOGIN_DONE = {type:types.LOGIN_DONE};
 const SEND_SUCCESSFUL = {type:types.SEND_SUCCESSFUL};
 
 export const getLoginCode = (data) => (dispatch, getState) => {
+    NProgress.start();
     AjaxByPost('api/user/getLoginCode',{
         head: {
             transcode: 'S000006',
@@ -20,14 +21,16 @@ export const getLoginCode = (data) => (dispatch, getState) => {
         data: data
     })
     .then(res=>{
+        NProgress.done();
         dispatch({...SEND_SUCCESSFUL,msg:res.msg}) 
     },err=>{
-        console.log(err);
+        NProgress.done();
         dispatch({...SEND_SUCCESSFUL,msg:err.data.msg})
     });
 }
 
 export const userLogin = (userInfo={},context) => (dispatch,getState) => {
+    NProgress.start();
     dispatch(LOGIN_START);
     userInfo.pwd = Md5(userInfo.pwd);
     AjaxByPost('api/user/login',{
@@ -41,8 +44,10 @@ export const userLogin = (userInfo={},context) => (dispatch,getState) => {
         const data = pick(res.data,['token','tokenKey']);
         store.set('token',data);
         context.router.push('/');
+        NProgress.done();
     },err=>{
         dispatch(LOGIN_DONE);
+        NProgress.done();
         //dispatch({...SEND_SUCCESSFUL,msg:err.data.msg})
     });
 }
@@ -52,6 +57,7 @@ export const hideLoading = () => (dispatch,getState) => {
 }
 
 export const userLoginout = (context) => (dispatch,getState) => {
+    NProgress.start();
     const token = store.get('token');
     AjaxByPost('api/user/loginout',{
         head: {
@@ -60,8 +66,11 @@ export const userLoginout = (context) => (dispatch,getState) => {
         data: token
     })
     .then(res=>{
+        NProgress.done();
         store.remove('token')
         context.router.push('/login'); 
+    },err=>{
+        NProgress.done();
     });
 }
 

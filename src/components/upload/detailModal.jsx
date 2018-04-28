@@ -58,8 +58,8 @@ import * as Actions from 'actions';
                             <li><span>批次号：</span><span>{record.batchno}</span></li>
                             <li><span>公司名称：</span><span>{record.corpname}</span></li>
                             <li><span>代发文件名：</span><span>{record.payapplyfilename}</span></li>
-                            <li><span>总笔数</span><span>{record.totalcount}</span></li>
-                            <li><span>总金额</span><span>{record.totalamount}</span></li>
+                            <li><span>总笔数：</span><span>{record.totalcount}</span></li>
+                            <li><span>总金额：</span><span>{record.totalamount}</span></li>
                             <li><span>申请日期：</span><span>{record.applydate}</span></li>
                         </ul>
                             <Table 
@@ -72,6 +72,7 @@ import * as Actions from 'actions';
                                     onChange: this.onChangePagination
                                 }}
                             />
+
                     </div>
                 </Modal>
         )

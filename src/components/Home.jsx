@@ -138,7 +138,7 @@ import * as Actions from 'actions';
             break;
             case "/createFile":
                 this.setState({
-                    panes:[{ title: '银行代发文件', key: 'createFile' }]
+                    panes:[{ title: '数据转换', key: 'dataSwitch' }]
                 });
             break;
             
@@ -151,10 +151,12 @@ import * as Actions from 'actions';
     }
    componentWillReceiveProps(nextProps,nextState){
         const {pathname} = nextProps.location;
+        const panes = this.state.panes;
         switch (pathname) {
             case "/createFile":
+                 panes.push({ title: '数据转换', key: 'dataSwitch' })
                 this.setState({
-                    panes:[{ title: '银行代发文件', key: 'createFile' }]
+                    panes
                 });
             break;
         }    
@@ -207,7 +209,7 @@ import * as Actions from 'actions';
                                             :pane.title==="模板文件"?'mouldFile'
                                             :pane.title==="用户管理"?'userManage'
                                             :pane.title==='权限设置'?"accessPermission"
-                                            :pane.title==="日志查询" && "log"} 
+                                            :pane.title==="日志查询"&& "log"} 
                                             activeClassName='active'>
                                             {pane.title}
                                         </Link>

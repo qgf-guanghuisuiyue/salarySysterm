@@ -5,6 +5,7 @@ import {Link} from 'react-router';
 import { Table , Button , Tooltip , Select} from 'antd';
 
 import DataCompareModal from './dataCompareModal';
+import RefuseModal from './refuseModal';
 import LoadingComponent from '../loading';
 
 import columns from 'data/table-columns/createFile';
@@ -30,10 +31,13 @@ import * as Actions from 'actions';
         router: PropTypes.object
     };
     showFileModal = () => {
-      this.props.showFileModal()
+        const {dataResultCheck} = this.props;
+        const {batchno} = this.props.location.query;
+        this.props.showFileModal(batchno, dataResultCheck)
     }
     goBack = () => {
-      this.context.router.push('dataSwitch')
+      //this.context.router.push('dataSwitch')
+      this.props.showRefuseModal()
     }
     getColumns = () => {
         const {page} = this.state;
@@ -79,7 +83,10 @@ import * as Actions from 'actions';
             payagentDetail,
             isSwitchLoading ,
             isFileModal ,
-            createFileLoading
+            createFileLoading,
+            hideRefuseModal,
+            isRefuseModal,
+            refusePay
         } = this.props;
         const {tblPayApplyModel , tblPayInfo={} , list , size} = payagentDetail;
         const {batchno} = this.props.location.query;
@@ -101,8 +108,8 @@ import * as Actions from 'actions';
                             <span className="select-name">银行：</span>
                             <Select defaultValue="招商银行" onChange={this.handleChange.bind(this,"bankName")}>
                                 {
-                                    bank.map((item, index)=>{
-                                        return (<Option value={item.text}>{item.text}</Option>)
+                                    ["招商银行"].map((item, index)=>{
+                                        return (<Option value={item}>{item}</Option>)
                                     })
                                 }
                             </Select>
@@ -166,13 +173,20 @@ import * as Actions from 'actions';
                     </div>
                 </div>
                 {isLoading && <LoadingComponent/>}
-                {isFileModal && <DataCompareModal batchNo={batchno}/>}
+                <DataCompareModal batchNo={batchno}/>
+                <RefuseModal 
+                    isRefuseModal = {isRefuseModal} 
+                    hideRefuseModal = {hideRefuseModal} 
+                    refusePay = {refusePay}
+                    batchNo = {batchno}
+                />
             </div>
         )
     }
 }
 const mapStateToProps = state => ({
    isFileModal: state.DataSwitch.isFileModal,
+   isRefuseModal: state.DataSwitch.isRefuseModal,
    isLoading: state.DataSwitch.isLoading,
    payagentDetail: state.DataSwitch.payagentDetail,
    isSwitchLoading:state.DataSwitch.isSwitchLoading,
@@ -183,7 +197,11 @@ const mapDispatchToProps = dispatch => ({
    hideFileModal: bindActionCreators(Actions.DataSwitchActions.hideFileModal, dispatch),
    getPayagentDetail: bindActionCreators(Actions.DataSwitchActions.getPayagentDetail, dispatch),
    dataSwitch: bindActionCreators(Actions.DataSwitchActions.dataSwitch, dispatch),
-   createPayFile: bindActionCreators(Actions.DataSwitchActions.createPayFile, dispatch)
+   createPayFile: bindActionCreators(Actions.DataSwitchActions.createPayFile, dispatch),
+   dataResultCheck: bindActionCreators(Actions.DataSwitchActions.dataResultCheck, dispatch),
+   showRefuseModal: bindActionCreators(Actions.DataSwitchActions.showRefuseModal, dispatch),
+   hideRefuseModal: bindActionCreators(Actions.DataSwitchActions.hideRefuseModal, dispatch),
+   refusePay: bindActionCreators(Actions.DataSwitchActions.refusePay, dispatch)
 })
 
 export default connect(

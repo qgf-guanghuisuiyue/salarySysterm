@@ -5,6 +5,7 @@ import { Table , Button , Tooltip , Input, DatePicker , Icon ,Spin ,notification
 
 import columns from 'data/table-columns/dataSwitch';
 import LoadingComponent from './loading';
+import DetailModalComponent from './upload/detailModal';
 
 //redux
 import {bindActionCreators} from 'redux';
@@ -20,24 +21,40 @@ import * as Actions from 'actions';
             startDate:"",
             endDate:"",
             batchno:"",
-            page:1
+            page:1,
+            record:{}
         }
     }
+    componentDidMount(){
+        NProgress.start()
+        NProgress.done()
+    }
     skip = 0;
+    params = {
+        skip: 0,
+        count: 10
+    }
     onChange = (e) => {
         this.setState({
             corpName:e.target.value
         })
     }
     dateChange = (field,value,dateString) => {
-        this.setState({
-            [field]:moment(value).format("YYYYMMDD")
-        })
+        if(value){
+            this.setState({
+                [field]:moment(value).format("YYYYMMDD")
+            })
+        }else{
+            this.setState({
+                [field]:""
+            })
+        }
+        
     }
     queryList = () => {
         const {corpName , startDate , endDate} = this.state;
-        const skip = this.skip;
-        this.props.getDataSwitchList({corpName , startDate , endDate,skip,count:'10'})
+        //const skip = this.skip;
+        this.props.getDataSwitchList({corpName , startDate , endDate,...this.params})
     }
     getColumns = () => {
         const {page} = this.state;
@@ -48,21 +65,24 @@ import * as Actions from 'actions';
             return  <span>{record.status===0?"全部成功":record.status===1?"部分成功":record.status===2?"待处理":record.status===3?"处理中":record.status===4 ? "拒绝处理":"暂无"}</span>
         }
         columns[columns.length-1].render = (text,record,index)=>{
-            return <a onClick = {this.checkDetail.bind(this,record)}>明细</a>;
+            return <a onClick = {this.showDetailModal.bind(this,record)}>明细</a>;
         }
         return columns;
     }
     //明细查询
-    checkDetail = (record) => {
-        console.log(record)
-        //this.props.getDetail({batchNo:batchno , count:10 , skip:0})
+    showDetailModal = (record) => {
+        const {payAgentApplyDetaillist} = this.props;
+        this.props.showDetailModal({...this.params,
+            batchNo: record.batchno
+        }, payAgentApplyDetaillist);
+        this.setState({record})
     }
     //页码回调
     onChangePagination = (page) => {
         this.setState({
             page
         })
-        this.skip = page * 5 - 5;
+        this.params.skip = page * 5 - 5;
         this.queryList();
     }
     rowSelection = () =>{
@@ -85,10 +105,11 @@ import * as Actions from 'actions';
             });
          }else{
             window.location.hash = `#/createFile?batchno=${batchno}`
+            NProgress.done()
          }
     }
     render(){
-        const {corpName , startDate , endDate  ,batchno} = this.state;
+        const {corpName , startDate , endDate  ,batchno , record} = this.state;
         const {isLoading , dataSwitchList={}} = this.props,
                 data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
                 count = dataSwitchList.count;//总条数 
@@ -153,7 +174,8 @@ import * as Actions from 'actions';
                         />
                     </div>
                 </div>
-                {isLoading && <Spin delay={5000}/>}
+                {isLoading && <LoadingComponent/>}
+                <DetailModalComponent record={record}/>
             </div>
         )
     }
@@ -164,7 +186,8 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
     getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch),
-    getDetail: bindActionCreators(Actions.DataSwitchActions.getDetail, dispatch)
+    showDetailModal: bindActionCreators(Actions.ApplyActions.showDetailModal, dispatch),
+    payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch)
 })
 export default connect(
     mapStateToProps,

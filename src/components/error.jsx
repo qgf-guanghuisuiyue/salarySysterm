@@ -20,6 +20,10 @@ import * as Actions from 'actions';
             
         }
     }
+    componentDidMount(){
+        NProgress.start()
+        NProgress.done()
+    }
     onChange = (e) => {
       console.log(e.target.value)
     }

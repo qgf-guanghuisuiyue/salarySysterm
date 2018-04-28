@@ -21,7 +21,8 @@ import * as Actions from 'actions';
         errorMsg: '',
         exptPayDate: null,
         record: {},
-        page: 1
+        page: 1,
+        fileName: ''
     }
      
 
@@ -101,6 +102,9 @@ import * as Actions from 'actions';
             return ;
         }
         const {data} = response;
+        this.setState({
+            fileName: data
+        })
         payAgentApply({"fileName":data,"exptPayDate":exptPayDate}, getApplyList)
     }
 
@@ -161,7 +165,11 @@ import * as Actions from 'actions';
         this.props.payAgentDel({"batchNo":batchNoList}, getApplyList);
     }
 
-    
+    downloadExcel = () => {
+        const {fileName} = this.state;
+        const {downloadExcel} = this.props;
+        downloadExcel(fileName)
+    }
 
     render(){
         const {fileList,error,errorMsg, record} = this.state;
@@ -224,7 +232,7 @@ import * as Actions from 'actions';
                     </div>
                     <div className="handle-block">
                         <span className="title">模版文件下载：</span>
-                        <Link>模板.xls</Link>
+                        <Link onClick={this.downloadExcel}>模板.xls</Link>
                     </div>
                     <h2 className="File-title">列表</h2>
                     <div className="table-area">
@@ -263,6 +271,7 @@ const mapStateToProps = state => ({
     applyList: state.Apply.applyList
 })
 const mapDispatchToProps = dispatch => ({
+    downloadExcel: bindActionCreators(Actions.UploadActions.downloadExcel, dispatch),
     getApplyList: bindActionCreators(Actions.ApplyActions.getApplyList, dispatch),
     payAgentCommit: bindActionCreators(Actions.ApplyActions.payAgentCommit, dispatch),
     payAgentApply: bindActionCreators(Actions.ApplyActions.payAgentApply, dispatch),

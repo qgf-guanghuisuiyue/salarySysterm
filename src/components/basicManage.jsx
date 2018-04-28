@@ -19,7 +19,8 @@ import * as Actions from 'actions';
 
     state = {
       type: '',
-      value: ''
+      value: '',
+      page: 1,
     }
 
     params = {
@@ -28,15 +29,29 @@ import * as Actions from 'actions';
     }
 
     _getColumns() {
-      columns[columns.length-1].render = (text,record,index)=>{
-        return <a onClick={this.showParameterModal.bind(this,record)}>明细</a>;
+        columns[0].render = (text,record,index) => {           
+            return  <a>{index+1+(this.state.page-1)*5}</a>
+        }
+        return columns;
     }
-    return columns;
-  }
 
-  showParameterModal = (record) => {
-    console.log(record)
-  }
+    //页码回调
+    onChangePagination = (page) => {
+        this.setState({
+            page
+        });
+        const {
+            type,
+            value
+        } = this.state;
+        const {getParameterList} = this.props;
+        this.param.skip = page * 5 - 5;
+        getParameterList({count:5,skip:this.param.skip, type, value})
+    }
+
+    showParameterModal = (record) => {
+        console.log(record)
+    }
 
     onHandleChange = (field, value) => {
       this.setState({
@@ -45,7 +60,6 @@ import * as Actions from 'actions';
     }
 
     searchChange = () => {
-      console.log('search')
       const {
         type,
         value
@@ -126,7 +140,13 @@ import * as Actions from 'actions';
                           rowSelection={rowSelection} 
                           columns={this._getColumns()} 
                           dataSource={parameter.list} 
-                          bordered={true}/>
+                          bordered={true}
+                          pagination={{
+                            defaultPageSize:5,
+                            total: parameter.sum,
+                            onChange: this.onChangePagination
+                          }}
+                        />
                     </div>
                 </div>
             </div>

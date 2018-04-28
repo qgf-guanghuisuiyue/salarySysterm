@@ -1,6 +1,5 @@
 import * as types from '../constants/apply';
 import {AjaxByToken} from 'utils/ajax';
-import store from 'store';
 import {notification} from 'antd'; 
 
 // 代发申请列表查询接口 

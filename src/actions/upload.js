@@ -1,18 +1,24 @@
 import * as types from '../constants/upload';
 import {AjaxByPost} from 'utils/ajax';
+import axios from 'axios';
+import store from 'store';
 
-const SHOW_FILE_MODAL  = {type: types.SHOW_FILE_MODAL};
-const HIDE_FILE_MODAL = {type: types.HIDE_FILE_MODAL};
-const UPLOAD_FILE_START = {type: types.UPLOAD_FILE_START};
-const UPLOAD_FILE_DONE = {type: types.UPLOAD_FILE_DONE};
-
-//上传文件
-export const uploadFile = (data, props) => (dispatch, getState) => {
-    dispatch(UPLOAD_FILE_START);
-    AjaxByPost('/api/web/file/uploadFile', {
-        data: data,
+//模板下载
+export const downloadExcel = (fileName) => (dispatch, getState) => {
+    const token = store.get('token');
+    axios({
+        url: `/api/web/file/downloadExcel`,
+        method: 'get',
+        responseType: 'arraybuffer',
+        params: {
+            token,
+            fileName: fileName
+        }
     })
     .then(res=>{
-        dispatch(UPLOAD_FILE_DONE)
-    })
+        const blob = new Blob([res.data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+        FileSaver.saveAs(blob,'模板.xlsx');
+    }).catch(error=>{
+        console.log(error)
+    });
 }

@@ -168,7 +168,7 @@ import * as Actions from 'actions';
     downloadExcel = () => {
         const {fileName} = this.state;
         const {downloadExcel} = this.props;
-        downloadExcel(fileName)
+        // downloadExcel(fileName)
     }
 
     render(){

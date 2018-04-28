@@ -7,7 +7,7 @@ import store from 'store';
 export const downloadExcel = (fileName) => (dispatch, getState) => {
     const token = store.get('token');
     axios({
-        url: `/api/web/file/downloadExcel`,
+        url: `/api/web/file/downloadFile`,
         method: 'get',
         responseType: 'arraybuffer',
         params: {

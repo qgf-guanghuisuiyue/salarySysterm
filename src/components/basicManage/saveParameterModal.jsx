@@ -3,7 +3,8 @@ import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
 
-import { Table , Button , Tooltip , Select ,Modal} from 'antd';
+import {  Button , Tooltip , Select ,Input, Modal} from 'antd';
+const Option = Select.Option;
 import {AjaxByToken} from 'utils/ajax';
 import columns from 'data/table-columns/detailmodal';
 
@@ -15,52 +16,84 @@ import * as Actions from 'actions';
 
  class SaveParameterModalComponent extends React.Component{
 
-    _getColumns() {
-        columns[0].render = (text,record,index) => {           
-            return  <a>{index+1}</a>
-        }
-        return columns;
+    state = {
+        type: '',
+        value: '',
+        code: ''
+    }
+
+    onHandleChange = (field, value) => {
+        this.setState({
+            [field]: value
+        })
     }
 
     render(){ 
-        const {detailList, record} = this.props;
+        const {
+            type, value, code
+        } = this.state;
+        const {saveParameterVisible, hideSaveParameterModal} = this.props;
         return(
                 <Modal
                     title={<h2>列表</h2>}
                     wrapClassName="vertical-center-modal"
-                    visible={detailList.visible}
-                    width={1000}
+                    visible={saveParameterVisible}
+                    width={500}
                     footer={false}
-                    onCancel={() => this.props.hideDetailModal()}
+                    onCancel={() => hideSaveParameterModal()}
                 >
-                    <div className="dataSwitch">
-                        <ul className="data-info switchFileUl">
-                            <li><span>批次号：</span><span>{record.batchno}</span></li>
-                            <li><span>公司名称：</span><span>{record.corpname}</span></li>
-                            <li><span>代发文件名：</span><span>{record.payapplyfilename}</span></li>
-                            <li><span>总笔数</span><span>{record.totalcount}</span></li>
-                            <li><span>总金额</span><span>{record.totalamount}</span></li>
-                            <li><span>申请日期：</span><span>{record.applydate}</span></li>
-                        </ul>
-                            <Table 
-                                columns={this._getColumns()} 
-                                dataSource={detailList.list} 
-                                bordered={true}
-                                pagination={{
-                                    defaultPageSize:5,
-                                    count: detailList.count
-                                }}
-                            />
-                    </div>
+                    <ul class="data-list">
+                        <li>
+                            <span class="data-title">参数类型:</span>
+                            <Select style={{width: 200}}
+                                    placeholder='请选择参数类型'
+                                    onChange={this.onHandleChange.bind(this, 'type')}
+                            >
+                              <Option value="1">公司参数</Option>
+                              <Option value="2">系统参数</Option>
+                            </Select>
+                        </li>
+                        <li>
+                            <span class="data-title">参数值:</span>
+                            <Select  style={{width: 200}}
+                                    placeholder='请选择公司'
+                                    onChange={this.onHandleChange.bind(this, 'value')}
+                            >
+                                    {
+                                        [
+                                            '海银会', 
+                                            '银都',
+                                            '零点花花',
+                                            '西藏新路驰迅'
+                                        ].map((item , index)=>{
+                                            return <Option key={index} value={item}>{item}</Option>
+                                        })
+                                    }
+                            </Select>
+                        </li>
+                        <li>
+                            <span class="data-title">参数代码:</span>
+                            <Select style={{width: 200}}
+                                    placeholder='参数值'
+                                    onChange={this.onHandleChange.bind(this, 'code')}
+                            >
+                              <Option value="yd">yd</Option>
+                              <Option value="xzxlcx">xzxlcx</Option>
+                              <Option value="hyh">hyh</Option>
+                              <Option value="ldhh">ldhh</Option>
+                            </Select>
+                        </li>
+                    </ul>
                 </Modal>
         )
     }
 }
 const mapStateToProps = state => ({
-    detailList: state.Apply.detailList,
+    saveParameterVisible: state.System.saveParameterVisible,
 })
 const mapDispatchToProps = dispatch => ({
-    hideDetailModal: bindActionCreators(Actions.ApplyActions.hideDetailModal, dispatch),
+    parameterSave: bindActionCreators(Actions.SystemActions.parameterSave, dispatch),
+    hideSaveParameterModal: bindActionCreators(Actions.SystemActions.hideSaveParameterModal, dispatch),
 })
 
 export default connect(

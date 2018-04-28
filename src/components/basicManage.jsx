@@ -49,10 +49,6 @@ import * as Actions from 'actions';
         getParameterList({count:5,skip:this.param.skip, type, value})
     }
 
-    showParameterModal = (record) => {
-        console.log(record)
-    }
-
     onHandleChange = (field, value) => {
       this.setState({
           [field]: value
@@ -68,7 +64,7 @@ import * as Actions from 'actions';
     }
 
     saveParameter = () => {
-      this.props.parameterSave()
+        this.props.showSaveParameterModal()
     }
 
     render(){
@@ -149,16 +145,18 @@ import * as Actions from 'actions';
                         />
                     </div>
                 </div>
+                <SaveParameterModal/>
             </div>
         )
     }
 }
 const mapStateToProps = state => ({
     parameter: state.System.parameter,
+    saveParameterVisible: state.System.saveParameterVisible,
 })
 const mapDispatchToProps = dispatch => ({
     getParameterList: bindActionCreators(Actions.SystemActions.getParameterList, dispatch),
-    parameterSave: bindActionCreators(Actions.SystemActions.parameterSave, dispatch),
+    showSaveParameterModal: bindActionCreators(Actions.SystemActions.showSaveParameterModal, dispatch),
 })
 
 export default connect(

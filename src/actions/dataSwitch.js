@@ -1,6 +1,9 @@
 import * as types from '../constants/dataSwitch';
 import {AjaxByToken} from 'utils/ajax';
-import {Modal , notification} from 'antd';
+import axios from 'axios';
+import store from 'store';
+import FileSaver from 'file-saver';
+import {Modal , notification , message} from 'antd';
 
 const SHOW_FILE_MODAL = {type:types.SHOW_FILE_MODAL};
 const HIDE_FILE_MODAL = {type:types.HIDE_FILE_MODAL};
@@ -18,6 +21,7 @@ const SHOW_REFUSE_MODAL = {type:types.SHOW_REFUSE_MODAL};
 const HIDE_REFUSE_MODAL = {type:types.HIDE_REFUSE_MODAL};
 const SHOW_EDIT_MODAL = {type:types.SHOW_EDIT_MODAL};
 const HIDE_EDIT_MODAL = {type:types.HIDE_EDIT_MODAL};
+const PAY_FILE_CREATE = {type:types.PAY_FILE_CREATE};
 
 
 
@@ -102,10 +106,8 @@ const HIDE_EDIT_MODAL = {type:types.HIDE_EDIT_MODAL};
         })
         .then(res=>{
             getPayagentDetail({batchNo:data.batchNo,count:"10",skip:"0"})
-            dispatch({...HIDE_SWITCH_LOADING})
-            notification.success({
-                message:res.msg
-            })   
+            dispatch({...HIDE_SWITCH_LOADING}) 
+            message.success(res.msg); 
         },err=>{
             dispatch({...HIDE_SWITCH_LOADING})
         });    
@@ -129,7 +131,7 @@ const HIDE_EDIT_MODAL = {type:types.HIDE_EDIT_MODAL};
     }
 
     //生成银行代发文件
-    export const createPayFile = (data) => (dispatch,getState) => {
+    export const createPayFile = (data,payFileMakeInfo) => (dispatch,getState) => {
         dispatch({...CREATE_FILE_START})
         AjaxByToken('api/accept/payagent_genfile',{
             head: {
@@ -138,11 +140,11 @@ const HIDE_EDIT_MODAL = {type:types.HIDE_EDIT_MODAL};
             data: data
         })
         .then(res=>{
-            notification.success({
-                message:res.msg
-            }) 
+            message.success(res.msg);
+            payFileMakeInfo({batchNo:data.batchNo})
             dispatch({...CREATE_FILE_DONE})
         },err=>{
+            console.log(err.data.msg)
             dispatch({...CREATE_FILE_DONE})
         });
     }
@@ -156,9 +158,7 @@ const HIDE_EDIT_MODAL = {type:types.HIDE_EDIT_MODAL};
             data: data
         })
         .then(res=>{
-            notification.success({
-                message:res.msg
-            }) 
+            message.success(res.msg);
             dataResultCheck({batchNo:data.batchNo,skip:0,count:50});
             hideEditModal()
         },err=>{
@@ -174,12 +174,44 @@ const HIDE_EDIT_MODAL = {type:types.HIDE_EDIT_MODAL};
             data: data
         })
         .then(res=>{
-            notification.success({
-                message:res.msg
-            }) 
+            message.success(res.msg);
             dataResultCheck({batchNo,skip:0,count:50});
             hideEditModal()
         },err=>{
             console.log(err)
+        });
+    }
+    //代发受理文件生成信息
+    export const payFileMakeInfo = (data) => (dispatch,getState) => {
+        AjaxByToken('api/accept/payagent_info',{
+            head: {
+                transcode: 'C000006',
+            },
+            data: data
+        })
+        .then(res=>{
+            dispatch({...PAY_FILE_CREATE,payFileCreate:res.data})
+        },err=>{
+            console.log(err)
+        });
+    }
+    //下载代发生成文件
+    export const downLoadPayFile = (name) =>(dispatch,getState) => {
+        const token = store.get('token');
+        axios({
+            url: "PayAgent/api/web/file/downloadExcel",
+            method: 'get',
+            responseType: 'arraybuffer',
+            params:{
+                token:token.token,
+                tokenKey:token.tokenKey,
+                fileName:name
+            }
+        })
+        .then(res=>{
+            const blob = new Blob([res.data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+            FileSaver.saveAs(blob, `${name}.xls`);
+        }).catch(error=>{
+            console.log(error)
         });
     }

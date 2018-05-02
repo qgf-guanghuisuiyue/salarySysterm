@@ -1,6 +1,6 @@
 import React, {Component,PropTypes} from 'react';
 import moment from 'moment';
-import {Link} from 'react-router';
+import store from 'store';
 
 import { Table , Button , Tooltip , Select} from 'antd';
 
@@ -36,7 +36,6 @@ import * as Actions from 'actions';
         this.props.showFileModal(batchno, dataResultCheck)
     }
     goBack = () => {
-      //this.context.router.push('dataSwitch')
       this.props.showRefuseModal()
     }
     getColumns = () => {
@@ -47,12 +46,15 @@ import * as Actions from 'actions';
         return columns
     }
     componentDidMount(){
-      const {batchno} = this.props.location.query;
-      this.setState({
-        batchNo:batchno
-      })
-      //调取代发申请人员信息接口
-        this.props.getPayagentDetail({batchNo:batchno,count:"10",skip:"0"})
+        const {payFileMakeInfo , getPayagentDetail} = this.props;
+        const {batchno} = this.props.location.query;
+        this.setState({
+            batchNo:batchno
+        })
+        //调取代发申请人员信息接口
+        getPayagentDetail({batchNo:batchno,count:"10",skip:"0"});
+        //获取受理文件生成信息
+        payFileMakeInfo({batchNo:batchno})
     }
     //页码回调
     onChangePagination = (page) => {
@@ -74,8 +76,12 @@ import * as Actions from 'actions';
         this.props.dataSwitch({batchNo , bankName , pay_way},getPayagentDetail);
     }
     createPayFile = () => {
+        const {payFileMakeInfo , getPayagentDetail} = this.props;
         const {batchno} = this.props.location.query;
-        this.props.createPayFile({batchNo:batchno})
+        this.props.createPayFile({batchNo:batchno},payFileMakeInfo)
+    }
+    downLoadFile = (filename) => {
+        this.props.downLoadPayFile(filename)
     }
     render(){
         const { 
@@ -85,11 +91,16 @@ import * as Actions from 'actions';
             isFileModal ,
             createFileLoading,
             hideRefuseModal,
-            isRefuseModal,
-            refusePay
+            isRefuseModal,//拒绝代发Modal
+            refusePay,//拒绝代发
+            payFileCreate//代发受理文件生成
         } = this.props;
         const {tblPayApplyModel , tblPayInfo={} , list , size} = payagentDetail;
+        const { tblPayInfoModel } = payFileCreate;
         const {batchno} = this.props.location.query;
+        const token = store.get('token'),
+              origin = window.location.origin,
+              url = `/PayAgent/api/web/file/downloadExcel?token=${token.token}&tokenKey=${token.tokenKey}&fileName=`
         return(
             <div className="layout common">
                 <div className="leadingResult">
@@ -154,9 +165,14 @@ import * as Actions from 'actions';
                     </div>
                     <div className="File">
                         <span>银行代发文件：</span>
-                        <a>12121212121.xls</a>
-                        <a>12121212121.xls</a>
-                        <a>12121212121.xls</a>
+                        {
+                            tblPayInfoModel?tblPayInfoModel.payfilename.split(",").map((item,index)=>{
+                                return (<Tooltip title="点击下载银行代发文件">
+                                            <a href={`${origin + url + item}`}>{item}</a>
+                                            {/* <a onClick={this.downLoadFile.bind(this,item)}>{item}</a> */}
+                                       </Tooltip>)
+                            }):"暂未生成代发文件"
+                        } 
                     </div>
                     <div className="result-table">
                         <Table 
@@ -167,7 +183,8 @@ import * as Actions from 'actions';
                             pagination={{
                                 total:size,
                                 defaultPageSize: 10,
-                                onChange:this.onChangePagination
+                                onChange:this.onChangePagination,
+                                showTotal:total => `共 ${size} 条数据`
                             }}
                         />
                     </div>
@@ -190,7 +207,8 @@ const mapStateToProps = state => ({
    isLoading: state.DataSwitch.isLoading,
    payagentDetail: state.DataSwitch.payagentDetail,
    isSwitchLoading:state.DataSwitch.isSwitchLoading,
-   createFileLoading: state.DataSwitch.createFileLoading
+   createFileLoading: state.DataSwitch.createFileLoading,
+   payFileCreate: state.DataSwitch.payFileCreate
 })
 const mapDispatchToProps = dispatch => ({
    showFileModal: bindActionCreators(Actions.DataSwitchActions.showFileModal, dispatch),
@@ -201,7 +219,9 @@ const mapDispatchToProps = dispatch => ({
    dataResultCheck: bindActionCreators(Actions.DataSwitchActions.dataResultCheck, dispatch),
    showRefuseModal: bindActionCreators(Actions.DataSwitchActions.showRefuseModal, dispatch),
    hideRefuseModal: bindActionCreators(Actions.DataSwitchActions.hideRefuseModal, dispatch),
-   refusePay: bindActionCreators(Actions.DataSwitchActions.refusePay, dispatch)
+   refusePay: bindActionCreators(Actions.DataSwitchActions.refusePay, dispatch),
+   payFileMakeInfo: bindActionCreators(Actions.DataSwitchActions.payFileMakeInfo, dispatch),
+   downLoadPayFile: bindActionCreators(Actions.DataSwitchActions.downLoadPayFile, dispatch)
 })
 
 export default connect(

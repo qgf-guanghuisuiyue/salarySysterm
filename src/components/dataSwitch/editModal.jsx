@@ -21,7 +21,6 @@ export default class EditModal extends React.Component{
          }else{
             editBankInfo({detailID,bankName,bankPlace},batchNo,dataResultCheck,hideEditModal)
          }
-        //this.props.hideEditModal()
      }
      onCancel = () => {
          this.props.hideEditModal()

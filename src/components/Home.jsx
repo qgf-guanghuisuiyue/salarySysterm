@@ -5,7 +5,7 @@ import {Link} from 'react-router';
 
 import {AjaxByToken} from 'utils/ajax';
 
-import { Menu, Icon ,Tabs} from 'antd';
+import { Menu, Icon ,Tabs } from 'antd';
 const TabPane = Tabs.TabPane;
 const SubMenu = Menu.SubMenu;
 
@@ -157,6 +157,11 @@ import * as Actions from 'actions';
                  panes.push({ title: '数据转换', key: 'dataSwitch' })
                 this.setState({
                     panes
+                });
+            break;
+            case "/":
+                this.setState({
+                    panes:[{ title: '上传文件', key: 'upload' }]
                 });
             break;
         }    

@@ -15,9 +15,18 @@ import * as Actions from 'actions';
 
 
  class LeadingResult extends React.Component{
+    state = {
+      companyName:"",
+      startDate:"",
+      endDate:"",
+    }
     componentDidMount(){
         NProgress.start()
         NProgress.done()
+    }
+    params ={
+      skip:'0',
+      count:'10'
     }
     showLeadingFileModal = () => {
       this.props.showLeadingFileModal()
@@ -32,6 +41,28 @@ import * as Actions from 'actions';
         onCancel() {},
       });
     }
+    leadingResultQuery = () => {
+      const {leadingResultQuery} = this.props;
+      const { companyName,startDate,endDate} = this.state;
+      leadingResultQuery({...this.params,companyName,startDate,endDate})
+    }
+    onChange = (e) => {
+        this.setState({
+            companyName:e.target.value
+        })
+    }
+    dateChange = (field,value,dateString) => {
+      if(value){
+          this.setState({
+              [field]:moment(value).format("YYYYMMDD")
+          })
+      }else{
+          this.setState({
+              [field]:""
+          })
+      }
+      
+  }
     render(){
         const columns = [
             {
@@ -97,19 +128,34 @@ import * as Actions from 'actions';
               console.log(selected, selectedRows, changeRows);
             },
           };
-          
+          const { companyName } = this.state;
         return(
             <div className="layout common">
                 <div className="error handle">
                     <h2 className="File-title">导入结果处理</h2>
                     <ul className="data-info handle-info">
-                        <li><span>公司名称：</span><Input className="input"/></li>
+                        <li>
+                            <span>公司名称：</span>
+                            <Input className="input" value={companyName} onChange={this.onChange}/>
+                        </li>
                         <li className="date handle-date">
                             <span className="date-title">申请日期：</span>
-                            <DatePicker/>
+                            <DatePicker 
+                              placeholder="开始日期" 
+                              onChange={this.dateChange.bind(this,"startDate")}
+                            />
                             <span className="date-to">To</span>
-                            <DatePicker/>
-                            <Button className="query-btn" type="primary">查询</Button>
+                            <DatePicker 
+                              placeholder="结束日期" 
+                              onChange={this.dateChange.bind(this,"endDate")}
+                            />
+                            <Button 
+                              className="query-btn" 
+                              type="primary"
+                              onClick={this.leadingResultQuery}
+                            >
+                            查询
+                            </Button>
                         </li>
                     </ul>
                     
@@ -147,6 +193,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   showLeadingFileModal: bindActionCreators(Actions.LeadingResultActions.showLeadingFileModal, dispatch),
   hideLeadingFileModal: bindActionCreators(Actions.LeadingResultActions.hideLeadingFileModal, dispatch),
+  leadingResultQuery: bindActionCreators(Actions.LeadingResultActions.leadingResultQuery, dispatch)
 })
 
 export default connect(

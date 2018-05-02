@@ -9,6 +9,9 @@ const PARAMETER_LIST_DONE = {type: types.PARAMETER_LIST_DONE};
 const GET_PARAMETER_LIST = {type: types.GET_PARAMETER_LIST};
 const SHOW_SAVE_PARAMETER = {type: types.SHOW_SAVE_PARAMETER};
 const HIDE_SAVE_PARAMETER = {type: types.HIDE_SAVE_PARAMETER};
+const TEMP_LIST_START = {type: types.TEMP_LIST_START};
+const TEMP_LIST_DONE = {type: types.TEMP_LIST_DONE};
+const GET_TEMP_LIST = {type: types.GET_TEMP_LIST};
 
 // 系统参数列表查询
 export const getParameterList = (data) => (dispatch, getState) => {
@@ -21,7 +24,6 @@ export const getParameterList = (data) => (dispatch, getState) => {
     }).then(res => {
         dispatch(PARAMETER_LIST_DONE)
         dispatch({...GET_PARAMETER_LIST, list: res.data.list})
-        console.log(res)
     }, err => {
         dispatch(PARAMETER_LIST_DONE)
         console.log(err)
@@ -29,13 +31,20 @@ export const getParameterList = (data) => (dispatch, getState) => {
 }
 
 //系统参数添加
-export const parameterSave = (data) => (dispatch, getState) => {
+export const parameterSave = (data, getParameterList) => (dispatch, getState) => {
     AjaxByToken('api/system/parameter/save', {
         head: {
             transcode: 'S000008',
-        }
+        },
+        data: data
     }).then(res => {
-        console.log(res)
+        // console.log(res)
+        dispatch(HIDE_SAVE_PARAMETER);
+        notification.success({
+            message: '提示',
+            description: res.msg
+        });
+        getParameterList({skip: 0,count: 10})
     }, err => {
         console.log(err)
     })
@@ -49,12 +58,14 @@ export const hideSaveParameterModal = () => (dispatch,getState) => {
 }
 
 //系统参数删除
-export const parameterDelete = () => (dispatch, getState) => {
+export const parameterDelete = (data, getParameterList) => (dispatch, getState) => {
     AjaxByToken('api/system/parameter/delete', {
         head: {
             transcode: 'S000009',
-        }
+        },
+        data: data
     }).then(res => {
+        getParameterList({skip: 0,count: 10})
         console.log(res)
     }, err => {
         console.log(err)
@@ -62,21 +73,26 @@ export const parameterDelete = () => (dispatch, getState) => {
 }
 
 //系统模板数据列表查询
-export const tempList = () => (dispatch, getState) => {
-    AjaxByToken('api/system/templete/list', {
+export const tempList = (data) => (dispatch, getState) => {
+    dispatch(TEMP_LIST_START)
+    AjaxByToken('api/system/template/list', {
         head: {
             transcode: 'S000010',
-        }
+        },
+        data: data
     }).then(res => {
+        dispatch(TEMP_LIST_DONE)
+        dispatch({...GET_TEMP_LIST, list: res.data.list})
         console.log(res)
     }, err => {
+        dispatch(TEMP_LIST_DONE)
         console.log(err)
     })
 }
 
 //系统模板数据新增
 export const tempSave = () => (dispatch, getState) => {
-    AjaxByToken('api/system/templete/save', {
+    AjaxByToken('api/system/template/save', {
         head: {
             transcode: 'S000011',
         }
@@ -89,7 +105,7 @@ export const tempSave = () => (dispatch, getState) => {
 
 //系统模板数据停用
 export const tempStop = () => (dispatch, getState) => {
-    AjaxByToken('api/system/templete/stop', {
+    AjaxByToken('api/system/template/stop', {
         head: {
             transcode: 'S000012',
         }

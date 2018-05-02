@@ -6,8 +6,9 @@ import columns from 'data/table-columns/basic';
 import SaveParameterModal from './basicManage/saveParameterModal';
 
 import {AjaxByToken} from 'utils/ajax';
-import {Select, Button, Table} from 'antd';
+import {Select, Button, Table, notification} from 'antd';
 const Option = Select.Option;
+
 
 //redux
 import {bindActionCreators} from 'redux';
@@ -21,6 +22,7 @@ import * as Actions from 'actions';
       type: '',
       value: '',
       page: 1,
+      idList: []
     }
 
     params = {
@@ -67,21 +69,33 @@ import * as Actions from 'actions';
         this.props.showSaveParameterModal()
     }
 
+    deleteParameter = () => {
+        const {idList} = this.state;
+        const {parameterDelete, getParameterList} = this.props;
+        if(idList.length > 1) {
+            notification.success({
+                message: '警告',
+                description: '一次只能删除一个参数'
+            });
+        } else {
+            parameterDelete({ID: idList[0]}, getParameterList)
+        }
+    }
+
+    rowSelection = (selectedRowKeys, selectedRows) => {
+        let idList = selectedRows.map((item,index) => {
+            console.log(selectedRows)
+            return item.id;
+        })
+        this.setState({idList})
+    }
+
     render(){
 
         const {parameter} = this.props;
-        console.log(parameter.list)
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
-          onChange(selectedRowKeys, selectedRows) {
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-          },
-          onSelect(record, selected, selectedRows) {
-            console.log(record, selected, selectedRows);
-          },
-          onSelectAll(selected, selectedRows, changeRows) {
-            console.log(selected, selectedRows, changeRows);
-          },
+          onChange: this.rowSelection
         };
         return(
             <div className=" layout common">
@@ -130,7 +144,10 @@ import * as Actions from 'actions';
                                 style={{marginRight: 50}}
                                 onClick={this.saveParameter}
                               >新增</Button>
-                            <Button icon="delete">删除</Button>
+                            <Button 
+                                icon="delete"
+                                onClick={this.deleteParameter}
+                            >删除</Button>
                         </div>
                         <Table 
                           rowSelection={rowSelection} 
@@ -157,6 +174,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     getParameterList: bindActionCreators(Actions.SystemActions.getParameterList, dispatch),
     showSaveParameterModal: bindActionCreators(Actions.SystemActions.showSaveParameterModal, dispatch),
+    parameterDelete: bindActionCreators(Actions.SystemActions.parameterDelete, dispatch),
 })
 
 export default connect(

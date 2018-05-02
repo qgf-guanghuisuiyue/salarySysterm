@@ -1,0 +1,18 @@
+.save-param {
+    .ant-modal-body {
+        ul {
+            margin-left: 20px;
+            li {
+                margin-bottom: 20px;
+                .data-title {
+                    width: 100px;
+                    display: inline-block;
+                    font-size: 16px;
+                }
+            }
+        }
+    } 
+    .ant-modal-footer {
+        text-align: center;
+    }
+}

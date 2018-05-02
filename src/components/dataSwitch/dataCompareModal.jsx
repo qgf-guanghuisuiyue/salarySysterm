@@ -1,7 +1,4 @@
 import React from 'react';
-import moment from 'moment';
-import {Link} from 'react-router';
-
 import { Table , Button , Tooltip , Select ,Modal, Icon ,Input , notification} from 'antd';
 const confirm = Modal.confirm;
 const { TextArea } = Input;
@@ -126,11 +123,7 @@ import * as Actions from 'actions';
                                 <span>{tblPayApplyModel?tblPayApplyModel.applydate:""}</span>
                             </li>
                         </ul>
-                        <div className="File-btn">
-                            <Tooltip title="先检查是否已完成数据的转换">
-                                <Button type="primary">生成代发文件</Button>
-                            </Tooltip>   
-                        </div>
+                        <div className="File-btn"></div>
                         <div className="table-left">
                             <ul className="table-head">
                                 <li>原公司提交数据</li>

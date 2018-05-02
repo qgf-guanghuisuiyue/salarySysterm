@@ -1,7 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import {Link} from 'react-router';
-import { Table , Button , Tooltip , Input, DatePicker , Icon ,Spin ,notification } from 'antd';
+import { Table , Button , Tooltip , Input, DatePicker , Icon ,notification } from 'antd';
 
 import columns from 'data/table-columns/dataSwitch';
 import LoadingComponent from './loading';
@@ -116,7 +115,7 @@ import * as Actions from 'actions';
         return(
             <div className=" layout common">
                 <div className="error handle">
-                    <h2 className="File-title">申请受理查询</h2>
+                    <h2 className="File-title">数据转换列表查询</h2>
                     <ul className="data-info handle-info">
                         <li>
                             <span>公司名称：</span>
@@ -169,7 +168,8 @@ import * as Actions from 'actions';
                             pagination={{
                                 defaultPageSize: 5,
                                 total: count,
-                                onChange:this.onChangePagination
+                                onChange:this.onChangePagination,
+                                showTotal:total => `共 ${count} 条数据`
                             }}
                         />
                     </div>

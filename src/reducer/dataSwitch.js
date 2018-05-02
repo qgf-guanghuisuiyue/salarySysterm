@@ -14,7 +14,8 @@ import {
     SHOW_REFUSE_MODAL,
     HIDE_REFUSE_MODAL,
     SHOW_EDIT_MODAL,
-    HIDE_EDIT_MODAL
+    HIDE_EDIT_MODAL,
+    PAY_FILE_CREATE
 } from '../constants/dataSwitch';
 
 const initialState = {
@@ -28,7 +29,8 @@ const initialState = {
     createFileLoading:false,
     isRefuseModal:false,
     isEditModal:false,
-    title:""
+    title:"",
+    payFileCreate:{}
 };
 
 export default function dataSwitch(state = initialState,actions){
@@ -62,7 +64,9 @@ export default function dataSwitch(state = initialState,actions){
         case SHOW_EDIT_MODAL: 
             return {...state,isEditModal:true,title:actions.title}; 
         case HIDE_EDIT_MODAL: 
-            return {...state,isEditModal:false};     
+            return {...state,isEditModal:false};
+        case PAY_FILE_CREATE: 
+            return {...state,payFileCreate:actions.payFileCreate};     
         default: 
             return state;
     }

@@ -41,11 +41,19 @@ export const AjaxByPost = (uri, data) => {
                 if(msg === '登录已失效,请重新登录' && code === '0000005'){
                     store.remove('token');
                     location.href = `${location.origin}/#/login`; 
+                    notification.error({
+                        message:"错误信息",
+                        description:msg,
+                        style:{top:40}
+                    });
+                }else{
+                    notification.error({
+                        message:"错误信息",
+                        description:msg,
+                        duration:"",
+                        style:{top:40}
+                    });
                 }
-                notification.error({
-                    message:"错误信息",
-                    description:msg
-                });
                 reject(response);
             }else {
                 resolve(omit(data,['code']));

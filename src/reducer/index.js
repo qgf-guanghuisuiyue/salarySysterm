@@ -5,6 +5,7 @@ import Upload from './upload';
 import Apply from './apply';
 import DataSwitch from './dataSwitch';
 import LeadingResult from './leadingResult';
+import Handle from './handle';
 import System from './system';
 
 const rootReducer = combineReducers({
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
     Upload,
     Apply,
     DataSwitch,
+    Handle,
     System
 });
 

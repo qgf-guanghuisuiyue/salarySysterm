@@ -61,7 +61,16 @@ import * as Actions from 'actions';
             return  <a>{(index+1)+(page-1)*5}</a>
         }
         columns[columns.length-2].render = (text,record,index) => {
-            return  <span>{record.status===0?"全部成功":record.status===1?"部分成功":record.status===2?"待处理":record.status===3?"处理中":record.status===4 ? "拒绝处理":"暂无"}</span>
+            return  <span>
+                        {
+                            record.status===0?"全部成功":
+                            record.status===1?"部分成功":
+                            record.status===2?"待处理":
+                            record.status===3?"处理中":
+                            record.status===4 ? "拒绝处理":
+                            record.status===-1 ? "撤销":"暂无"
+                        }
+                    </span>
         }
         columns[columns.length-1].render = (text,record,index)=>{
             return <a onClick = {this.showDetailModal.bind(this,record)}>明细</a>;

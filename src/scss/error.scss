@@ -79,7 +79,16 @@
         }
         .err-info{
             width: 85%;
-            margin: 0 auto
+            margin: 0 auto;
+            li{
+                .resultSelect{
+                    .ant-select-arrow{
+                        display: inline-block;
+                        width: 9px;
+                        height: 9px
+                    }
+                }
+            }
         }
         .date{
             width: 85%;

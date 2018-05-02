@@ -173,17 +173,22 @@ import * as Actions from 'actions';
         return(
             <div>
                 {pathname!=='/login' && pathname!=='login' && pathname!=='/forgetPsd' && pathname!=='forgetPsd' &&
-                    <NavbarComponent 
-                        handleClick={this.handleClick.bind(this)} 
-                        routes={routes} 
-                        userLoginout={userLoginout}
-                    />
+                    <div>
+                        <NavbarComponent 
+                            handleClick={this.handleClick.bind(this)} 
+                            routes={routes} 
+                            userLoginout={userLoginout}
+                        />
+                        <div className="breadName layout">
+                            {routes[routes.length - 1 ].breadcrumbName} 
+                        </div>
+                    </div>
                 }
-                {pathname!=='/login' && pathname!=='login' &&
+                {/* {pathname!=='/login' && pathname!=='login' && pathname!=='/forgetPsd' && pathname!=='forgetPsd' &&
                     <div className="breadName layout">
                         {routes[routes.length - 1 ].breadcrumbName} 
                     </div>
-                }
+                } */}
                 {
                     pathname==='/' && !routes[routes.length - 1 ].path &&
                     <div className="breadName layout">
@@ -192,39 +197,39 @@ import * as Actions from 'actions';
                 } 
                 {
                     pathname!=='/login' && pathname!=='login'  && pathname!=='/forgetPsd' && pathname!=='forgetPsd' &&
-                    <div className="content">
-                        <Tabs
-                            hideAdd
-                            onChange={this.onChange}
-                            type="editable-card"
-                            activeKey={this.state.activeKey}
-                            onEdit={this.onEdit}
-                            onTabClick={this.onTabClick}
-                        >
-                            {
-                                this.state.panes.map(pane => <TabPane 
-                                    tab={
-                                        <Link to={pane.title==="上传文件"?"upload"
-                                            :pane.title==="申请结果查询"?"apply"
-                                            :pane.title==="数据转换"?"dataSwitch"
-                                            :pane.title==="导入结果"?"leadingResult"
-                                            :pane.title==="受理查询"?'handle'
-                                            :pane.title==="失败结果查询"?'errorResult'
-                                            :pane.title==="基础管理"?'basicManage'
-                                            :pane.title==="模板文件"?'mouldFile'
-                                            :pane.title==="用户管理"?'userManage'
-                                            :pane.title==='权限设置'?"accessPermission"
-                                            :pane.title==="日志查询"&& "log"} 
-                                            activeClassName='active'>
-                                            {pane.title}
-                                        </Link>
-                                    } 
-                                        key={pane.key}
-                                    >
-                                </TabPane>)
-                            }
-                        </Tabs>
-                    </div>
+                        <div className="content">
+                            <Tabs
+                                hideAdd
+                                onChange={this.onChange}
+                                type="editable-card"
+                                activeKey={this.state.activeKey}
+                                onEdit={this.onEdit}
+                                onTabClick={this.onTabClick}
+                            >
+                                {
+                                    this.state.panes.map(pane => <TabPane 
+                                        tab={
+                                            <Link to={pane.title==="上传文件"?"upload"
+                                                :pane.title==="申请结果查询"?"apply"
+                                                :pane.title==="数据转换"?"dataSwitch"
+                                                :pane.title==="导入结果"?"leadingResult"
+                                                :pane.title==="受理查询"?'handle'
+                                                :pane.title==="失败结果查询"?'errorResult'
+                                                :pane.title==="基础管理"?'basicManage'
+                                                :pane.title==="模板文件"?'mouldFile'
+                                                :pane.title==="用户管理"?'userManage'
+                                                :pane.title==='权限设置'?"accessPermission"
+                                                :pane.title==="日志查询"&& "log"} 
+                                                activeClassName='active'>
+                                                {pane.title}
+                                            </Link>
+                                        } 
+                                            key={pane.key}
+                                        >
+                                    </TabPane>)
+                                }
+                            </Tabs>
+                        </div>
                 }
                 {this.props.children}
             </div>

@@ -3,7 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
 
-import { Table , Button , Input , DatePicker , Checkbox , Icon , Modal} from 'antd';
+import { Table , Button , Input , DatePicker , Checkbox , Icon , Modal , Select} from 'antd';
 const confirm = Modal.confirm;
 import {AjaxByToken} from 'utils/ajax';
 
@@ -17,8 +17,16 @@ import * as Actions from 'actions';
     constructor(){
         super();
         this.state={
-            
+            batchNo:"",
+            companyName:"",
+            status:"",
+            startDate:"",
+            endDate:""
         }
+    }
+    params = {
+        skip:0,
+        count:10
     }
     componentDidMount(){
         NProgress.start()
@@ -37,6 +45,32 @@ import * as Actions from 'actions';
                 console.log('确定');
               },
         });
+    }
+    onInputChange = (field,e) => {
+        this.setState({
+          [field]:e.target.value
+        })
+    }
+    onSelectChange = (value) => {
+        this.setState({
+            status:value
+        })
+    }
+    onDateChange = (date, dateString) => {
+        this.setState({
+            [date]:moment(dateString).format("YYYYMMDD")
+        })
+    }
+    Option = [
+        {value:"-1",text:"撤销"},
+        {value:"0",text:"全部成功"},
+        {value:"1",text:"部分成功"},
+        {value:"2",text:"待处理"},
+        {value:"3",text:"处理中"},
+        {value:"4",text:"拒绝处理"}
+    ]
+    searchErrorList = () => {
+        this.props.searchErrorList({...this.params,...this.state})
     }
     render(){
         const columns = [
@@ -132,23 +166,40 @@ import * as Actions from 'actions';
                     <ul className="data-info err-info">
                         <li>
                             <span>批次号：</span>
-                            <Input/>
+                            <Input onChange = {this.onInputChange.bind(this,"batchNo")}/>
                         </li>
                         <li>
                             <span>公司名称：</span>
-                            <Input/>
+                            <Input onChange = {this.onInputChange.bind(this,"companyName")}/>
                         </li>
                         <li>
-                            <span>姓名：</span>
-                            <Input/>
+                            <span>处理结果：</span>
+                            <Select 
+                                className="resultSelect"
+                                defaultValue="选择" 
+                                style={{width:180}}
+                                onChange = {this.onSelectChange}
+                            >
+                              {
+                                this.Option.map((item,index)=>{
+                                    return (<Option value={item.value}>{item.text}</Option>)
+                                })
+                              } 
+                            </Select>
                         </li>
                     </ul>
                     <div className="date">
                         <span className="date-title">代发申请日期：</span>
-                        <DatePicker/>
+                        <DatePicker onChange={this.onDateChange.bind(this,"startDate")}/>
                         <span className="date-to">To</span>
-                        <DatePicker/>
-                        <Button className="query-btn" type="primary">查询</Button>
+                        <DatePicker onChange={this.onDateChange.bind(this,"endDate")}/>
+                        <Button 
+                            className="query-btn" 
+                            type="primary"
+                            onClick= {this.searchErrorList}
+                        >
+                            查询
+                        </Button>
                     </div>
                     <div className="list">
                         <h2>列表</h2>
@@ -174,7 +225,7 @@ const mapStateToProps = state => ({
     
 })
 const mapDispatchToProps = dispatch => ({
-   
+    searchErrorList: bindActionCreators(Actions.ErrorActions.searchErrorList, dispatchEvent)
 })
 
 export default connect(

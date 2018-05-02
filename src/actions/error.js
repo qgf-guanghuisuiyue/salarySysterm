@@ -1,4 +1,4 @@
-import * as types from '../constants/leadingResult';
+import * as types from '../constants/error';
 import {AjaxByToken} from 'utils/ajax';
 import {Modal} from 'antd';
 
@@ -13,10 +13,10 @@ const LEADING_RESULT_QUERY = {type:types.LEADING_RESULT_QUERY};
         dispatch({...HIDE_LEADINGFILE_MODAL})
     }
     //导入结果列表查询
-    export const leadingResultQuery = (data) => (dispatch,getState) => {
-        AjaxByToken('api/accept/payagent_importquery',{
+    export const searchErrorList = (data) => (dispatch,getState) => {
+        AjaxByToken('api/accept/payagent/failure/list',{
             head: {
-                transcode: 'C000005',
+                transcode: 'C000008',
             },
             data: data
         })
@@ -27,18 +27,4 @@ const LEADING_RESULT_QUERY = {type:types.LEADING_RESULT_QUERY};
             console.log(err)
         });
     }
-    //批次结果确认
-    export const resultConfirm = (data) => (dispatch,getState) => {
-        AjaxByToken('api/accept/payagent_confirm',{
-            head: {
-                transcode: 'C000013',
-            },
-            data: data
-        })
-        .then(res=>{
-            console.log(res)
-            //dispatch({...LEADING_RESULT_QUERY,payFileCreate:res.data})
-        },err=>{
-            console.log(err)
-        });
-    }
+    

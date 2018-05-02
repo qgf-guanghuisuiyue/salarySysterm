@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
+import columns from 'data/table-columns/mouldFile';
 
 import {AjaxByToken} from 'utils/ajax';
 import {Input, Button, Table} from 'antd';
@@ -13,63 +14,26 @@ import * as Actions from 'actions';
 
 
  class MouldFile extends React.Component{
-    constructor(){
-        super();
-        this.state={
-            
-        }
+    
+    state = {
+      corpCode: ''
     }
-    render(){
-        const columns = [
-            {
-            title: '序号',
-            dataIndex: 'key',
-            }, {
-            title: '姓名',
-            dataIndex: 'name',
-            render: text => <a href="#">{text}</a>,
-          }, {
-            title: '卡号',
-            dataIndex: 'age',
-          }, {
-            title: '银行名称',
-            dataIndex: 'address',
-          }, {
-            title: '开户行',
-            dataIndex: 'bank',
-          }, {
-            title: '金额',
-            dataIndex: 'sum',
-          }, {
-            title: '备注',
-            dataIndex: 'remark',
-          }];
-        const data = [{
-            key: '1',
-            name: '胡彦斌',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }, {
-            key: '2',
-            name: '胡彦祖',
-            age: 4212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }, {
-            key: '3',
-            name: '李大嘴',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }];
 
+    componentDidMount() {
+        const  {corpCode} = this.state;
+        this.props.tempList({corpCode});
+    }
+
+    onHandleSearch = (field, e) => {
+      this.setState({
+        [field]: e.target.value
+      })
+    }
+
+    render(){
+        const {corpCode} = this.state;
+        const {temp} = this.props;
+        
           // 通过 rowSelection 对象表明需要行选择
           const rowSelection = {
             onChange(selectedRowKeys, selectedRows) {
@@ -90,7 +54,11 @@ import * as Actions from 'actions';
                     <div className="handle-block">
                         <div className="inline-block">
                             <span className="title">公司名称：</span>
-                            <Input style={{width: 200}}/>
+                            <Input 
+                               style={{width: 200}}
+                               value={corpCode}
+                               onChange={this.onHandleSearch.bind(this, 'corpCode')}
+                            />
                         </div>
                         <Button type="primary" style={{marginLeft: 20}}>查询</Button>
                     </div>
@@ -98,9 +66,9 @@ import * as Actions from 'actions';
                     <div className="table-area">
                         <div className="control">
                             <Button icon="plus-square" style={{marginRight: 50}}>新增</Button>
-                            <Button icon="delete">删除</Button>
+                            <Button icon="delete">停用</Button>
                         </div>
-                        <Table rowSelection={rowSelection} columns={columns} dataSource={data} bordered={true}/>
+                        <Table rowSelection={rowSelection} columns={columns} dataSource={temp.list} bordered={true}/>
                     </div>
                 </div>
             </div>
@@ -108,10 +76,10 @@ import * as Actions from 'actions';
     }
 }
 const mapStateToProps = state => ({
-    
+      temp: state.System.temp,
 })
 const mapDispatchToProps = dispatch => ({
-   
+      tempList: bindActionCreators(Actions.SystemActions.tempList, dispatch),
 })
 
 export default connect(

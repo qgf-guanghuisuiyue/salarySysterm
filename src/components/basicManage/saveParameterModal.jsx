@@ -28,6 +28,18 @@ import * as Actions from 'actions';
         })
     }
 
+    onHandleInput = (field, e) => {
+        this.setState({
+            [field]: e.target.value
+        })
+    }
+
+    parameterSave = () => {
+        const {parameterSave, getParameterList} = this.props;
+        const {type, value, code} = this.state;
+        parameterSave({type, value, code}, getParameterList)
+    }
+
     render(){ 
         const {
             type, value, code
@@ -36,15 +48,15 @@ import * as Actions from 'actions';
         return(
                 <Modal
                     title={<h2>列表</h2>}
-                    wrapClassName="vertical-center-modal"
+                    wrapClassName="vertical-center-modal save-param"
                     visible={saveParameterVisible}
                     width={500}
-                    footer={false}
-                    onCancel={() => hideSaveParameterModal()}
+                    onCancel={hideSaveParameterModal}
+                    onOk={this.parameterSave}
                 >
-                    <ul class="data-list">
+                    <ul> 
                         <li>
-                            <span class="data-title">参数类型:</span>
+                            <span className="data-title">参数类型:</span>
                             <Select style={{width: 200}}
                                     placeholder='请选择参数类型'
                                     onChange={this.onHandleChange.bind(this, 'type')}
@@ -54,34 +66,22 @@ import * as Actions from 'actions';
                             </Select>
                         </li>
                         <li>
-                            <span class="data-title">参数值:</span>
-                            <Select  style={{width: 200}}
-                                    placeholder='请选择公司'
-                                    onChange={this.onHandleChange.bind(this, 'value')}
-                            >
-                                    {
-                                        [
-                                            '海银会', 
-                                            '银都',
-                                            '零点花花',
-                                            '西藏新路驰迅'
-                                        ].map((item , index)=>{
-                                            return <Option key={index} value={item}>{item}</Option>
-                                        })
-                                    }
-                            </Select>
+                            <span className="data-title">参数值:</span>
+                            <Input 
+                                style={{width: 200}}
+                                onChange={this.onHandleInput.bind(this, 'value')}
+                                placeholder='请输入公司名称'
+                                value={value}
+                            ></Input>
                         </li>
                         <li>
-                            <span class="data-title">参数代码:</span>
-                            <Select style={{width: 200}}
-                                    placeholder='参数值'
-                                    onChange={this.onHandleChange.bind(this, 'code')}
-                            >
-                              <Option value="yd">yd</Option>
-                              <Option value="xzxlcx">xzxlcx</Option>
-                              <Option value="hyh">hyh</Option>
-                              <Option value="ldhh">ldhh</Option>
-                            </Select>
+                            <span className="data-title">代码:</span>
+                            <Input 
+                                style={{width: 200}}
+                                onChange={this.onHandleInput.bind(this, 'code')}
+                                placeholder='请输入公司名称首字母缩写'
+                                value={code}
+                            ></Input>
                         </li>
                     </ul>
                 </Modal>
@@ -92,6 +92,7 @@ const mapStateToProps = state => ({
     saveParameterVisible: state.System.saveParameterVisible,
 })
 const mapDispatchToProps = dispatch => ({
+    getParameterList: bindActionCreators(Actions.SystemActions.getParameterList, dispatch),
     parameterSave: bindActionCreators(Actions.SystemActions.parameterSave, dispatch),
     hideSaveParameterModal: bindActionCreators(Actions.SystemActions.hideSaveParameterModal, dispatch),
 })

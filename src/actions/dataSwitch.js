@@ -70,6 +70,7 @@ const PAY_FILE_CREATE = {type:types.PAY_FILE_CREATE};
             data: data
         })
         .then(res=>{
+
             notification.success({
                 message:res.msg
             }) 

@@ -3,6 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
 import columns from 'data/table-columns/basic';
+import SaveParameterModal from './basicManage/saveParameterModal';
 
 import {AjaxByToken} from 'utils/ajax';
 import {Select, Button, Table} from 'antd';
@@ -18,12 +19,34 @@ import * as Actions from 'actions';
 
     state = {
       type: '',
-      value: ''
+      value: '',
+      page: 1,
     }
 
     params = {
       skip: 0,
       count: 10
+    }
+
+    _getColumns() {
+        columns[0].render = (text,record,index) => {           
+            return  <a>{index+1+(this.state.page-1)*5}</a>
+        }
+        return columns;
+    }
+
+    //页码回调
+    onChangePagination = (page) => {
+        this.setState({
+            page
+        });
+        const {
+            type,
+            value
+        } = this.state;
+        const {getParameterList} = this.props;
+        this.param.skip = page * 5 - 5;
+        getParameterList({count:5,skip:this.param.skip, type, value})
     }
 
     onHandleChange = (field, value) => {
@@ -33,7 +56,6 @@ import * as Actions from 'actions';
     }
 
     searchChange = () => {
-      console.log('search')
       const {
         type,
         value
@@ -42,7 +64,7 @@ import * as Actions from 'actions';
     }
 
     saveParameter = () => {
-      this.props.parameterSave()
+        this.props.showSaveParameterModal()
     }
 
     render(){
@@ -112,21 +134,29 @@ import * as Actions from 'actions';
                         </div>
                         <Table 
                           rowSelection={rowSelection} 
-                          columns={columns} 
+                          columns={this._getColumns()} 
                           dataSource={parameter.list} 
-                          bordered={true}/>
+                          bordered={true}
+                          pagination={{
+                            defaultPageSize:5,
+                            total: parameter.sum,
+                            onChange: this.onChangePagination
+                          }}
+                        />
                     </div>
                 </div>
+                <SaveParameterModal/>
             </div>
         )
     }
 }
 const mapStateToProps = state => ({
     parameter: state.System.parameter,
+    saveParameterVisible: state.System.saveParameterVisible,
 })
 const mapDispatchToProps = dispatch => ({
     getParameterList: bindActionCreators(Actions.SystemActions.getParameterList, dispatch),
-    parameterSave: bindActionCreators(Actions.SystemActions.parameterSave, dispatch),
+    showSaveParameterModal: bindActionCreators(Actions.SystemActions.showSaveParameterModal, dispatch),
 })
 
 export default connect(

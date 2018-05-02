@@ -22,7 +22,8 @@ import * as Actions from 'actions';
         endDate: null,
         endOpen: false,
         corpName: '',
-        record: {}
+        record: {},
+        page: 1
     };
 
     params = {
@@ -82,7 +83,6 @@ import * as Actions from 'actions';
 
     queryList = () => {
         const {corpName , startDate , endDate} = this.state;
-        const skip = this.skip;
         this.props.getDataSwitchList({...this.params, corpName , startDate , endDate})
     }
 
@@ -96,7 +96,10 @@ import * as Actions from 'actions';
 
     getColumns = () => {
         columns[0].render = (text,record,index) => {           
-            return  <Link>{index+1}</Link>
+            return  <Link>{index+1+(this.state.page-1)*5}</Link>
+        }
+        columns[columns.length-2].render = (text,record,index) => {
+            return  <span>{record.status===0?"成功":record.status===1?"未处理":record.status===2?"处理中":record.status===3?"失败":"暂无"}</span>
         }
         columns[columns.length-1].render = (text,record,index)=>{
             return <a onClick={this.showAcceptDetailModal.bind(this,record)}>明细</a>;
@@ -104,9 +107,20 @@ import * as Actions from 'actions';
         return columns;
     }
 
+    //页码回调
+    onChangePagination = (page) => {
+        this.setState({
+            page
+        })
+        const {batchno} = record;
+        const {payAgentApply} = this.props;
+        this.param.skip = page * 5 - 5;
+        this.queryList()
+    }
+
     render(){
         const { startDate, endDate, endOpen, corpName, record } = this.state;
-        const {applyList} = this.props;
+        const {applyList, getPayagentDetail} = this.props;
         const {isLoading , dataSwitchList={}} = this.props,
         data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
         count = dataSwitchList.count;//总条数   
@@ -176,12 +190,13 @@ import * as Actions from 'actions';
                             bordered
                             pagination={{
                                 defaultPageSize:5,
-                                count: count
+                                total: count,
+                                onChange:this.onChangePagination
                             }}
                         />
                     </div>
                 </div>
-                <AcceptDetailModalComponent  record={record}/>
+                <AcceptDetailModalComponent  record={record} getPayagentDetail={getPayagentDetail}/>
             </div>
         )
     }
@@ -189,13 +204,12 @@ import * as Actions from 'actions';
 const mapStateToProps = state => ({
     dataSwitchList: state.DataSwitch.dataSwitchList,
     isLoading: state.DataSwitch.isLoading,
-    applyList: state.Apply.applyList,
 })
 const mapDispatchToProps = dispatch => ({
     getApplyList: bindActionCreators(Actions.ApplyActions.getApplyList, dispatch),
     getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch),
     showAcceptDetailModal: bindActionCreators(Actions.ApplyActions.showAcceptDetailModal, dispatch),
-    getPayagentDetail: bindActionCreators(Actions.DataSwitchActions.getPayagentDetail, dispatch),
+    getPayagentDetail: bindActionCreators(Actions.DataSwitchActions.getPayagentDetail, dispatch)
 })
 
 export default connect(

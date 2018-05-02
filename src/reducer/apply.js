@@ -17,14 +17,12 @@ const initialState = {
     isUploadSucc: false,
     applyList: {
         isLoading: false,
-        list: [],
-        count: 0,
+        applyData: {}
     },
     detailList: {
         visible: false,
         isLoading: false,
-        list: [],
-        count: 0
+        detailData: {}
     },
     acceptDetailVisible: false
 };
@@ -40,7 +38,7 @@ export default function upload(state = initialState,actions){
         case APPLY_LIST_DONE: 
             return {...state, applyList: {...state.applyList, isLoading: false}};
         case GET_APPLY_LIST: 
-            return {...state, applyList: {...state.applyList, list: actions.list, count: actions.sum}}; 
+            return {...state, applyList: {...state.applyList, applyData: actions.applyData}}; 
         case SHOW_DETAIL_MODAL: 
             return {...state, detailList: {...state.detailList, visible: true}}; 
         case HIDE_DETAIL_MODAL: 
@@ -50,7 +48,7 @@ export default function upload(state = initialState,actions){
         case DETAIL_LIST_DONE: 
             return {...state, detailList: {...state.detailList, isLoading: false}}; 
         case GET_DETAIL_LIST: 
-            return {...state, detailList: {...state.detailList, list: actions.list, count: actions.sum}}; 
+            return {...state, detailList: {...state.detailList, detailData: actions.detailData}}; 
         case SHOW_ACCEPT_DETAIL_MODAL: 
             return {...state, acceptDetailVisible: true}; 
         case HIDE_ACCEPT_DETAIL_MODAL: 

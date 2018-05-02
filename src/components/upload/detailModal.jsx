@@ -14,16 +14,36 @@ import * as Actions from 'actions';
 
 
  class DetailModalComponent extends React.Component{
+   state = {
+       page: 1
+   }
+   skip=0
+   
 
     _getColumns() {
         columns[0].render = (text,record,index) => {           
-            return  <a>{index+1}</a>
+            return  <a>{index+1+(this.state.page-1)*5}</a>
         }
         return columns;
     }
 
+    //页码回调
+    onChangePagination = (page) => {
+        const {
+            record,
+            payAgentApplyDetaillist
+        } = this.props;
+        const {batchno} = record;
+        this.setState({
+            page
+        })
+        this.skip = page * 5 - 5;
+        payAgentApplyDetaillist({batchNo:batchno,count:5,skip:this.skip})
+    }
+
     render(){ 
         const {detailList, record} = this.props;
+        const {detailData} = detailList
         return(
                 <Modal
                     title={<h2>列表</h2>}
@@ -42,15 +62,17 @@ import * as Actions from 'actions';
                             <li><span>总金额：</span><span>{record.totalamount}</span></li>
                             <li><span>申请日期：</span><span>{record.applydate}</span></li>
                         </ul>
-                        <Table 
-                            columns={this._getColumns()} 
-                            dataSource={detailList.list} 
-                            bordered={true}
-                            pagination={{
-                                defaultPageSize:5,
-                                count: detailList.count
-                            }}
-                        />
+                            <Table 
+                                columns={this._getColumns()} 
+                                dataSource={detailData.list} 
+                                bordered={true}
+                                pagination={{
+                                    defaultPageSize:5,
+                                    total: detailData.sum,
+                                    onChange: this.onChangePagination
+                                }}
+                            />
+
                     </div>
                 </Modal>
         )

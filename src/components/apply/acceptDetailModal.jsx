@@ -14,17 +14,34 @@ import * as Actions from 'actions';
 
 
  class AcceptDetailModalComponent extends React.Component{
+    state = {
+        page: 1
+    }
+    skip=0
 
     _getColumns() {
         columns[0].render = (text,record,index) => {           
-            return  <a>{index+1}</a>
+            return  <a>{index+1+(this.state.page-1)*10}</a>
         }
         return columns;
     }
 
+    //页码回调
+    onChangePagination = (page) => {
+        const {
+            record,
+            getPayagentDetail
+        } = this.props;
+        const {batchno} = record;
+        this.setState({
+            page
+        })
+        this.skip = (page-1)*10;
+        getPayagentDetail({batchNo:batchno,count:10,skip:this.skip})
+    }
+
     render(){ 
         const {acceptDetailVisible, detailList, record, payagentDetail} = this.props;
-        const {tblPayApplyModel , list , size} = payagentDetail;
         return(
                 <Modal
                     title={<h2>列表</h2>}
@@ -45,11 +62,12 @@ import * as Actions from 'actions';
                         </ul>
                             <Table 
                                 columns={this._getColumns()} 
-                                dataSource={list} 
+                                dataSource={payagentDetail.list} 
                                 bordered={true}
                                 pagination={{
-                                    defaultPageSize:5,
-                                    count: size
+                                    defaultPageSize:10,
+                                    total: payagentDetail.size,
+                                    onChange: this.onChangePagination
                                 }}
                             />
                     </div>

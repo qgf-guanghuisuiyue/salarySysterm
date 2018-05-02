@@ -1,6 +1,5 @@
 import * as types from '../constants/apply';
 import {AjaxByToken} from 'utils/ajax';
-import store from 'store';
 import {notification} from 'antd'; 
 
 // 代发申请列表查询接口 
@@ -48,7 +47,7 @@ export const getApplyList = (params) => (dispatch, getState) => {
         data: params
     }).then(res => {
         dispatch(APPLY_LIST_DONE);
-        dispatch({...GET_APPLY_LIST, list: res.data.list, count: res.data.sum});
+        dispatch({...GET_APPLY_LIST, applyData: res.data});
     }, err => {
         dispatch(APPLY_LIST_DONE);
         console.log(err)
@@ -97,7 +96,7 @@ export const payAgentApplyDetaillist = (data) => (dispatch, getState) => {
         data: data
     }).then(res => {
         dispatch(DETAIL_LIST_DONE)
-        dispatch({...GET_DETAIL_LIST, list:res.data.list, count: res.data.sum})
+        dispatch({...GET_DETAIL_LIST, detailData:res.data})
     }, err => {
         dispatch(DETAIL_LIST_DONE)
         console.log(err)
@@ -112,9 +111,9 @@ export const hideDetailModal = () => (dispatch,getState) => {
     dispatch(HIDE_DETAIL_MODAL)
 }
 
-export const showAcceptDetailModal = (data, getDataSwitchList) => (dispatch,getState) => {
+export const showAcceptDetailModal = (data, getPayagentDetail) => (dispatch,getState) => {
     dispatch(SHOW_ACCEPT_DETAIL_MODAL);
-    getDataSwitchList(data)
+    getPayagentDetail(data)
 }
 export const hideAcceptDetailModal = () => (dispatch,getState) => {
     dispatch(HIDE_ACCEPT_DETAIL_MODAL)

@@ -5,7 +5,7 @@ import columns from 'data/table-columns/upload';
 import DetailModalComponent from './upload/detailModal';
 
 import {AjaxByToken} from 'utils/ajax';
-import {Input, Upload, Button, DatePicker, Table, Modal} from 'antd';
+import {Input, Upload, Button, DatePicker, Table, Modal, notification} from 'antd';
 
 //redux
 import {bindActionCreators} from 'redux';
@@ -28,7 +28,7 @@ import * as Actions from 'actions';
 
     params = {
         skip: 0,
-        count: 10
+        count: 5
     }
 
     componentDidMount() {
@@ -142,9 +142,9 @@ import * as Actions from 'actions';
         })
         const {record} = this.state;
         const {batchno} = record;
-        const {payAgentApply} = this.props;
-        this.param.skip = page * 5 - 5;
-        payAgentApply({batchNo:batchno,count:5,skip:this.param.skip})
+        const {getApplyList} = this.props;
+        this.params.skip = page * 5 - 5;
+        getApplyList({batchNo:batchno,count:5,skip:this.params.skip})
     }
     
     onSelectChange = (selectedRowKeys, selectedRows) => {
@@ -156,13 +156,27 @@ import * as Actions from 'actions';
 
     handlePayAgentCommit = () => {
         const {batchNoList} = this.state;
-        this.props.payAgentCommit({"batchNo":batchNoList})
+        if(batchNoList.length == 0) {
+            notification.warning({
+                message: '请选择代发申请文件',
+                style:{top:40}
+            });
+        }else {
+            this.props.payAgentCommit({"batchNo":batchNoList})
+        }    
     }
 
     handlePayAgentDel = () => {
         const {batchNoList} = this.state;
         const {payAgentDel, getApplyList} = this.props;
-        payAgentDel({"batchNo":batchNoList}, getApplyList);
+        if(batchNoList.length == 0) {
+            notification.warning({
+                message: '请选择代发申请文件',
+                style:{top:40}
+            });
+        }else {
+            payAgentDel({"batchNo":batchNoList}, getApplyList);
+        }
     }
 
     downloadExcel = () => {
@@ -239,11 +253,13 @@ import * as Actions from 'actions';
                         <div className="control">
                             <Button 
                                 icon="delete" 
+                                type="primary"
                                 style={{marginRight: 50}}
                                 onClick={this.handlePayAgentDel}
                             >删除</Button>
                             <Button 
                                 icon="check-circle"
+                                type="primary"
                                 onClick={this.handlePayAgentCommit}
                             >确认代发</Button>
                         </div>
@@ -256,7 +272,8 @@ import * as Actions from 'actions';
                             pagination={{
                                 defaultPageSize:5,
                                 total: applyData.sum,
-                                onChange: this.onChangePagination
+                                onChange: this.onChangePagination,
+                                showTotal:total => `共 ${applyData.sum == 0 ? 0 : applyData.sum} 条数据`
                             }}
                         />
                     </div>

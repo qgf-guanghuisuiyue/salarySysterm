@@ -32,13 +32,14 @@ import * as Actions from 'actions';
     }
 
     saveTemp = () => {
-        this.props.showSaveTempModal()
+        const {getCorpList, showSaveTempModal} = this.props;
+        showSaveTempModal(getCorpList);        
     }
 
     render(){
         const {corpCode} = this.state;
-        const {temp, getTempList} = this.props;
-        
+        const {temp, getTempList, corpData} = this.props;
+        const {tempData} = temp;
           // 通过 rowSelection 对象表明需要行选择
           const rowSelection = {
             onChange(selectedRowKeys, selectedRows) {
@@ -81,7 +82,12 @@ import * as Actions from 'actions';
                                 type="primary"
                             >停用</Button>
                         </div>
-                        <Table rowSelection={rowSelection} columns={columns} dataSource={temp.list} bordered={true}/>
+                        <Table 
+                           rowSelection={rowSelection} 
+                           columns={columns} 
+                           dataSource={tempData.list} 
+                           bordered={true}
+                        />
                     </div>
                 </div>
                 <SaveTempModalComponent getTempList={getTempList}></SaveTempModalComponent>
@@ -96,6 +102,7 @@ const mapDispatchToProps = dispatch => ({
       getTempList: bindActionCreators(Actions.SystemActions.getTempList, dispatch),
       tempSave: bindActionCreators(Actions.SystemActions.tempSave, dispatch),
       showSaveTempModal: bindActionCreators(Actions.SystemActions.showSaveTempModal, dispatch),
+      getCorpList: bindActionCreators(Actions.SystemActions.getCorpList, dispatch),
 })
 
 export default connect(

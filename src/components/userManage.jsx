@@ -3,6 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
 import columns from 'data/table-columns/userManage';
+import SaveUserManageModalComponent from './userManage/saveUserManageModal';
 
 import {AjaxByToken} from 'utils/ajax';
 import {Input, Button, Table} from 'antd';
@@ -46,6 +47,27 @@ import * as Actions from 'actions';
       return columns;
     }
 
+    handleChange = (field, e) => {
+        this.setState({
+            [field]: e.target.value
+        })
+    }
+
+    handleQuery = () => {
+        const {
+            userName,
+            phone,
+            corpCode,
+          } = this.state;
+        const {getUserInfoList} = this.props;
+        getUserInfoList({count:5,skip:this.params.skip, userName, phone, corpCode})
+    }
+
+    showSaveUserInfoModal = () => {
+        const {showSaveUserInfoModal, getCorpList} = this.props;
+        showSaveUserInfoModal(getCorpList);
+    }
+
     //页码回调
     onChangePagination = (page) => {
       this.setState({
@@ -57,13 +79,18 @@ import * as Actions from 'actions';
         corpCode,
       } = this.state;
       const {getUserInfoList} = this.props;
-      this.params.skip = page * 5 - 5;
-      getUserInfoList({count:5,skip:this.params.skip, userName, phone, corpCode})
+      this.params.skip = (page -1)*5;
+      this.handleQuery()
     }
     
     render(){
         const {userInfoList} = this.props;
-
+        const {userInfoData} = userInfoList;
+        const {
+            userName,
+            phone,
+            corpCode,
+          } = this.state;
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
           onChange(selectedRowKeys, selectedRows) {
@@ -83,31 +110,70 @@ import * as Actions from 'actions';
                     <h2 className="File-title">查询</h2>
                     <div className="handle-block">
                         <div className="inline-block">
-                            <span className="title">公司名称：</span>
-                            <Input style={{width: 200}}/>
+                            <span className="title">姓名：</span>
+                            <Input 
+                                style={{width: 200}}
+                                value={userName}
+                                onChange={this.handleChange.bind(this, 'userName')}
+                            />
                         </div>
-                        <Button type="primary" style={{marginLeft: 20}}>查询</Button>
+                        <div className="inline-block">
+                            <span className="title">手机：</span>
+                            <Input 
+                                style={{width: 200}}
+                                value={phone}
+                                onChange={this.handleChange.bind(this, 'phone')}
+                            />
+                        </div>
+                        <div className="inline-block">
+                            <span className="title">公司名称：</span>
+                            <Input 
+                                style={{width: 200}}
+                                value={corpCode}
+                                onChange={this.handleChange.bind(this, 'corpCode')}
+                            />
+                        </div>
+                        <Button 
+                            type="primary" 
+                            style={{marginLeft: 20}}
+                            onClick={this.handleQuery}
+                        >查询</Button>
                     </div>
                     <h2 className="File-title">列表</h2>
                     <div className="table-area">
                         <div className="control">
-                            <Button icon="plus-square" style={{marginRight: 50}}>新增</Button>
-                            <Button icon="delete" style={{marginRight: 50}}>删除</Button>
-                            <Button icon="retweet" style={{marginRight: 50}}>重置密码</Button>
+                            <Button 
+                                icon="plus-square" 
+                                type="primary"
+                                style={{marginRight: 50}}
+                                onClick={this.showSaveUserInfoModal}
+                            >新增</Button>
+                            <Button 
+                                icon="delete" 
+                                type="primary"
+                                style={{marginRight: 50}}
+                            >删除</Button>
+                            <Button 
+                                icon="retweet" 
+                                type="primary"
+                                style={{marginRight: 50}}
+                            >重置密码</Button>
                         </div>
                         <Table 
                           rowSelection={rowSelection} 
                           columns={this._getColumns()} 
-                          dataSource={userInfoList.list} 
+                          dataSource={userInfoData.list} 
                           bordered={true}
                           pagination={{
                             defaultPageSize:5,
-                            total: userInfoList.sum,
-                            onChange: this.onChangePagination
+                            total: userInfoData.sum,
+                            onChange: this.onChangePagination,
+                            showTotal:total => `共 ${userInfoData.sum == 0 ? 0 : userInfoData.sum} 条数据`
                           }}
                         />
                     </div>
                 </div>
+                <SaveUserManageModalComponent></SaveUserManageModalComponent>
             </div>
         )
     }
@@ -117,6 +183,8 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
   getUserInfoList: bindActionCreators(Actions.SystemActions.getUserInfoList, dispatch),
+  showSaveUserInfoModal: bindActionCreators(Actions.SystemActions.showSaveUserInfoModal, dispatch),
+  getCorpList: bindActionCreators(Actions.SystemActions.getCorpList, dispatch),
 })
 
 export default connect(

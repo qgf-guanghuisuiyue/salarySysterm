@@ -100,6 +100,7 @@ import * as Actions from 'actions';
     render(){
 
         const {parameter} = this.props;
+        const {parameterData} = this.parameter;
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
           onChange: this.rowSelection
@@ -161,11 +162,11 @@ import * as Actions from 'actions';
                         <Table 
                           rowSelection={rowSelection} 
                           columns={this._getColumns()} 
-                          dataSource={parameter.list} 
+                          dataSource={parameterData.list} 
                           bordered={true}
                           pagination={{
                             defaultPageSize:5,
-                            total: parameter.sum,
+                            total: parameterData.sum,
                             onChange: this.onChangePagination
                           }}
                         />

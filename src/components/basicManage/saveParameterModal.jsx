@@ -6,7 +6,6 @@ import {Link} from 'react-router';
 import {  Button , Tooltip , Select ,Input, Modal} from 'antd';
 const Option = Select.Option;
 import {AjaxByToken} from 'utils/ajax';
-import columns from 'data/table-columns/detailmodal';
 
 //redux
 import {bindActionCreators} from 'redux';

@@ -17,31 +17,31 @@ import * as Actions from 'actions';
 
  class LeadingResult extends React.Component{
     state = {
-      companyName:"",
-      startDate:"",
-      endDate:"",
+        companyName:"",
+        startDate:"",
+        endDate:"",
+        batchno:""
     }
     componentDidMount(){
-        NProgress.start()
-        NProgress.done()
+        this.leadingResultQuery()
     }
     params ={
-      skip:'0',
-      count:'10'
+        skip:0,
+        count:10
     }
     showLeadingFileModal = () => {
-      this.props.showLeadingFileModal()
+        this.props.showLeadingFileModal()
     }
     showConfirm = () => {
-      const _this = this;
-      confirm({
-        title: '是否确认该批次的代发结果',
-        style:{top:'30%'},
-        onOk() {
-            _this.props.resultConfirm()
-        },
-        onCancel() {},
-      });
+        const _this = this;
+        confirm({
+            title: '是否确认该批次的代发结果',
+            style:{top:'30%'},
+            onOk() {
+                _this.props.resultConfirm()
+            },
+            onCancel() {},
+        });
     }
     leadingResultQuery = () => {
         const {leadingResultQuery} = this.props;
@@ -54,17 +54,28 @@ import * as Actions from 'actions';
         })
     }
     dateChange = (field,value,dateString) => {
-      if(value){
-          this.setState({
-              [field]:moment(value).format("YYYYMMDD")
-          })
-      }else{
-          this.setState({
-              [field]:""
-          })
-      }
-      
-  }
+        if(value){
+            this.setState({
+                [field]:moment(value).format("YYYYMMDD")
+            })
+        }else{
+            this.setState({
+                [field]:""
+            })
+        } 
+    }
+    rowSelection = () =>{
+        const _this = this;
+       // 通过 rowSelection 对象表明需要行选择
+        return {
+           type:'radio',
+           onSelect(record, selected, selectedRows) {
+                   _this.setState({
+                       batchno:record.batchno
+                   })
+               }
+       };
+    } 
     render(){
           const data = [];
           // 通过 rowSelection 对象表明需要行选择
@@ -89,7 +100,8 @@ import * as Actions from 'actions';
                             <span>公司名称：</span>
                             <Input 
                                 className="input" 
-                                value={companyName} 
+                                value={companyName}
+                                placeholder="请输入公司名称" 
                                 onChange={this.onChange}
                             />
                         </li>
@@ -136,7 +148,7 @@ import * as Actions from 'actions';
                     </div>
                     <div className="err-table">
                         <Table 
-                            rowSelection={rowSelection} 
+                            rowSelection={this.rowSelection()} 
                             columns={columns} 
                             dataSource={data} 
                             bordered={true}

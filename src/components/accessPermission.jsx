@@ -4,8 +4,9 @@ import moment from 'moment';
 import {Link} from 'react-router';
 
 import {AjaxByToken} from 'utils/ajax';
-import { Button, Table} from 'antd';
+import { Button, Table, notification} from 'antd';
 
+import columns from 'data/table-columns/accessPermission';
 //redux
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
@@ -16,84 +17,82 @@ import * as Actions from 'actions';
     constructor(){
         super();
         this.state={
-            
+          ID:""
         }
     }
-    render(){
-        const columns = [
-            {
-            title: '序号',
-            dataIndex: 'key',
-            }, {
-            title: '姓名',
-            dataIndex: 'name',
-            render: text => <a href="#">{text}</a>,
-          }, {
-            title: '卡号',
-            dataIndex: 'age',
-          }, {
-            title: '银行名称',
-            dataIndex: 'address',
-          }, {
-            title: '开户行',
-            dataIndex: 'bank',
-          }, {
-            title: '金额',
-            dataIndex: 'sum',
-          }, {
-            title: '备注',
-            dataIndex: 'remark',
-          }];
-        const data = [{
-            key: '1',
-            name: '胡彦斌',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }, {
-            key: '2',
-            name: '胡彦祖',
-            age: 4212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }, {
-            key: '3',
-            name: '李大嘴',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }];
-
-          // 通过 rowSelection 对象表明需要行选择
-          const rowSelection = {
-            onChange(selectedRowKeys, selectedRows) {
-              console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
+    componentDidMount(){
+        this.props.userInfoRoleList(this.params)
+    }
+    params = {
+        skip:0,
+        count:10
+    }
+    //页码回调
+    onChangePagination = (page) => {
+        this.setState({
+            page
+        })
+        this.params.skip = page * 10 - 10;
+        this.props.userInfoRoleList(this.params);
+    }
+    userInfoRoleDel = () => {
+        const { ID } = this.state;
+        if(ID){
+            this.props.userInfoRoleDel({ID})
+        }else{
+            notification.warn({
+                message:"请先选择用户"
+            })
+        } 
+    }
+    rowSelection = () =>{
+         const _this = this;
+        // 通过 rowSelection 对象表明需要行选择
+         return {
+            type:'radio',
             onSelect(record, selected, selectedRows) {
-              console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-              console.log(selected, selectedRows, changeRows);
-            },
-          };
+                    _this.setState({
+                      ID:record.ID
+                    })
+                }
+          }
+     } 
+    render(){
+        const { roleList } = this.props;
         return(
             <div className=" layout common">
-                {/* 权限设置 */}
                 <div className="accessPermission">
                     <h2 className="File-title">列表</h2>
                     <div className="table-area">
                         <div className="control">
-                            <Button icon="plus-square" style={{marginRight: 50}}>新增</Button>
-                            <Button icon="delete" style={{marginRight: 50}}>删除</Button>
-                            <Button icon="retweet" style={{marginRight: 50}}>重置密码</Button>
+                            <Button 
+                                icon="plus-square" 
+                                type="primary" 
+                                style={{marginRight: 50}}
+                            >
+                              新增
+                            </Button>
+                            <Button 
+                                icon="delete" 
+                                type="primary" 
+                                style={{marginRight: 50}}
+                                onClick={this.userInfoRoleDel}
+                            >
+                              删除
+                            </Button>
                         </div>
-                        <Table rowSelection={rowSelection} columns={columns} dataSource={data} bordered={true}/>
+                        <Table 
+                            rowSelection={this.rowSelection()} 
+                            columns={columns} 
+                            dataSource={roleList.list} 
+                            bordered={true}
+                            pagination={{
+                                defaultPageSize: 10,
+                                total: roleList.sum,
+                                onChange:this.onChangePagination,
+                                showTotal:total => `共 ${roleList.sum} 条数据`
+                            }}
+                        />
                     </div>
                 </div>
             </div>
@@ -101,10 +100,11 @@ import * as Actions from 'actions';
     }
 }
 const mapStateToProps = state => ({
-    
+    roleList: state.System.roleList
 })
 const mapDispatchToProps = dispatch => ({
-   
+   userInfoRoleList: bindActionCreators(Actions.SystemActions.userInfoRoleList, dispatch),
+   userInfoRoleDel: bindActionCreators(Actions.SystemActions.userInfoRoleDel, dispatch)
 })
 
 export default connect(

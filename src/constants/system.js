@@ -11,3 +11,7 @@ export const HIDE_SAVE_PARAMETER = "HIDE_SAVE_PARAMETER";
 export const TEMP_LIST_START = "TEMP_LIST_START";
 export const TEMP_LIST_DONE = "TEMP_LIST_DONE";
 export const GET_TEMP_LIST = "GET_TEMP_LIST";
+export const LOG_LIST = "LOG_LIST";
+export const LOG_LIST_START = "LOG_LIST_START";
+export const LOG_LIST_DONE = "LOG_LIST_DONE";
+export const ROLE_LIST = "ROLE_LIST";

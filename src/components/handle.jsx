@@ -151,9 +151,7 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
                     <ul className="data-info handle-info" >
                         <li style={{marginLeft:100}}>
                             <span>批次号：</span>
-                            <Input 
-                                onChange = {this.onChange.bind(this,"batchNo")}
-                            />
+                            <Input onChange = {this.onChange.bind(this,"batchNo")}/>
                         </li>
                         <li>
                             <span>公司名称：</span>
@@ -171,9 +169,9 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
                                 onChange = {this.onSelectChange}
                             >
                               {
-                                this.Option.map((item,index)=>{
-                                    return (<Option value={item.value}>{item.text}</Option>)
-                                })
+                                  this.Option.map((item,index)=>{
+                                      return (<Option value={item.value}>{item.text}</Option>)
+                                  })
                               } 
                             </Select>
                         </li>
@@ -217,7 +215,7 @@ const mapStateToProps = state => ({
     
 })
 const mapDispatchToProps = dispatch => ({
-  searchHandleList: bindActionCreators(Actions.HandleActions.searchHandleList, dispatch)
+    searchHandleList: bindActionCreators(Actions.HandleActions.searchHandleList, dispatch)
 })
 
 export default connect(

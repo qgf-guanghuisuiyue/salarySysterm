@@ -12,6 +12,10 @@ const HIDE_SAVE_PARAMETER = {type: types.HIDE_SAVE_PARAMETER};
 const TEMP_LIST_START = {type: types.TEMP_LIST_START};
 const TEMP_LIST_DONE = {type: types.TEMP_LIST_DONE};
 const GET_TEMP_LIST = {type: types.GET_TEMP_LIST};
+const LOG_LIST = {type: types.LOG_LIST};
+const LOG_LIST_START = {type: types.LOG_LIST_START};
+const LOG_LIST_DONE = {type: types.LOG_LIST_DONE}
+const ROLE_LIST = {type: types.ROLE_LIST}
 
 // 系统参数列表查询
 export const getParameterList = (data) => (dispatch, getState) => {
@@ -169,13 +173,14 @@ export const userInfoReloadpwd = () => (dispatch, getState) => {
 }
 
 //系统管理-用户权限列表查询
-export const userInfoRoleList = () => (dispatch, getState) => {
+export const userInfoRoleList = (data) => (dispatch, getState) => {
     AjaxByToken('api/system/userinfo/role/list', {
         head: {
             transcode: 'S000017',
-        }
+        },
+        data:data
     }).then(res => {
-        console.log(res)
+        dispatch({...ROLE_LIST,roleList:res.data})
     }, err => {
         console.log(err)
     })
@@ -208,14 +213,18 @@ export const userInfoRoleDel = () => (dispatch, getState) => {
 }
 
 //系统管理-系统日记查询
-export const userInfoRoleLogList = () => (dispatch, getState) => {
+export const userInfoRoleLogList = (data) => (dispatch, getState) => {
+    dispatch(LOG_LIST_START)
     AjaxByToken('api/system/log/list', {
         head: {
             transcode: 'S000020',
-        }
+        },
+        data:data
     }).then(res => {
-        console.log(res)
+        dispatch(LOG_LIST_DONE);
+        dispatch({...LOG_LIST,logList:res.data});
     }, err => {
+        dispatch(LOG_LIST_DONE)
         console.log(err)
     })
 }

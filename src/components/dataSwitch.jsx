@@ -25,8 +25,7 @@ import * as Actions from 'actions';
         }
     }
     componentDidMount(){
-        NProgress.start()
-        NProgress.done()
+        this.queryList()
     }
     skip = 0;
     params = {
@@ -52,13 +51,15 @@ import * as Actions from 'actions';
     }
     queryList = () => {
         const {corpName , startDate , endDate} = this.state;
-        //const skip = this.skip;
         this.props.getDataSwitchList({corpName , startDate , endDate,...this.params})
     }
     getColumns = () => {
         const {page} = this.state;
         columns[0].render = (text,record,index) => {           
             return  <a>{(index+1)+(page-1)*5}</a>
+        }
+        columns[columns.length-3].render = (text,record,index)=>{
+            return <a>{moment(record.applydate).format("YYYY-MM-DD")}</a>;
         }
         columns[columns.length-2].render = (text,record,index) => {
             return  <span>

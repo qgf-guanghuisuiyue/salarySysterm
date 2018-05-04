@@ -7,6 +7,10 @@ import {
     TEMP_LIST_START,
     TEMP_LIST_DONE,
     GET_TEMP_LIST,
+    LOG_LIST,
+    LOG_LIST_START,
+    LOG_LIST_DONE,
+    ROLE_LIST,
     SHOW_SAVE_TEMP,
     HIDE_SAVE_TEMP,
     SET_RESETTEMP_TRUE,
@@ -57,13 +61,21 @@ export default function upload(state = initialState,actions){
         case SHOW_SAVE_PARAMETER:
             return {...state, saveParameterVisible: true};
         case HIDE_SAVE_PARAMETER:
-            return {...state, saveParameterVisible: false }
+            return {...state, saveParameterVisible: false };
         case TEMP_LIST_START: 
             return {...state, temp: {...state.temp, isLoading: true}};
         case TEMP_LIST_DONE: 
             return {...state, temp: {...state.temp, isLoading: false}};
         case GET_TEMP_LIST: 
-            return {...state, temp: {...state.temp, tempData: actions.tempData}}; 
+            return {...state, temp: {...state.temp, tempData: actions.tempData}};
+        case LOG_LIST: 
+            return {...state, logList: actions.logList};
+        case LOG_LIST_START: 
+            return {...state, isLogLoading: true};
+        case LOG_LIST_DONE: 
+            return {...state, isLogLoading: false};
+        case ROLE_LIST:
+            return {...state, roleList: actions.roleList}     
         case SHOW_SAVE_TEMP:
             return {...state, saveTempModal:{...state.saveTempModal,saveTempVisible: true}};
         case HIDE_SAVE_TEMP:

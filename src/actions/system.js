@@ -29,6 +29,10 @@ const SHOW_SAVE_USERINFO = {type: types.SHOW_SAVE_USERINFO};
 const HIDE_SAVE_USERINFO = {type: types.HIDE_SAVE_USERINFO};
 const SET_RESETUSERINFO_TRUE = {type: types.SET_RESETUSERINFO_TRUE};
 const SET_RESETUSERINFO_FALSE = {type: types.SET_RESETUSERINFO_FALSE};
+const SET_RELOADPWD_TRUE = {type: types.SET_RELOADPWD_TRUE};
+const SET_RELOADPWD_FALSE = {type: types.SET_RELOADPWD_FALSE};
+const SHOW_RELOADPWD = {type: types.SHOW_RELOADPWD};
+const HIDE_RELOADPWD = {type: types.HIDE_RELOADPWD};
 
 // 系统参数列表查询
 export const getParameterList = (data) => (dispatch, getState) => {
@@ -195,7 +199,7 @@ export const userInfoSave = (data, getUserInfoList) => (dispatch, getState) => {
         setTimeout(()=>{
             dispatch(HIDE_SAVE_USERINFO);
         },500);
-        getUserInfoList();
+        getUserInfoList({skip: 0,count: 5});
         console.log(res)
     }, err => {
         console.log(err)
@@ -217,12 +221,14 @@ export const hideSaveUserInfoModal = () => (dispatch,getState) => {
 }
 
 //系统管理-用户删除
-export const userInfoDelete = () => (dispatch, getState) => {
+export const userInfoDelete = (data, getUserInfoList) => (dispatch, getState) => {
     AjaxByToken('api/system/userinfo/delete', {
         head: {
             transcode: 'S000015',
-        }
+        },
+        data: data
     }).then(res => {
+        getUserInfoList({skip: 0,count: 5});
         console.log(res)
     }, err => {
         console.log(err)
@@ -230,16 +236,32 @@ export const userInfoDelete = () => (dispatch, getState) => {
 }
 
 //系统管理-用户密码重置
-export const userInfoReloadpwd = () => (dispatch, getState) => {
+export const userInfoReloadpwd = (data) => (dispatch, getState) => {
     AjaxByToken('api/system/userinfo/reloadpwd', {
         head: {
             transcode: 'S000016',
-        }
+        },
+        data: data
     }).then(res => {
+        dispatch(SET_RELOADPWD_FALSE);
+        dispatch(HIDE_RELOADPWD);
         console.log(res)
     }, err => {
         console.log(err)
     })
+}
+
+export const setResetReloadPwdFalse = () => (dispatch,getState) => {
+    dispatch(SET_RELOADPWD_FALSE);
+}
+
+export const showReloadpwdModal = (getUserInfoList) => (dispatch,getState) => {
+    dispatch(SHOW_RELOADPWD);
+    getUserInfoList({skip: 0,count: 5});
+}
+export const hideReloadpwdModal = () => (dispatch,getState) => {
+    dispatch(HIDE_RELOADPWD);
+    dispatch(SET_RELOADPWD_TRUE);
 }
 
 //系统管理-用户权限列表查询

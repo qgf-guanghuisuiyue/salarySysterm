@@ -1,7 +1,6 @@
 //系统管理相关接口
 import * as types from '../constants/system';
 import {AjaxByToken} from 'utils/ajax';
-import store from 'store';
 import {notification} from 'antd'; 
 
 const PARAMETER_LIST_START = {type: types.PARAMETER_LIST_START};
@@ -152,12 +151,14 @@ export const getCorpList = () => (dispatch, getState) => {
 }
 
 //系统模板数据停用
-export const tempStop = () => (dispatch, getState) => {
-    AjaxByToken('api/system/template/stop', {
+export const tempStop = (data, getTempList) => (dispatch, getState) => {
+    AjaxByToken('api/system/template/changestatus', {
         head: {
             transcode: 'S000012',
-        }
+        },
+        data: data
     }).then(res => {
+        getTempList()
         console.log(res)
     }, err => {
         console.log(err)
@@ -295,3 +296,5 @@ export const userInfoRoleLogList = (data) => (dispatch, getState) => {
         console.log(err)
     })
 }
+
+

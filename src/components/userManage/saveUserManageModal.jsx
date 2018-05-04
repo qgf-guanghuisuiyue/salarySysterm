@@ -3,7 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
 
-import {  Button , Tooltip , Select ,Input, Modal} from 'antd';
+import {  Button , Tooltip , Select ,Input, Modal, message} from 'antd';
 const Option = Select.Option;
 import {AjaxByToken} from 'utils/ajax';
 
@@ -53,7 +53,31 @@ import * as Actions from 'actions';
     userInfoSave = () => {
         const {userInfoSave, getUserInfoList} = this.props;
         const {userType, role, corpcode, loginname, phone, pwd} = this.state;
-        parameterSave({type, value, code}, getUserInfoList)
+        if(!userType){
+            message.info('请选择用户类型');
+            return ;
+        }
+        if(!role){
+            message.info('请选择角色');
+            return ;
+        }
+        if(!corpcode){
+            message.info('请填写公司名称');
+            return ;
+        }
+        if(!loginname){
+            message.info('请填写登录名');
+            return ;
+        }
+        if(!phone){
+            message.info('请填写手机号');
+            return ;
+        }
+        if(!pwd){
+            message.info('请填写密码');
+            return ;
+        }
+        userInfoSave({userType, role, corpcode, loginname, phone, pwd}, getUserInfoList)
     }
 
     render(){ 

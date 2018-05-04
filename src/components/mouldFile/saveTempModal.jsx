@@ -17,8 +17,8 @@ import * as Actions from 'actions';
  class SaveTempModalComponent extends React.Component{
 
     state = {
-        type: null,   //1-公司模版；2-银行模版 模版类型
-        corpCode: '',   //公司名称
+        type: [],   //1-公司模版；2-银行模版 模版类型
+        corpCode: [],   //公司名称
         templateName: '',    //模版名称
         templateFileName: '', //模板文件
         error: false,
@@ -29,8 +29,8 @@ import * as Actions from 'actions';
     componentWillUpdate(nextProps,nextState) {
         if(nextProps.saveTempModal.resetForm){
             this.setState({
-                type: null,
-                corpCode: '',
+                type: [],
+                corpCode: [],
                 templateName: '',
                 templateFileName: '',
                 fileList: []
@@ -94,7 +94,7 @@ import * as Actions from 'actions';
     onFileRemove = file => {
         // 文件移除
         const {response} = file;
-        this.props.removeUploadFIle(response.filePath);
+        this.props.removeUploadFIle({fileName: response.data});
         if(this.state.error){
             this.triggerError(false);
         }
@@ -136,7 +136,7 @@ import * as Actions from 'actions';
             type, corpCode, templateName, templateFileName, fileList,error,errorMsg
         } = this.state;
         const {saveTempModal, hideSaveTempModal, corpData} = this.props;
-        let list = corpData.list?corpData.list:[];
+        let list = corpData.list?corpData.list:corpCode;
         return(
                 <Modal
                     title={<h2>列表</h2>}
@@ -218,6 +218,7 @@ const mapDispatchToProps = dispatch => ({
     tempSave: bindActionCreators(Actions.SystemActions.tempSave, dispatch),
     hideSaveTempModal: bindActionCreators(Actions.SystemActions.hideSaveTempModal, dispatch),
     setResetTempFalse: bindActionCreators(Actions.SystemActions.setResetTempFalse, dispatch),
+    removeUploadFIle: bindActionCreators(Actions.FileActions.removeUploadFIle, dispatch),
 })
 
 export default connect(

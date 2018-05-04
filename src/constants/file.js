@@ -1,0 +1,1 @@
+export const REMOVE_UPLOAD_FILE = "REMOVE_UPLOAD_FILE";

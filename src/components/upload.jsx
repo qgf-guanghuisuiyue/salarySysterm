@@ -84,8 +84,14 @@ import * as Actions from 'actions';
     }
 
     // 文件移除
-    onFileRemove = () => {
-        this.triggerError(false);
+    onFileRemove = (file) => {
+        // 文件移除
+        const {response} = file;
+        this.props.removeUploadFIle({fileName: response.data});
+        if(this.state.error){
+            this.triggerError(false);
+        }
+        return true;
     }
 
     uploadDemo = () => {
@@ -294,7 +300,8 @@ const mapDispatchToProps = dispatch => ({
     payAgentApply: bindActionCreators(Actions.ApplyActions.payAgentApply, dispatch),
     payAgentDel: bindActionCreators(Actions.ApplyActions.payAgentDel, dispatch),
     showDetailModal: bindActionCreators(Actions.ApplyActions.showDetailModal, dispatch),
-    payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),    
+    payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),   
+    removeUploadFIle: bindActionCreators(Actions.FileActions.removeUploadFIle, dispatch), 
 })
 
 export default connect(

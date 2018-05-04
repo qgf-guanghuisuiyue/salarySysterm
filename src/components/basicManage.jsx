@@ -91,7 +91,6 @@ import * as Actions from 'actions';
 
     rowSelection = (selectedRowKeys, selectedRows) => {
         let idList = selectedRows.map((item,index) => {
-            console.log(selectedRows)
             return item.id;
         })
         this.setState({idList})
@@ -100,7 +99,7 @@ import * as Actions from 'actions';
     render(){
 
         const {parameter} = this.props;
-        const {parameterData} = this.parameter;
+        const {parameterData} = parameter;
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
           onChange: this.rowSelection

@@ -10,7 +10,12 @@ import {
     LOG_LIST,
     LOG_LIST_START,
     LOG_LIST_DONE,
-    ROLE_LIST
+    ROLE_LIST,
+    SHOW_SAVE_TEMP,
+    HIDE_SAVE_TEMP,
+    USERINFO_LIST_START,
+    USERINFO_LIST_DONE,
+    GET_USERINFO_LIST,
 } from '../constants/system';
 
 const initialState = {
@@ -25,7 +30,12 @@ const initialState = {
     },
     logList:{},
     isLogLoading:false,
-    roleList:{}
+    roleList:{},
+    saveTempVisible: false,
+    userInfoList: {
+        isLoading: false,
+        list: []
+    },
 };
 
 export default function upload(state = initialState,actions){
@@ -54,6 +64,17 @@ export default function upload(state = initialState,actions){
             return {...state, isLogLoading: false};
         case ROLE_LIST:
             return {...state, roleList: actions.roleList}     
+            return {...state, temp: {...state.temp, list: actions.list}}; 
+        case SHOW_SAVE_TEMP:
+            return {...state, saveTempVisible: true};
+        case HIDE_SAVE_TEMP:
+            return {...state, saveTempVisible: false }    
+        case USERINFO_LIST_START: 
+            return {...state, userInfoList: {...state.userInfoList, isLoading: true}};
+        case USERINFO_LIST_DONE: 
+            return {...state, userInfoList: {...state.userInfoList, isLoading: false}};
+        case GET_USERINFO_LIST: 
+            return {...state, userInfoList: {...state.userInfoList, list: actions.list}};       
         default: 
             return state;
     }

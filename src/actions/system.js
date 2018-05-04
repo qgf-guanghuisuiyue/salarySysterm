@@ -16,6 +16,11 @@ const LOG_LIST = {type: types.LOG_LIST};
 const LOG_LIST_START = {type: types.LOG_LIST_START};
 const LOG_LIST_DONE = {type: types.LOG_LIST_DONE}
 const ROLE_LIST = {type: types.ROLE_LIST}
+const SHOW_SAVE_TEMP = {type: types.SHOW_SAVE_TEMP};
+const HIDE_SAVE_TEMP = {type: types.HIDE_SAVE_TEMP};
+const USERINFO_LIST_START = {type: types.USERINFO_LIST_START};
+const USERINFO_LIST_DONE = {type: types.USERINFO_LIST_DONE};
+const GET_USERINFO_LIST = {type: types.GET_USERINFO_LIST};
 
 // 系统参数列表查询
 export const getParameterList = (data) => (dispatch, getState) => {
@@ -77,7 +82,7 @@ export const parameterDelete = (data, getParameterList) => (dispatch, getState) 
 }
 
 //系统模板数据列表查询
-export const tempList = (data) => (dispatch, getState) => {
+export const getTempList = (data) => (dispatch, getState) => {
     dispatch(TEMP_LIST_START)
     AjaxByToken('api/system/template/list', {
         head: {
@@ -95,16 +100,25 @@ export const tempList = (data) => (dispatch, getState) => {
 }
 
 //系统模板数据新增
-export const tempSave = () => (dispatch, getState) => {
+export const tempSave = (data, getTempList) => (dispatch, getState) => {
     AjaxByToken('api/system/template/save', {
         head: {
             transcode: 'S000011',
-        }
+        },
+        data: data
     }).then(res => {
-        console.log(res)
+        console.log(res),
+        getTempList()
     }, err => {
         console.log(err)
     })
+}
+
+export const showSaveTempModal = () => (dispatch,getState) => {
+    dispatch(SHOW_SAVE_TEMP);
+}
+export const hideSaveTempModal = () => (dispatch,getState) => {
+    dispatch(HIDE_SAVE_TEMP)
 }
 
 //系统模板数据停用
@@ -121,12 +135,16 @@ export const tempStop = () => (dispatch, getState) => {
 }
 
 //系统管理-用户列表查询
-export const userInfoList = () => (dispatch, getState) => {
+export const getUserInfoList = (data) => (dispatch, getState) => {
+    dispatch(USERINFO_LIST_START);
     AjaxByToken('api/system/userinfo/list', {
         head: {
             transcode: 'S000013',
-        }
+        },
+        data: data
     }).then(res => {
+        dispatch(USERINFO_LIST_DONE);
+        dispatch({...GET_USERINFO_LIST, list: res.data.list})
         console.log(res)
     }, err => {
         console.log(err)

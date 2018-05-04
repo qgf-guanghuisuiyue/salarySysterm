@@ -29,10 +29,6 @@ export const payAgentApply = (data, getApplyList) => (dispatch, getState) => {
         getApplyList({skip: 0,count: 10})
     }, err => {
         dispatch(UPLOAD_DONE);
-        notification.error({
-            message: '提示',
-            description: err.data.msg
-        });
         console.log(err)
     })
 }
@@ -78,10 +74,6 @@ export const payAgentDel = (batchNoList, getApplyList) => (ispatch, getState) =>
     }).then(res => {
         getApplyList({skip: 0,count: 10})
     }, err => {
-        notification.error({
-            message: '提示',
-            description: err.data.msg
-        });
         console.log(err)
     })
 }

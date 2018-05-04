@@ -50,7 +50,6 @@ export const AjaxByPost = (uri, data) => {
                     notification.error({
                         message:"错误信息",
                         description:msg,
-                        duration:"",
                         style:{top:40}
                     });
                 }

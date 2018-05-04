@@ -27,7 +27,7 @@ import * as Actions from 'actions';
 
     params = {
       skip: 0,
-      count: 10
+      count: 5
     }
 
     _getColumns() {
@@ -72,10 +72,17 @@ import * as Actions from 'actions';
     deleteParameter = () => {
         const {idList} = this.state;
         const {parameterDelete, getParameterList} = this.props;
-        if(idList.length > 1) {
-            notification.success({
+        if(idList.length == 0) {
+            notification.warning({
                 message: '警告',
-                description: '一次只能删除一个参数'
+                description: '请选择参数',
+                style:{top:40}
+            });
+        }else if(idList.length > 1) {
+            notification.warning({
+                message: '警告',
+                description: '一次只能删除一个参数',
+                style:{top:40}
             });
         } else {
             parameterDelete({ID: idList[0]}, getParameterList)
@@ -141,11 +148,13 @@ import * as Actions from 'actions';
                         <div className="control">
                             <Button 
                                 icon="plus-square" 
+                                type="primary"
                                 style={{marginRight: 50}}
                                 onClick={this.saveParameter}
                               >新增</Button>
                             <Button 
                                 icon="delete"
+                                type="primary"
                                 onClick={this.deleteParameter}
                             >删除</Button>
                         </div>

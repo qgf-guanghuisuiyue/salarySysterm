@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
+import columns from 'data/table-columns/userManage';
 
 import {AjaxByToken} from 'utils/ajax';
 import {Input, Button, Table} from 'antd';
@@ -13,75 +14,68 @@ import * as Actions from 'actions';
 
 
  class UserManage extends React.Component{
-    constructor(){
-        super();
-        this.state={
-            
-        }
+    state = {
+      userName: '',
+      phone: '',
+      corpCode: '',
+      page: 1
     }
-    render(){
-        const columns = [
-            {
-            title: '序号',
-            dataIndex: 'key',
-            }, {
-            title: '姓名',
-            dataIndex: 'name',
-            render: text => <a href="#">{text}</a>,
-          }, {
-            title: '卡号',
-            dataIndex: 'age',
-          }, {
-            title: '银行名称',
-            dataIndex: 'address',
-          }, {
-            title: '开户行',
-            dataIndex: 'bank',
-          }, {
-            title: '金额',
-            dataIndex: 'sum',
-          }, {
-            title: '备注',
-            dataIndex: 'remark',
-          }];
-        const data = [{
-            key: '1',
-            name: '胡彦斌',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }, {
-            key: '2',
-            name: '胡彦祖',
-            age: 4212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }, {
-            key: '3',
-            name: '李大嘴',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666"
-          }];
 
-          // 通过 rowSelection 对象表明需要行选择
-          const rowSelection = {
-            onChange(selectedRowKeys, selectedRows) {
-              console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
-            onSelect(record, selected, selectedRows) {
-              console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-              console.log(selected, selectedRows, changeRows);
-            },
-          };
+    params = {
+      skip: 0,
+      count: 5
+    }
+
+    componentDidMount() {
+      this.props.getUserInfoList(this.params)
+    }
+
+    _getColumns() {
+      columns[0].render = (text,record,index) => {           
+          return  <a>{index+1+(this.state.page-1)*5}</a>
+      }
+      columns[columns.length-3].render = (text,record,index) => {           
+          return  <span>{record.createdate == null ? '': moment(record.createdate).format('YYYYMMDD')}</span>
+      }
+      columns[columns.length-2].render = (text,record,index) => {           
+          return  <span>{record.role==0?'超级用户':record.role==1?"财务":"管理员"}</span>
+      }
+      columns[columns.length-1].render = (text,record,index) => { 
+          return  <span>{record.activeflag ==1 ? "有效":"无效"}</span> 
+      }
+      return columns;
+    }
+
+    //页码回调
+    onChangePagination = (page) => {
+      this.setState({
+          page
+      });
+      const {
+        userName,
+        phone,
+        corpCode,
+      } = this.state;
+      const {getUserInfoList} = this.props;
+      this.params.skip = page * 5 - 5;
+      getUserInfoList({count:5,skip:this.params.skip, userName, phone, corpCode})
+    }
+    
+    render(){
+        const {userInfoList} = this.props;
+
+        // 通过 rowSelection 对象表明需要行选择
+        const rowSelection = {
+          onChange(selectedRowKeys, selectedRows) {
+            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+          },
+          onSelect(record, selected, selectedRows) {
+            console.log(record, selected, selectedRows);
+          },
+          onSelectAll(selected, selectedRows, changeRows) {
+            console.log(selected, selectedRows, changeRows);
+          },
+        };
         return(
             <div className=" layout common">
                 {/* 用户管理 */}
@@ -101,7 +95,17 @@ import * as Actions from 'actions';
                             <Button icon="delete" style={{marginRight: 50}}>删除</Button>
                             <Button icon="retweet" style={{marginRight: 50}}>重置密码</Button>
                         </div>
-                        <Table rowSelection={rowSelection} columns={columns} dataSource={data} bordered={true}/>
+                        <Table 
+                          rowSelection={rowSelection} 
+                          columns={this._getColumns()} 
+                          dataSource={userInfoList.list} 
+                          bordered={true}
+                          pagination={{
+                            defaultPageSize:5,
+                            total: userInfoList.sum,
+                            onChange: this.onChangePagination
+                          }}
+                        />
                     </div>
                 </div>
             </div>
@@ -109,10 +113,10 @@ import * as Actions from 'actions';
     }
 }
 const mapStateToProps = state => ({
-    
+  userInfoList: state.System.userInfoList,
 })
 const mapDispatchToProps = dispatch => ({
-   
+  getUserInfoList: bindActionCreators(Actions.SystemActions.getUserInfoList, dispatch),
 })
 
 export default connect(

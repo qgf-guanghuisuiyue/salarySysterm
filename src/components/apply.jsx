@@ -31,8 +31,8 @@ import * as Actions from 'actions';
         count: 10
     }
 
-    componentDidMount() {
-        this.props.getApplyList(this.params)
+    componentDidMount(){
+        this.props.getDataSwitchList(this.params)
     }
 
     disabledStartDate = (startDate) => {
@@ -112,9 +112,7 @@ import * as Actions from 'actions';
         this.setState({
             page
         })
-        const {batchno} = record;
-        const {payAgentApply} = this.props;
-        this.param.skip = page * 5 - 5;
+        this.params.skip = page * 5 - 5;
         this.queryList()
     }
 
@@ -191,7 +189,8 @@ import * as Actions from 'actions';
                             pagination={{
                                 defaultPageSize:5,
                                 total: count,
-                                onChange:this.onChangePagination
+                                onChange:this.onChangePagination,
+                                showTotal:total => `共 ${count == 0 ? 0 : count} 条数据`
                             }}
                         />
                     </div>
@@ -206,7 +205,6 @@ const mapStateToProps = state => ({
     isLoading: state.DataSwitch.isLoading,
 })
 const mapDispatchToProps = dispatch => ({
-    getApplyList: bindActionCreators(Actions.ApplyActions.getApplyList, dispatch),
     getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch),
     showAcceptDetailModal: bindActionCreators(Actions.ApplyActions.showAcceptDetailModal, dispatch),
     getPayagentDetail: bindActionCreators(Actions.DataSwitchActions.getPayagentDetail, dispatch)

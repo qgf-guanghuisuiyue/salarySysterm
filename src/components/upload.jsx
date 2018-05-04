@@ -192,12 +192,6 @@ import * as Actions from 'actions';
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
            onChange: this.onSelectChange,
-           // onSelect(record, selected, selectedRows) {
-           //     console.log(record, selected, selectedRows);
-           // },
-           // onSelectAll(selected, selectedRows, changeRows) {
-           //     console.log(selected, selectedRows, changeRows);
-           // },
        };
         return(
             <div className="layout common">

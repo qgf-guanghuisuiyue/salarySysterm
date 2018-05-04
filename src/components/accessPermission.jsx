@@ -7,6 +7,7 @@ import {AjaxByToken} from 'utils/ajax';
 import { Button, Table, notification} from 'antd';
 
 import columns from 'data/table-columns/accessPermission';
+import AddAccessModal from './accessPermission/addAccessModal';
 //redux
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
@@ -17,7 +18,8 @@ import * as Actions from 'actions';
     constructor(){
         super();
         this.state={
-          ID:""
+          ID:"",
+          page:1
         }
     }
     componentDidMount(){
@@ -57,8 +59,18 @@ import * as Actions from 'actions';
                 }
           }
      } 
+     getColumns = () => {
+       const {page} = this.state;
+       columns[0].render = (text , record , index) => {
+          return <span>{index+1 + page*10 -10}</span>
+       }
+       return columns
+     }
+     showAddAccessModal = () => {
+        this.props.showAddAccessModal()
+     }
     render(){
-        const { roleList } = this.props;
+        const { roleList ,isAddAccessModal, hideAddAccessModal} = this.props;
         return(
             <div className=" layout common">
                 <div className="accessPermission">
@@ -69,6 +81,7 @@ import * as Actions from 'actions';
                                 icon="plus-square" 
                                 type="primary" 
                                 style={{marginRight: 50}}
+                                onClick={this.showAddAccessModal}
                             >
                               新增
                             </Button>
@@ -83,7 +96,7 @@ import * as Actions from 'actions';
                         </div>
                         <Table 
                             rowSelection={this.rowSelection()} 
-                            columns={columns} 
+                            columns={this.getColumns()} 
                             dataSource={roleList.list} 
                             bordered={true}
                             pagination={{
@@ -95,16 +108,20 @@ import * as Actions from 'actions';
                         />
                     </div>
                 </div>
+                <AddAccessModal isAddAccessModal={isAddAccessModal} hideAddAccessModal={hideAddAccessModal}/>
             </div>
         )
     }
 }
 const mapStateToProps = state => ({
-    roleList: state.System.roleList
+    roleList: state.System.roleList,
+    isAddAccessModal: state.System.isAddAccessModal
 })
 const mapDispatchToProps = dispatch => ({
    userInfoRoleList: bindActionCreators(Actions.SystemActions.userInfoRoleList, dispatch),
-   userInfoRoleDel: bindActionCreators(Actions.SystemActions.userInfoRoleDel, dispatch)
+   userInfoRoleDel: bindActionCreators(Actions.SystemActions.userInfoRoleDel, dispatch),
+   showAddAccessModal:bindActionCreators(Actions.SystemActions.showAddAccessModal, dispatch),
+   hideAddAccessModal:bindActionCreators(Actions.SystemActions.hideAddAccessModal, dispatch)
 })
 
 export default connect(

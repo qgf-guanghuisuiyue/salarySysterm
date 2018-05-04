@@ -21,6 +21,8 @@ const HIDE_SAVE_TEMP = {type: types.HIDE_SAVE_TEMP};
 const USERINFO_LIST_START = {type: types.USERINFO_LIST_START};
 const USERINFO_LIST_DONE = {type: types.USERINFO_LIST_DONE};
 const GET_USERINFO_LIST = {type: types.GET_USERINFO_LIST};
+const SHOW_ADDACCESS_MODAL = {type: types.SHOW_ADDACCESS_MODAL};
+const HIDE_ADDACCESS_MODAL = {type: types.HIDE_ADDACCESS_MODAL}
 
 // 系统参数列表查询
 export const getParameterList = (data) => (dispatch, getState) => {
@@ -245,4 +247,10 @@ export const userInfoRoleLogList = (data) => (dispatch, getState) => {
         dispatch(LOG_LIST_DONE)
         console.log(err)
     })
+}
+export const showAddAccessModal = () => (dispatch,getState) => {
+    dispatch(SHOW_ADDACCESS_MODAL);
+}
+export const hideAddAccessModal = () => (dispatch,getState) => {
+    dispatch(HIDE_ADDACCESS_MODAL)
 }

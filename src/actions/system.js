@@ -23,6 +23,8 @@ const GET_CORP_LIST = {type: types.GET_CORP_LIST};
 const USERINFO_LIST_START = {type: types.USERINFO_LIST_START};
 const USERINFO_LIST_DONE = {type: types.USERINFO_LIST_DONE};
 const GET_USERINFO_LIST = {type: types.GET_USERINFO_LIST};
+const SHOW_ADDACCESS_MODAL = {type: types.SHOW_ADDACCESS_MODAL};
+const HIDE_ADDACCESS_MODAL = {type: types.HIDE_ADDACCESS_MODAL}
 const SHOW_SAVE_USERINFO = {type: types.SHOW_SAVE_USERINFO};
 const HIDE_SAVE_USERINFO = {type: types.HIDE_SAVE_USERINFO};
 const SET_RESETUSERINFO_TRUE = {type: types.SET_RESETUSERINFO_TRUE};
@@ -255,26 +257,36 @@ export const userInfoRoleList = (data) => (dispatch, getState) => {
 }
 
 //系统管理-用户权限-新增
-export const userInfoRoleSave = () => (dispatch, getState) => {
+export const userInfoRoleSave = (data,hideAddAccessModal,userInfoRoleList,clearTableCheckbox) => (dispatch, getState) => {
     AjaxByToken('api/system/userinfo/role/save', {
         head: {
             transcode: 'S000018',
-        }
+        },
+        data:data
     }).then(res => {
-        console.log(res)
+        notification.success({
+            message:res.msg
+        });
+        hideAddAccessModal();
+        userInfoRoleList({skip:0,count:10});
+        clearTableCheckbox()
     }, err => {
         console.log(err)
     })
 }
 
 //系统管理-用户权限-删除
-export const userInfoRoleDel = () => (dispatch, getState) => {
+export const userInfoRoleDel = (data,userInfoRoleList) => (dispatch, getState) => {
     AjaxByToken('api/system/userinfo/role/del', {
         head: {
             transcode: 'S000019',
-        }
+        },
+        data:data
     }).then(res => {
-        console.log(res)
+        notification.success({
+            message:res.msg
+        });
+        userInfoRoleList({skip:0,count:10})
     }, err => {
         console.log(err)
     })
@@ -296,5 +308,10 @@ export const userInfoRoleLogList = (data) => (dispatch, getState) => {
         console.log(err)
     })
 }
-
-
+export const showAddAccessModal = (getCorpList) => (dispatch,getState) => {
+    dispatch(SHOW_ADDACCESS_MODAL);
+    getCorpList()
+}
+export const hideAddAccessModal = () => (dispatch,getState) => {
+    dispatch(HIDE_ADDACCESS_MODAL)
+}

@@ -5,11 +5,11 @@ module.exports = [
         },
         {
         title: '姓名',
-        dataIndex: 'userName'
+        dataIndex: 'username'
         }, 
         {
         title: '登录名称',
-        dataIndex: 'age',
+        dataIndex: 'loginname',
         }, 
         {
         title: '授权公司名称',

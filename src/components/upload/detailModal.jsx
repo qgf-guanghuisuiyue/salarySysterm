@@ -83,6 +83,7 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
     hideDetailModal: bindActionCreators(Actions.ApplyActions.hideDetailModal, dispatch),
+    payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch)
 })
 
 export default connect(

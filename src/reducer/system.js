@@ -19,6 +19,8 @@ import {
     USERINFO_LIST_START,
     USERINFO_LIST_DONE,
     GET_USERINFO_LIST,
+    SHOW_ADDACCESS_MODAL,
+    HIDE_ADDACCESS_MODAL,
     SHOW_SAVE_USERINFO,
     HIDE_SAVE_USERINFO,
     SET_RESETUSERINFO_TRUE,
@@ -44,10 +46,13 @@ const initialState = {
         isLoading: false,
         userInfoData: []
     },
+    isAddAccessModal:false,
     saveUserInfoModal: {
         saveUserInfoVisible: false,
         resetForm: false        
-    }
+    },
+    logList:{},
+    roleList:{}
 };
 
 export default function upload(state = initialState,actions){
@@ -75,7 +80,7 @@ export default function upload(state = initialState,actions){
         case LOG_LIST_DONE: 
             return {...state, isLogLoading: false};
         case ROLE_LIST:
-            return {...state, roleList: actions.roleList}     
+            return {...state, roleList: actions.roleList};     
         case SHOW_SAVE_TEMP:
             return {...state, saveTempModal:{...state.saveTempModal,saveTempVisible: true}};
         case HIDE_SAVE_TEMP:
@@ -91,7 +96,11 @@ export default function upload(state = initialState,actions){
         case USERINFO_LIST_DONE: 
             return {...state, userInfoList: {...state.userInfoList, isLoading: false}};
         case GET_USERINFO_LIST: 
-            return {...state, userInfoList: {...state.userInfoList, userInfoData: actions.userInfoData}};   
+            return {...state, userInfoList: {...state.userInfoList, list: actions.list}};
+        case SHOW_ADDACCESS_MODAL: 
+            return {...state, isAddAccessModal: true};
+        case HIDE_ADDACCESS_MODAL: 
+            return {...state, isAddAccessModal: false};       
         case SHOW_SAVE_USERINFO:
             return {...state, saveUserInfoModal: {...state.saveUserInfoModal, saveUserInfoVisible: true}};
         case HIDE_SAVE_USERINFO:

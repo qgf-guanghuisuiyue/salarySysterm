@@ -13,32 +13,46 @@ import {
     ROLE_LIST,
     SHOW_SAVE_TEMP,
     HIDE_SAVE_TEMP,
+    SET_RESETTEMP_TRUE,
+    SET_RESETTEMP_FALSE,
+    GET_CORP_LIST,
     USERINFO_LIST_START,
     USERINFO_LIST_DONE,
     GET_USERINFO_LIST,
     SHOW_ADDACCESS_MODAL,
-    HIDE_ADDACCESS_MODAL
+    HIDE_ADDACCESS_MODAL,
+    SHOW_SAVE_USERINFO,
+    HIDE_SAVE_USERINFO,
+    SET_RESETUSERINFO_TRUE,
+    SET_RESETUSERINFO_FALSE
 } from '../constants/system';
 
 const initialState = {
     parameter: {
         isLoading: false,
-        list: [],
+        parameterData: [],
     },
     saveParameterVisible: false,
     temp: {
         isLoading: false,
-        list: [],
+        tempData: [],
     },
-    logList:{},
-    isLogLoading:false,
-    roleList:{},
-    saveTempVisible: false,
+    corpData: {},
+    saveTempModal: {
+        saveTempVisible: false,
+        resetForm: false
+    },
     userInfoList: {
         isLoading: false,
-        list: []
+        userInfoData: []
     },
-    isAddAccessModal:false
+    isAddAccessModal:false,
+    saveUserInfoModal: {
+        saveUserInfoVisible: false,
+        resetForm: false        
+    },
+    logList:{},
+    roleList:{}
 };
 
 export default function upload(state = initialState,actions){
@@ -48,7 +62,7 @@ export default function upload(state = initialState,actions){
         case PARAMETER_LIST_DONE: 
             return {...state, parameter: {...state.parameter, isLoading: false}};
         case GET_PARAMETER_LIST: 
-            return {...state, parameter: {...state.parameter, list: actions.list}};
+            return {...state, parameter: {...state.parameter, parameterData: actions.parameterData}};
         case SHOW_SAVE_PARAMETER:
             return {...state, saveParameterVisible: true};
         case HIDE_SAVE_PARAMETER:
@@ -58,7 +72,7 @@ export default function upload(state = initialState,actions){
         case TEMP_LIST_DONE: 
             return {...state, temp: {...state.temp, isLoading: false}};
         case GET_TEMP_LIST: 
-            return {...state, temp: {...state.temp, list: actions.list}};
+            return {...state, temp: {...state.temp, tempData: actions.tempData}};
         case LOG_LIST: 
             return {...state, logList: actions.logList};
         case LOG_LIST_START: 
@@ -68,9 +82,15 @@ export default function upload(state = initialState,actions){
         case ROLE_LIST:
             return {...state, roleList: actions.roleList};     
         case SHOW_SAVE_TEMP:
-            return {...state, saveTempVisible: true};
+            return {...state, saveTempModal:{...state.saveTempModal,saveTempVisible: true}};
         case HIDE_SAVE_TEMP:
-            return {...state, saveTempVisible: false };    
+            return {...state, saveTempModal:{...state.saveTempModal,saveTempVisible: false}};
+        case SET_RESETTEMP_TRUE:
+            return {...state, saveTempModal:{...state.saveTempModal,resetForm: true}};
+        case SET_RESETTEMP_FALSE:
+            return {...state, saveTempModal:{...state.saveTempModal,resetForm: false}};    
+        case GET_CORP_LIST:  
+            return {...state, corpData: actions.corpData };  
         case USERINFO_LIST_START: 
             return {...state, userInfoList: {...state.userInfoList, isLoading: true}};
         case USERINFO_LIST_DONE: 
@@ -81,6 +101,14 @@ export default function upload(state = initialState,actions){
             return {...state, isAddAccessModal: true};
         case HIDE_ADDACCESS_MODAL: 
             return {...state, isAddAccessModal: false};       
+        case SHOW_SAVE_USERINFO:
+            return {...state, saveUserInfoModal: {...state.saveUserInfoModal, saveUserInfoVisible: true}};
+        case HIDE_SAVE_USERINFO:
+            return {...state, saveUserInfoModal: {...state.saveUserInfoModal, saveUserInfoVisible: false}};  
+        case SET_RESETUSERINFO_TRUE:
+            return {...state, saveUserInfoModal: {...state.saveUserInfoModal, resetForm: true}};
+        case SET_RESETUSERINFO_FALSE:
+            return {...state, saveUserInfoModal: {...state.saveUserInfoModal, resetForm: false}};             
         default: 
             return state;
     }

@@ -18,11 +18,18 @@ const LOG_LIST_DONE = {type: types.LOG_LIST_DONE}
 const ROLE_LIST = {type: types.ROLE_LIST}
 const SHOW_SAVE_TEMP = {type: types.SHOW_SAVE_TEMP};
 const HIDE_SAVE_TEMP = {type: types.HIDE_SAVE_TEMP};
+const SET_RESETTEMP_TRUE = {type: types.SET_RESETTEMP_TRUE};
+const SET_RESETTEMP_FALSE = {type: types.SET_RESETTEMP_FALSE};
+const GET_CORP_LIST = {type: types.GET_CORP_LIST};
 const USERINFO_LIST_START = {type: types.USERINFO_LIST_START};
 const USERINFO_LIST_DONE = {type: types.USERINFO_LIST_DONE};
 const GET_USERINFO_LIST = {type: types.GET_USERINFO_LIST};
 const SHOW_ADDACCESS_MODAL = {type: types.SHOW_ADDACCESS_MODAL};
 const HIDE_ADDACCESS_MODAL = {type: types.HIDE_ADDACCESS_MODAL}
+const SHOW_SAVE_USERINFO = {type: types.SHOW_SAVE_USERINFO};
+const HIDE_SAVE_USERINFO = {type: types.HIDE_SAVE_USERINFO};
+const SET_RESETUSERINFO_TRUE = {type: types.SET_RESETUSERINFO_TRUE};
+const SET_RESETUSERINFO_FALSE = {type: types.SET_RESETUSERINFO_FALSE};
 
 // 系统参数列表查询
 export const getParameterList = (data) => (dispatch, getState) => {
@@ -34,7 +41,7 @@ export const getParameterList = (data) => (dispatch, getState) => {
         data: data
     }).then(res => {
         dispatch(PARAMETER_LIST_DONE)
-        dispatch({...GET_PARAMETER_LIST, list: res.data.list})
+        dispatch({...GET_PARAMETER_LIST, parameterData: res.data})
     }, err => {
         dispatch(PARAMETER_LIST_DONE)
         console.log(err)
@@ -93,8 +100,7 @@ export const getTempList = (data) => (dispatch, getState) => {
         data: data
     }).then(res => {
         dispatch(TEMP_LIST_DONE)
-        dispatch({...GET_TEMP_LIST, list: res.data.list})
-        console.log(res)
+        dispatch({...GET_TEMP_LIST, tempData: res.data})
     }, err => {
         dispatch(TEMP_LIST_DONE)
         console.log(err)
@@ -109,18 +115,42 @@ export const tempSave = (data, getTempList) => (dispatch, getState) => {
         },
         data: data
     }).then(res => {
-        console.log(res),
-        getTempList()
+        dispatch(SET_RESETTEMP_TRUE);
+        setTimeout(()=>{
+            dispatch(HIDE_SAVE_TEMP);
+        },500);
+        getTempList({skip: 0,count: 10})   
     }, err => {
         console.log(err)
     })
 }
 
-export const showSaveTempModal = () => (dispatch,getState) => {
+export const setResetTempFalse = () => (dispatch,getState) => {
+    dispatch(SET_RESETTEMP_FALSE);
+}
+
+export const showSaveTempModal = (getCorpList) => (dispatch,getState) => {
     dispatch(SHOW_SAVE_TEMP);
+    getCorpList()
 }
 export const hideSaveTempModal = () => (dispatch,getState) => {
-    dispatch(HIDE_SAVE_TEMP)
+    dispatch(HIDE_SAVE_TEMP);
+    dispatch(SET_RESETTEMP_TRUE);
+}
+
+
+
+//系统管理-授权及模板公司选项列表 
+export const getCorpList = () => (dispatch, getState) => {
+    AjaxByToken('api/system/parameter/companylist', {
+        head: {
+            transcode: 'S000021',
+        }
+    }).then(res => {
+        dispatch({...GET_CORP_LIST, corpData: res.data});
+    }, err => {
+        console.log(err)
+    })
 }
 
 //系统模板数据停用
@@ -146,24 +176,43 @@ export const getUserInfoList = (data) => (dispatch, getState) => {
         data: data
     }).then(res => {
         dispatch(USERINFO_LIST_DONE);
-        dispatch({...GET_USERINFO_LIST, list: res.data.list})
+        dispatch({...GET_USERINFO_LIST, userInfoData: res.data})
+            }, err => {
+        console.log(err)
+    })
+}
+
+//系统管理-用户添加
+export const userInfoSave = (data, getUserInfoList) => (dispatch, getState) => {
+    AjaxByToken('api/system/userinfo/save', {
+        head: {
+            transcode: 'S000014',
+        },
+        data: data
+    }).then(res => {
+        dispatch(SET_RESETUSERINFO_TRUE);
+        setTimeout(()=>{
+            dispatch(HIDE_SAVE_USERINFO);
+        },500);
+        getUserInfoList();
         console.log(res)
     }, err => {
         console.log(err)
     })
 }
 
-//系统管理-用户添加
-export const userInfoSave = () => (dispatch, getState) => {
-    AjaxByToken('api/system/userinfo/save', {
-        head: {
-            transcode: 'S000014',
-        }
-    }).then(res => {
-        console.log(res)
-    }, err => {
-        console.log(err)
-    })
+export const setResetUserInfoFalse = () => (dispatch,getState) => {
+    dispatch(SET_RESETUSERINFO_FALSE);
+}
+
+
+export const showSaveUserInfoModal = (getCorpList) => (dispatch,getState) => {
+    dispatch(SHOW_SAVE_USERINFO);
+    getCorpList();
+}
+export const hideSaveUserInfoModal = () => (dispatch,getState) => {
+    dispatch(HIDE_SAVE_USERINFO);
+    dispatch(SET_RESETUSERINFO_TRUE);
 }
 
 //系统管理-用户删除
@@ -207,26 +256,36 @@ export const userInfoRoleList = (data) => (dispatch, getState) => {
 }
 
 //系统管理-用户权限-新增
-export const userInfoRoleSave = () => (dispatch, getState) => {
+export const userInfoRoleSave = (data,hideAddAccessModal,userInfoRoleList,clearTableCheckbox) => (dispatch, getState) => {
     AjaxByToken('api/system/userinfo/role/save', {
         head: {
             transcode: 'S000018',
-        }
+        },
+        data:data
     }).then(res => {
-        console.log(res)
+        notification.success({
+            message:res.msg
+        });
+        hideAddAccessModal();
+        userInfoRoleList({skip:0,count:10});
+        clearTableCheckbox()
     }, err => {
         console.log(err)
     })
 }
 
 //系统管理-用户权限-删除
-export const userInfoRoleDel = () => (dispatch, getState) => {
+export const userInfoRoleDel = (data,userInfoRoleList) => (dispatch, getState) => {
     AjaxByToken('api/system/userinfo/role/del', {
         head: {
             transcode: 'S000019',
-        }
+        },
+        data:data
     }).then(res => {
-        console.log(res)
+        notification.success({
+            message:res.msg
+        });
+        userInfoRoleList({skip:0,count:10})
     }, err => {
         console.log(err)
     })
@@ -248,8 +307,9 @@ export const userInfoRoleLogList = (data) => (dispatch, getState) => {
         console.log(err)
     })
 }
-export const showAddAccessModal = () => (dispatch,getState) => {
+export const showAddAccessModal = (getCorpList) => (dispatch,getState) => {
     dispatch(SHOW_ADDACCESS_MODAL);
+    getCorpList()
 }
 export const hideAddAccessModal = () => (dispatch,getState) => {
     dispatch(HIDE_ADDACCESS_MODAL)

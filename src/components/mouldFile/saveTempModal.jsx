@@ -17,13 +17,26 @@ import * as Actions from 'actions';
  class SaveTempModalComponent extends React.Component{
 
     state = {
-        type: '',   //1-公司模版；2-银行模版 模版类型
+        type: null,   //1-公司模版；2-银行模版 模版类型
         corpCode: '',   //公司名称
         templateName: '',    //模版名称
         templateFileName: '', //模板文件
         error: false,
         errorMsg: '',
         fileList: [],
+    }
+
+    componentWillUpdate(nextProps,nextState) {
+        if(nextProps.saveTempModal.resetForm){
+            this.setState({
+                type: null,
+                corpCode: '',
+                templateName: '',
+                templateFileName: '',
+                fileList: []
+            });
+            this.props.setResetTempFalse();
+        }
     }
 
     onHandleChange = (field, value) => {
@@ -100,6 +113,10 @@ import * as Actions from 'actions';
             message.info('请填写公司名称');
             return ;
         }
+        if(!templateName) {
+            message.info('请填写模板名称');
+            return ;
+        }
         // 判断是否上传了文件
         if(fileList.length === 0){
             this.triggerError(true,'请选择上传文件！');
@@ -110,7 +127,7 @@ import * as Actions from 'actions';
         if(!response){
             return ;
         }
-        tempSave({type, corpCode, templateName, templateFileName:name},getTempList);
+        tempSave({type, corpCode, templateName, templateFileName: name, fileName:response.data},getTempList);
     }
 
 
@@ -118,12 +135,13 @@ import * as Actions from 'actions';
         const {
             type, corpCode, templateName, templateFileName, fileList,error,errorMsg
         } = this.state;
-        const {saveTempVisible, hideSaveTempModal} = this.props;
+        const {saveTempModal, hideSaveTempModal, corpData} = this.props;
+        let list = corpData.list?corpData.list:[];
         return(
                 <Modal
                     title={<h2>列表</h2>}
                     wrapClassName="vertical-center-modal save-param"
-                    visible={saveTempVisible}
+                    visible={saveTempModal.saveTempVisible}
                     width={500}
                     onCancel={hideSaveTempModal}
                     onOk={this.uploadTemp}
@@ -141,12 +159,16 @@ import * as Actions from 'actions';
                         </li>
                         <li>
                             <span className="data-title">公司名称:</span>
-                            <Input 
-                                style={{width: 200}}
-                                onChange={this.onHandleInput.bind(this, 'corpCode')}
-                                placeholder='请输入公司名称'
-                                value={corpCode}
-                            ></Input>
+                            <Select style={{width: 200}}
+                                    placeholder='请选择公司名称'
+                                    onChange={this.onHandleChange.bind(this, 'corpCode')}
+                            >
+                                {
+                                    list.map( (item,index)=>{
+                                        return <Option key={index} value={item.corpName}>{item.corpName}</Option>
+                                    })
+                                }
+                            </Select>
                         </li>
                         <li>
                             <span className="data-title">模版名称:</span>
@@ -163,7 +185,7 @@ import * as Actions from 'actions';
                                 className="upLoad-btn upLoad-choose"
                                 name='file'
                                 fileList={fileList}
-                                action={`${prefixUri}/api/web/file/uploadFile`} 
+                                action={`${prefixUri}/api/web/file/uploadtemplate`} 
                                 onChange={this.onFileChange}
                                 onRemove={this.onFileRemove}
                                 beforeUpload={this.onFilebeforeUpload}
@@ -189,11 +211,13 @@ import * as Actions from 'actions';
     }
 }
 const mapStateToProps = state => ({
-    saveTempVisible: state.System.saveTempVisible,
+    saveTempModal: state.System.saveTempModal,
+    corpData: state.System.corpData,
 })
 const mapDispatchToProps = dispatch => ({
     tempSave: bindActionCreators(Actions.SystemActions.tempSave, dispatch),
     hideSaveTempModal: bindActionCreators(Actions.SystemActions.hideSaveTempModal, dispatch),
+    setResetTempFalse: bindActionCreators(Actions.SystemActions.setResetTempFalse, dispatch),
 })
 
 export default connect(

@@ -27,12 +27,12 @@ import * as Actions from 'actions';
 
     params = {
       skip: 0,
-      count: 5
+      count: 10
     }
 
     _getColumns() {
         columns[0].render = (text,record,index) => {           
-            return  <a>{index+1+(this.state.page-1)*5}</a>
+            return  <a>{index+1+(this.state.page-1)*10}</a>
         }
         return columns;
     }
@@ -47,8 +47,8 @@ import * as Actions from 'actions';
             value
         } = this.state;
         const {getParameterList} = this.props;
-        this.param.skip = page * 5 - 5;
-        getParameterList({count:5,skip:this.param.skip, type, value})
+        this.param.skip = page * 10 - 10;
+        getParameterList({count:10,skip:this.param.skip, type, value})
     }
 
     onHandleChange = (field, value) => {
@@ -164,7 +164,7 @@ import * as Actions from 'actions';
                           dataSource={parameterData.list} 
                           bordered={true}
                           pagination={{
-                            defaultPageSize:5,
+                            defaultPageSize:10,
                             total: parameterData.sum,
                             onChange: this.onChangePagination
                           }}

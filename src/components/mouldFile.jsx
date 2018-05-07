@@ -22,9 +22,15 @@ import * as Actions from 'actions';
       selectedList: [],
     }
 
+    params = {
+        skip: 0,
+        count: 10
+    }
+
     componentDidMount() {
         const  {corpCode} = this.state;
-        this.props.getTempList({corpCode});
+        const  {getTempList} = this.props;
+        getTempList({corpCode, count:10,skip:this.params.skip });
     }
 
     _getColumns() {
@@ -77,6 +83,19 @@ import * as Actions from 'actions';
         this.setState({selectedList})
     }
 
+    //页码回调
+    onChangePagination = (page) => {
+        this.setState({
+            page
+        });
+        const {
+          corpCode,
+        } = this.state;
+        const {getTempList} = this.props;
+        this.params.skip = (page -1)*10;
+        this.getTempList({count:10,skip:this.params.skip, corpCode})
+    }
+
 
     render(){
         const {corpCode} = this.state;
@@ -122,6 +141,12 @@ import * as Actions from 'actions';
                            columns={this._getColumns()} 
                            dataSource={tempData.list} 
                            bordered={true}
+                           pagination={{
+                            defaultPageSize:10,
+                            total: tempData.sum,
+                            onChange: this.onChangePagination,
+                            showTotal:total => `共 ${tempData.sum == 0 ? 0 : tempData.sum} 条数据`
+                          }}
                         />
                     </div>
                 </div>

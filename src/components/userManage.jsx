@@ -28,7 +28,7 @@ import * as Actions from 'actions';
 
     params = {
       skip: 0,
-      count: 5
+      count: 10
     }
 
     componentDidMount() {
@@ -37,7 +37,7 @@ import * as Actions from 'actions';
 
     _getColumns() {
       columns[0].render = (text,record,index) => {           
-          return  <a>{index+1+(this.state.page-1)*5}</a>
+          return  <a>{index+1+(this.state.page-1)*10}</a>
       }
       columns[columns.length-3].render = (text,record,index) => {           
           return  <span>{record.createdate == null ? '': moment(record.createdate).format('YYYYMMDD')}</span>
@@ -64,7 +64,7 @@ import * as Actions from 'actions';
             corpCode,
           } = this.state;
         const {getUserInfoList} = this.props;
-        getUserInfoList({count:5,skip:this.params.skip, userName, phone, corpCode})
+        getUserInfoList({count:10,skip:this.params.skip, userName, phone, corpCode})
     }
 
     showSaveUserInfoModal = () => {
@@ -134,7 +134,7 @@ import * as Actions from 'actions';
         corpCode,
       } = this.state;
       const {getUserInfoList} = this.props;
-      this.params.skip = (page -1)*5;
+      this.params.skip = (page -1)*10;
       this.handleQuery()
     }
     
@@ -215,8 +215,9 @@ import * as Actions from 'actions';
                           columns={this._getColumns()} 
                           dataSource={userInfoData.list} 
                           bordered={true}
+                          size={"middle"}
                           pagination={{
-                            defaultPageSize:5,
+                            defaultPageSize:10,
                             total: userInfoData.sum,
                             onChange: this.onChangePagination,
                             showTotal:total => `共 ${userInfoData.sum == 0 ? 0 : userInfoData.sum} 条数据`

@@ -30,6 +30,10 @@ import * as Actions from 'actions';
       count: 10
     }
 
+    componentDidMount(){
+        this.props.getCorpList()
+    }
+    
     _getColumns() {
         columns[0].render = (text,record,index) => {           
             return  <a>{index+1+(this.state.page-1)*10}</a>
@@ -98,12 +102,13 @@ import * as Actions from 'actions';
 
     render(){
 
-        const {parameter} = this.props;
+        const {parameter, corpData} = this.props;
         const {parameterData} = parameter;
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
           onChange: this.rowSelection
         };
+        let list = corpData.list?corpData.list:[];
         return(
             <div className=" layout common">
                 {/* 基础管理 */}
@@ -122,20 +127,15 @@ import * as Actions from 'actions';
                         </div>
                         <div className="inline-block">
                             <span className="title">公司名称</span>
-                            <Select  style={{width: 200}}
-                                    placeholder='请选择公司'
-                                    onChange={this.onHandleChange.bind(this, 'value')}
+                            <Select style={{width: 200}}
+                                    placeholder='请选择公司名称'
+                                    onChange={this.onHandleChange.bind(this, 'corpcode')}
                             >
-                                    {
-                                        [
-                                            '海银会', 
-                                            '银都',
-                                            '零点花花',
-                                            '西藏新路驰迅'
-                                        ].map((item , index)=>{
-                                            return <Option key={index} value={item}>{item}</Option>
-                                        })
-                                    }
+                                {
+                                    list.map( (item,index)=>{
+                                        return <Option key={index} value={item.corpCode}>{item.corpName}</Option>
+                                    })
+                                }
                             </Select>
                         </div>  
                         <Button type="primary" 
@@ -179,11 +179,13 @@ import * as Actions from 'actions';
 const mapStateToProps = state => ({
     parameter: state.System.parameter,
     saveParameterVisible: state.System.saveParameterVisible,
+    corpData: state.System.corpData,
 })
 const mapDispatchToProps = dispatch => ({
     getParameterList: bindActionCreators(Actions.SystemActions.getParameterList, dispatch),
     showSaveParameterModal: bindActionCreators(Actions.SystemActions.showSaveParameterModal, dispatch),
     parameterDelete: bindActionCreators(Actions.SystemActions.parameterDelete, dispatch),
+    getCorpList: bindActionCreators(Actions.SystemActions.getCorpList, dispatch),
 })
 
 export default connect(

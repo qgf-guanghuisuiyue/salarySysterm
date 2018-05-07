@@ -7,7 +7,7 @@ import SaveUserManageModalComponent from './userManage/saveUserManageModal';
 import ReloadPwdModalComponent from './userManage/reloadPwdModal';
 
 import {AjaxByToken} from 'utils/ajax';
-import {Input, Button, Table,notification} from 'antd';
+import {Input, Button, Table,notification, Select} from 'antd';
 
 //redux
 import {bindActionCreators} from 'redux';
@@ -54,6 +54,12 @@ import * as Actions from 'actions';
     handleChange = (field, e) => {
         this.setState({
             [field]: e.target.value
+        })
+    }
+
+    onHandleChange = (field, value) => {
+        this.setState({
+            [field]: value
         })
     }
 
@@ -139,7 +145,7 @@ import * as Actions from 'actions';
     }
     
     render(){
-        const {userInfoList} = this.props;
+        const {userInfoList, corpData} = this.props;
         const {userInfoData} = userInfoList;
         const {
             userName,
@@ -152,6 +158,7 @@ import * as Actions from 'actions';
         const rowSelection = {
           onChange: this.rowSelection
         };
+        let list = corpData.list?corpData.list:[];
         return(
             <div className=" layout common">
                 {/* 用户管理 */}
@@ -176,11 +183,16 @@ import * as Actions from 'actions';
                         </div>
                         <div className="inline-block">
                             <span className="title">公司名称：</span>
-                            <Input 
-                                style={{width: 200}}
-                                value={corpCode}
-                                onChange={this.handleChange.bind(this, 'corpCode')}
-                            />
+                            <Select style={{width: 200}}
+                                    placeholder='请选择公司名称'
+                                    onChange={this.onHandleChange.bind(this, 'corpcode')}
+                            >
+                                {
+                                    list.map( (item,index)=>{
+                                        return <Option key={index} value={item.corpCode}>{item.corpName}</Option>
+                                    })
+                                }
+                            </Select>
                         </div>
                         <Button 
                             type="primary" 
@@ -236,6 +248,7 @@ import * as Actions from 'actions';
 }
 const mapStateToProps = state => ({
   userInfoList: state.System.userInfoList,
+  corpData: state.System.corpData,
 })
 const mapDispatchToProps = dispatch => ({
   getUserInfoList: bindActionCreators(Actions.SystemActions.getUserInfoList, dispatch),

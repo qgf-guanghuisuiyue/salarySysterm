@@ -132,9 +132,8 @@ export const setResetTempFalse = () => (dispatch,getState) => {
     dispatch(SET_RESETTEMP_FALSE);
 }
 
-export const showSaveTempModal = (getCorpList) => (dispatch,getState) => {
+export const showSaveTempModal = () => (dispatch,getState) => {
     dispatch(SHOW_SAVE_TEMP);
-    getCorpList()
 }
 export const hideSaveTempModal = () => (dispatch,getState) => {
     dispatch(HIDE_SAVE_TEMP);

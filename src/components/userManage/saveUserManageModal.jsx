@@ -130,7 +130,7 @@ import * as Actions from 'actions';
                             >
                                 {
                                     list.map( (item,index)=>{
-                                        return <Option key={index} value={item.corpName}>{item.corpName}</Option>
+                                        return <Option key={index} value={item.corpCode}>{item.corpName}</Option>
                                     })
                                 }
                             </Select>

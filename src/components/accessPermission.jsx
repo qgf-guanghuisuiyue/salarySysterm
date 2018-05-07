@@ -114,7 +114,7 @@ import * as Actions from 'actions';
         return(
             <div className=" layout common">
                 <div className="accessPermission">
-                    <h2 className="File-title">列表</h2>
+                    <h2 className="File-title">权限设置</h2>
                     <div className="table-area">
                         <div className="control">
                             <Button 

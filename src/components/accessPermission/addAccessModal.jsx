@@ -24,12 +24,7 @@ export default class AccessModalComponent extends React.Component{
             userInfoRoleList, 
             clearTableCheckbox
         } = this.props;
-        this.props.userInfoRoleSave(
-            {authCorpCode,userID:userInfo.userID},
-            hideAddAccessModal,
-            userInfoRoleList,
-            clearTableCheckbox
-        );
+        this.props.userInfoRoleSave({authCorpCode,userID:userInfo.userID},hideAddAccessModal,userInfoRoleList,clearTableCheckbox);
         this.setState({
             authCorpCode:""
         })

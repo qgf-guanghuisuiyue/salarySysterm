@@ -29,8 +29,7 @@ import * as Actions from 'actions';
         count:10
     }
     componentDidMount(){
-        NProgress.start()
-        NProgress.done()
+        this.searchErrorList()
     }
     onChange = (e) => {
       console.log(e.target.value)
@@ -80,7 +79,6 @@ import * as Actions from 'actions';
             }, {
             title: '批次号',
             dataIndex: 'name',
-            render: text => <a href="#">{text}</a>,
           }, {
             title: '代发申请日期',
             dataIndex: 'age',
@@ -109,56 +107,7 @@ import * as Actions from 'actions';
             title: '后续处理备注',
             dataIndex: 'result',
           }];
-        const data = [{
-            key: '1',
-            name: '胡彦斌',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666",
-            date:"2018-04-16",
-            money:"234",
-            explain:"121212",
-            result:"成功"
-          }, {
-            key: '2',
-            name: '胡彦祖',
-            age: 4212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666",
-            date:"2018-04-16",
-            money:"234",
-            explain:"121212",
-            result:"成功"
-          }, {
-            key: '3',
-            name: '李大嘴',
-            age: 3212121212121212,
-            address: '中国建设银行',
-            bank:"中国建设银行",
-            sum:"2134",
-            remark:"66666",
-            date:"2018-04-16",
-            money:"234",
-            explain:"121212",
-            result:"成功"
-          }];
-          
-          // 通过 rowSelection 对象表明需要行选择
-          const rowSelection = {
-            onChange(selectedRowKeys, selectedRows) {
-              console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
-            onSelect(record, selected, selectedRows) {
-              console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-              console.log(selected, selectedRows, changeRows);
-            },
-          };
+        const data = [];
         return(
             <div className="layout common">
                 <div className="error">
@@ -166,17 +115,23 @@ import * as Actions from 'actions';
                     <ul className="data-info err-info">
                         <li>
                             <span>批次号：</span>
-                            <Input onChange = {this.onInputChange.bind(this,"batchNo")}/>
+                            <Input 
+                                placeholder="请输入批次号"
+                                onChange = {this.onInputChange.bind(this,"batchNo")}
+                            />
                         </li>
                         <li>
                             <span>公司名称：</span>
-                            <Input onChange = {this.onInputChange.bind(this,"companyName")}/>
+                            <Input 
+                                placeholder="请输入公司名称"
+                                onChange = {this.onInputChange.bind(this,"companyName")}
+                            />
                         </li>
                         <li>
                             <span>处理结果：</span>
                             <Select 
                                 className="resultSelect"
-                                defaultValue="选择" 
+                                placeholder="请选择" 
                                 style={{width:180}}
                                 onChange = {this.onSelectChange}
                             >
@@ -190,9 +145,15 @@ import * as Actions from 'actions';
                     </ul>
                     <div className="date">
                         <span className="date-title">代发申请日期：</span>
-                        <DatePicker onChange={this.onDateChange.bind(this,"startDate")}/>
+                        <DatePicker 
+                            placeholder="请选择开始日期"
+                            onChange={this.onDateChange.bind(this,"startDate")}
+                        />
                         <span className="date-to">To</span>
-                        <DatePicker onChange={this.onDateChange.bind(this,"endDate")}/>
+                        <DatePicker 
+                            placeholder="请选择结束日期"
+                            onChange={this.onDateChange.bind(this,"endDate")}
+                        />
                         <Button 
                             className="query-btn" 
                             type="primary"
@@ -209,7 +170,6 @@ import * as Actions from 'actions';
                     </div>
                     <div className="err-table">
                         <Table 
-                            rowSelection={rowSelection} 
                             columns={columns} 
                             dataSource={data} 
                             bordered={true}
@@ -225,7 +185,7 @@ const mapStateToProps = state => ({
     
 })
 const mapDispatchToProps = dispatch => ({
-    searchErrorList: bindActionCreators(Actions.ErrorActions.searchErrorList, dispatchEvent)
+    searchErrorList: bindActionCreators(Actions.ErrorActions.searchErrorList, dispatch)
 })
 
 export default connect(

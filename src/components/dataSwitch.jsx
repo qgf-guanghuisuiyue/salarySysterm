@@ -127,7 +127,7 @@ import * as Actions from 'actions';
                 <div className="error handle">
                     <h2 className="File-title">数据转换列表查询</h2>
                     <ul className="data-info handle-info">
-                        <li>
+                        <li style={{marginLeft:100,marginRight:20}}>
                             <span>公司名称：</span>
                             <Input 
                                 className="input" 
@@ -136,7 +136,7 @@ import * as Actions from 'actions';
                                 onChange = {this.onChange}
                             />
                         </li>
-                        <li className="date handle-date">
+                        <li className="date handle-date" style={{width:800,paddingLeft:0}}>
                             <span className="date-title">代发申请日期：</span>
                             <DatePicker
                                 placeholder="开始日期" 
@@ -150,6 +150,7 @@ import * as Actions from 'actions';
                             <Button 
                                 className="query-btn" 
                                 type="primary"
+                                style={{left:120}}
                                 onClick={this.queryList}
                             >
                                 查询

@@ -17,8 +17,5 @@ module.exports = [
     }, {
         title: '状态',
         dataIndex: 'status',
-    }, {
-        title: '',
-        dataIndex: '',
     }
 ]

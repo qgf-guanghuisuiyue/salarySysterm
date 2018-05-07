@@ -24,7 +24,11 @@ import {
     SHOW_SAVE_USERINFO,
     HIDE_SAVE_USERINFO,
     SET_RESETUSERINFO_TRUE,
-    SET_RESETUSERINFO_FALSE
+    SET_RESETUSERINFO_FALSE,
+    SET_RELOADPWD_FALSE,
+    SHOW_RELOADPWD,
+    HIDE_RELOADPWD,
+    SET_RELOADPWD_TRUE
 } from '../constants/system';
 
 const initialState = {
@@ -50,6 +54,10 @@ const initialState = {
     saveUserInfoModal: {
         saveUserInfoVisible: false,
         resetForm: false        
+    },
+    reloadPwdModal: {
+        reloadPwdVisible: false,
+        resetForm: false,
     },
     logList:{},
     roleList:{}
@@ -96,7 +104,7 @@ export default function upload(state = initialState,actions){
         case USERINFO_LIST_DONE: 
             return {...state, userInfoList: {...state.userInfoList, isLoading: false}};
         case GET_USERINFO_LIST: 
-            return {...state, userInfoList: {...state.userInfoList, list: actions.list}};
+            return {...state, userInfoList: {...state.userInfoList, userInfoData: actions.userInfoData}};
         case SHOW_ADDACCESS_MODAL: 
             return {...state, isAddAccessModal: true};
         case HIDE_ADDACCESS_MODAL: 
@@ -108,7 +116,15 @@ export default function upload(state = initialState,actions){
         case SET_RESETUSERINFO_TRUE:
             return {...state, saveUserInfoModal: {...state.saveUserInfoModal, resetForm: true}};
         case SET_RESETUSERINFO_FALSE:
-            return {...state, saveUserInfoModal: {...state.saveUserInfoModal, resetForm: false}};             
+            return {...state, saveUserInfoModal: {...state.saveUserInfoModal, resetForm: false}};  
+        case SHOW_RELOADPWD:
+            return {...state, reloadPwdModal: {...state.reloadPwdModal, reloadPwdVisible: true}};
+        case HIDE_RELOADPWD:
+            return {...state, reloadPwdModal: {...state.reloadPwdModal, reloadPwdVisible: false}};  
+        case SET_RELOADPWD_TRUE:
+            return {...state, reloadPwdModal: {...state.reloadPwdModal, resetForm: true}};
+        case SET_RELOADPWD_FALSE:
+            return {...state, reloadPwdModal: {...state.reloadPwdModal, resetForm: false}};                
         default: 
             return state;
     }

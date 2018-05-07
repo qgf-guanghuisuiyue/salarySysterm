@@ -7,6 +7,7 @@ import DataSwitch from './dataSwitch';
 import LeadingResult from './leadingResult';
 import Handle from './handle';
 import System from './system';
+import File from './file';
 
 const rootReducer = combineReducers({
     DataSwitch,
@@ -17,7 +18,8 @@ const rootReducer = combineReducers({
     Apply,
     DataSwitch,
     Handle,
-    System
+    System,
+    File
 });
 
 export default rootReducer;

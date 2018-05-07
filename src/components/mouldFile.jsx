@@ -6,7 +6,7 @@ import columns from 'data/table-columns/mouldFile';
 import SaveTempModalComponent from './mouldFile/saveTempModal';
 
 import {AjaxByToken} from 'utils/ajax';
-import {Input, Button, Table} from 'antd';
+import {Input, Button, Table, notification} from 'antd';
 
 //redux
 import {bindActionCreators} from 'redux';
@@ -17,12 +17,24 @@ import * as Actions from 'actions';
  class MouldFile extends React.Component{
     
     state = {
-      corpCode: '' //公司名称
+      corpCode: '', //公司名称
+      page: 1,
+      selectedList: [],
     }
 
     componentDidMount() {
         const  {corpCode} = this.state;
         this.props.getTempList({corpCode});
+    }
+
+    _getColumns() {
+        columns[0].render = (text,record,index) => {           
+            return  <a>{index+1+(this.state.page-1)*5}</a>
+        }
+        columns[columns.length-2].render = (text,record,index) => {           
+            return  <span>{record.createdate == null ? '': moment(record.createdate).format('YYYYMMDD')}</span>
+        }
+        return columns;
     }
 
     onHandleSearch = (field, e) => {
@@ -36,21 +48,43 @@ import * as Actions from 'actions';
         showSaveTempModal(getCorpList);        
     }
 
+    tempStop = () => {
+        const {selectedList, status} = this.state;
+        const {tempStop, getTempList} = this.props;
+        if(selectedList.length == 0) {
+            notification.warning({
+                message: '警告',
+                description: '请选择参数',
+                style:{top:40}
+            });
+        }else if(selectedList.length > 1) {
+            notification.warning({
+                message: '警告',
+                description: '一次只能删除一个参数',
+                style:{top:40}
+            });
+        } else {
+            tempStop({ID: selectedList[0].id, status: selectedList[0].status}, getTempList)
+        }
+    }
+
+
+    
+    rowSelection = (selectedRowKeys, selectedRows) => {
+        let selectedList = selectedRows.map((item,index) => {
+            return item;
+        })
+        this.setState({selectedList})
+    }
+
+
     render(){
         const {corpCode} = this.state;
         const {temp, getTempList, corpData} = this.props;
         const {tempData} = temp;
           // 通过 rowSelection 对象表明需要行选择
           const rowSelection = {
-            onChange(selectedRowKeys, selectedRows) {
-              console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
-            onSelect(record, selected, selectedRows) {
-              console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-              console.log(selected, selectedRows, changeRows);
-            },
+            onChange: this.rowSelection
           };
         return(
             <div className="layout common">
@@ -80,11 +114,12 @@ import * as Actions from 'actions';
                             <Button 
                                 icon="delete"
                                 type="primary"
-                            >停用</Button>
+                                onClick={this.tempStop}
+                            >停用/启用</Button>
                         </div>
                         <Table 
                            rowSelection={rowSelection} 
-                           columns={columns} 
+                           columns={this._getColumns()} 
                            dataSource={tempData.list} 
                            bordered={true}
                         />
@@ -103,6 +138,7 @@ const mapDispatchToProps = dispatch => ({
       tempSave: bindActionCreators(Actions.SystemActions.tempSave, dispatch),
       showSaveTempModal: bindActionCreators(Actions.SystemActions.showSaveTempModal, dispatch),
       getCorpList: bindActionCreators(Actions.SystemActions.getCorpList, dispatch),
+      tempStop: bindActionCreators(Actions.SystemActions.tempStop, dispatch),
 })
 
 export default connect(

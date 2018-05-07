@@ -7,6 +7,7 @@ import * as LeadingResultActions from './leadingResult';
 import * as HandleActions from './handle';
 import * as ErrorActions from './error';
 import * as SystemActions from './system';
+import * as FileActions from './file';
 
 module.exports = {
     loginActions,
@@ -17,5 +18,6 @@ module.exports = {
     LeadingResultActions,
     HandleActions,
     ErrorActions,
-    SystemActions
+    SystemActions,
+    FileActions
 }

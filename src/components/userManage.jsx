@@ -4,9 +4,10 @@ import moment from 'moment';
 import {Link} from 'react-router';
 import columns from 'data/table-columns/userManage';
 import SaveUserManageModalComponent from './userManage/saveUserManageModal';
+import ReloadPwdModalComponent from './userManage/reloadPwdModal';
 
 import {AjaxByToken} from 'utils/ajax';
-import {Input, Button, Table} from 'antd';
+import {Input, Button, Table,notification} from 'antd';
 
 //redux
 import {bindActionCreators} from 'redux';
@@ -19,7 +20,10 @@ import * as Actions from 'actions';
       userName: '',
       phone: '',
       corpCode: '',
-      page: 1
+      page: 1,
+      selectedRowList: [],
+      user_id: '',
+      user_name: ''
     }
 
     params = {
@@ -68,6 +72,57 @@ import * as Actions from 'actions';
         showSaveUserInfoModal(getCorpList);
     }
 
+    userInfoDelete = () => {
+        const {selectedRowList} = this.state;
+        const {userInfoDelete, getUserInfoList} = this.props;
+        if(selectedRowList.length == 0) {
+            notification.warning({
+                message: '警告',
+                description: '请选择参数',
+                style:{top:40}
+            });
+        }else if(selectedRowList.length > 1) {
+            notification.warning({
+                message: '警告',
+                description: '一次只能删除一个用户',
+                style:{top:40}
+            });
+        } else {
+            userInfoDelete({userID: selectedRowList[0].userid}, getUserInfoList)
+        }
+    }
+
+    rowSelection = (selectedRowKeys, selectedRows) => {
+        let selectedRowList = selectedRows.map((item,index) => {
+            return item;
+        })
+        this.setState({selectedRowList})
+    }
+
+    showReloadpwdModal = () => {
+        const {selectedRowList} = this.state;
+        const {showReloadpwdModal, getUserInfoList} = this.props;
+        if(selectedRowList.length == 0) {
+            notification.warning({
+                message: '警告',
+                description: '请选择参数',
+                style:{top:40}
+            });
+        }else if(selectedRowList.length > 1) {
+            notification.warning({
+                message: '警告',
+                description: '一次只能更改一个用户',
+                style:{top:40}
+            });
+        } else {
+            this.setState({
+                user_name: selectedRowList[0].username,
+                user_id: selectedRowList[0].userid,
+            })
+            showReloadpwdModal(getUserInfoList);
+        }    
+    }
+
     //页码回调
     onChangePagination = (page) => {
       this.setState({
@@ -90,18 +145,12 @@ import * as Actions from 'actions';
             userName,
             phone,
             corpCode,
+            user_id,
+            user_name
           } = this.state;
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
-          onChange(selectedRowKeys, selectedRows) {
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-          },
-          onSelect(record, selected, selectedRows) {
-            console.log(record, selected, selectedRows);
-          },
-          onSelectAll(selected, selectedRows, changeRows) {
-            console.log(selected, selectedRows, changeRows);
-          },
+          onChange: this.rowSelection
         };
         return(
             <div className=" layout common">
@@ -152,11 +201,13 @@ import * as Actions from 'actions';
                                 icon="delete" 
                                 type="primary"
                                 style={{marginRight: 50}}
+                                onClick={this.userInfoDelete}
                             >删除</Button>
                             <Button 
                                 icon="retweet" 
                                 type="primary"
                                 style={{marginRight: 50}}
+                                onClick={this.showReloadpwdModal}
                             >重置密码</Button>
                         </div>
                         <Table 
@@ -174,6 +225,10 @@ import * as Actions from 'actions';
                     </div>
                 </div>
                 <SaveUserManageModalComponent></SaveUserManageModalComponent>
+                <ReloadPwdModalComponent 
+                   user_id={user_id}
+                   user_name={user_name}
+                ></ReloadPwdModalComponent>
             </div>
         )
     }
@@ -185,6 +240,8 @@ const mapDispatchToProps = dispatch => ({
   getUserInfoList: bindActionCreators(Actions.SystemActions.getUserInfoList, dispatch),
   showSaveUserInfoModal: bindActionCreators(Actions.SystemActions.showSaveUserInfoModal, dispatch),
   getCorpList: bindActionCreators(Actions.SystemActions.getCorpList, dispatch),
+  userInfoDelete: bindActionCreators(Actions.SystemActions.userInfoDelete, dispatch),
+  showReloadpwdModal: bindActionCreators(Actions.SystemActions.showReloadpwdModal, dispatch),
 })
 
 export default connect(

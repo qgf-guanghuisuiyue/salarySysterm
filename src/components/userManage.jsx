@@ -7,7 +7,7 @@ import SaveUserManageModalComponent from './userManage/saveUserManageModal';
 import ReloadPwdModalComponent from './userManage/reloadPwdModal';
 
 import {AjaxByToken} from 'utils/ajax';
-import {Input, Button, Table,notification} from 'antd';
+import {Input, Button, Table,notification, Select} from 'antd';
 
 //redux
 import {bindActionCreators} from 'redux';
@@ -28,7 +28,7 @@ import * as Actions from 'actions';
 
     params = {
       skip: 0,
-      count: 5
+      count: 10
     }
 
     componentDidMount() {
@@ -37,7 +37,7 @@ import * as Actions from 'actions';
 
     _getColumns() {
       columns[0].render = (text,record,index) => {           
-          return  <a>{index+1+(this.state.page-1)*5}</a>
+          return  <a>{index+1+(this.state.page-1)*10}</a>
       }
       columns[columns.length-3].render = (text,record,index) => {           
           return  <span>{record.createdate == null ? '': moment(record.createdate).format('YYYYMMDD')}</span>
@@ -57,6 +57,12 @@ import * as Actions from 'actions';
         })
     }
 
+    onHandleChange = (field, value) => {
+        this.setState({
+            [field]: value
+        })
+    }
+
     handleQuery = () => {
         const {
             userName,
@@ -64,7 +70,7 @@ import * as Actions from 'actions';
             corpCode,
           } = this.state;
         const {getUserInfoList} = this.props;
-        getUserInfoList({count:5,skip:this.params.skip, userName, phone, corpCode})
+        getUserInfoList({count:10,skip:this.params.skip, userName, phone, corpCode})
     }
 
     showSaveUserInfoModal = () => {
@@ -134,12 +140,12 @@ import * as Actions from 'actions';
         corpCode,
       } = this.state;
       const {getUserInfoList} = this.props;
-      this.params.skip = (page -1)*5;
+      this.params.skip = (page -1)*10;
       this.handleQuery()
     }
     
     render(){
-        const {userInfoList} = this.props;
+        const {userInfoList, corpData} = this.props;
         const {userInfoData} = userInfoList;
         const {
             userName,
@@ -152,6 +158,7 @@ import * as Actions from 'actions';
         const rowSelection = {
           onChange: this.rowSelection
         };
+        let list = corpData.list?corpData.list:[];
         return(
             <div className=" layout common">
                 {/* 用户管理 */}
@@ -176,11 +183,16 @@ import * as Actions from 'actions';
                         </div>
                         <div className="inline-block">
                             <span className="title">公司名称：</span>
-                            <Input 
-                                style={{width: 200}}
-                                value={corpCode}
-                                onChange={this.handleChange.bind(this, 'corpCode')}
-                            />
+                            <Select style={{width: 200}}
+                                    placeholder='请选择公司名称'
+                                    onChange={this.onHandleChange.bind(this, 'corpcode')}
+                            >
+                                {
+                                    list.map( (item,index)=>{
+                                        return <Option key={index} value={item.corpCode}>{item.corpName}</Option>
+                                    })
+                                }
+                            </Select>
                         </div>
                         <Button 
                             type="primary" 
@@ -215,8 +227,9 @@ import * as Actions from 'actions';
                           columns={this._getColumns()} 
                           dataSource={userInfoData.list} 
                           bordered={true}
+                          size={"middle"}
                           pagination={{
-                            defaultPageSize:5,
+                            defaultPageSize:10,
                             total: userInfoData.sum,
                             onChange: this.onChangePagination,
                             showTotal:total => `共 ${userInfoData.sum == 0 ? 0 : userInfoData.sum} 条数据`
@@ -235,6 +248,7 @@ import * as Actions from 'actions';
 }
 const mapStateToProps = state => ({
   userInfoList: state.System.userInfoList,
+  corpData: state.System.corpData,
 })
 const mapDispatchToProps = dispatch => ({
   getUserInfoList: bindActionCreators(Actions.SystemActions.getUserInfoList, dispatch),

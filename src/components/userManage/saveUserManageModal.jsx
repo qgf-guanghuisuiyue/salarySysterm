@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import moment from 'moment';
+import md5 from 'blueimp-md5';
 import {Link} from 'react-router';
 
 import {  Button , Tooltip , Select ,Input, Modal, message} from 'antd';
@@ -83,7 +84,7 @@ import * as Actions from 'actions';
             message.info('请填写姓名');
             return;
         }
-        userInfoSave({usertype, role, corpcode, loginname, phone, pwd, username}, getUserInfoList)
+        userInfoSave({usertype, role, corpcode, loginname, phone, pwd: md5(pwd), username}, getUserInfoList)
     }
 
     render(){ 
@@ -129,7 +130,7 @@ import * as Actions from 'actions';
                             >
                                 {
                                     list.map( (item,index)=>{
-                                        return <Option key={index} value={item.corpName}>{item.corpName}</Option>
+                                        return <Option key={index} value={item.corpCode}>{item.corpName}</Option>
                                     })
                                 }
                             </Select>

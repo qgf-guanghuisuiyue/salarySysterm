@@ -6,7 +6,7 @@ import columns from 'data/table-columns/mouldFile';
 import SaveTempModalComponent from './mouldFile/saveTempModal';
 
 import {AjaxByToken} from 'utils/ajax';
-import {Input, Button, Table, notification} from 'antd';
+import {Input, Button, Table, notification, Select} from 'antd';
 
 //redux
 import {bindActionCreators} from 'redux';
@@ -22,9 +22,16 @@ import * as Actions from 'actions';
       selectedList: [],
     }
 
+    params = {
+        skip: 0,
+        count: 10
+    }
+
     componentDidMount() {
         const  {corpCode} = this.state;
-        this.props.getTempList({corpCode});
+        const  {getTempList, getCorpList} = this.props;
+        getTempList({corpCode, count:10,skip:this.params.skip });
+        getCorpList()
     }
 
     _getColumns() {
@@ -37,15 +44,14 @@ import * as Actions from 'actions';
         return columns;
     }
 
-    onHandleSearch = (field, e) => {
-      this.setState({
-        [field]: e.target.value
-      })
+    onHandleChange = (field, value) => {
+        this.setState({
+            [field]: value
+        })
     }
 
     saveTemp = () => {
-        const {getCorpList, showSaveTempModal} = this.props;
-        showSaveTempModal(getCorpList);        
+        this.props.showSaveTempModal();        
     }
 
     tempStop = () => {
@@ -77,10 +83,24 @@ import * as Actions from 'actions';
         this.setState({selectedList})
     }
 
+    //页码回调
+    onChangePagination = (page) => {
+        this.setState({
+            page
+        });
+        const {
+          corpCode,
+        } = this.state;
+        const {getTempList} = this.props;
+        this.params.skip = (page -1)*10;
+        this.getTempList({count:10,skip:this.params.skip, corpCode})
+    }
+
 
     render(){
         const {corpCode} = this.state;
         const {temp, getTempList, corpData} = this.props;
+        let list = corpData.list?corpData.list:[];
         const {tempData} = temp;
           // 通过 rowSelection 对象表明需要行选择
           const rowSelection = {
@@ -94,11 +114,16 @@ import * as Actions from 'actions';
                     <div className="handle-block">
                         <div className="inline-block">
                             <span className="title">公司名称：</span>
-                            <Input 
-                               style={{width: 200}}
-                               value={corpCode}
-                               onChange={this.onHandleSearch.bind(this, 'corpCode')}
-                            />
+                            <Select style={{width: 200}}
+                                    placeholder='请选择公司名称'
+                                    onChange={this.onHandleChange.bind(this, 'corpCode')}
+                            >
+                                {
+                                    list.map( (item,index)=>{
+                                        return <Option key={index} value={item.corpCode}>{item.corpName}</Option>
+                                    })
+                                }
+                            </Select>
                         </div>
                         <Button type="primary" style={{marginLeft: 20}}>查询</Button>
                     </div>
@@ -122,6 +147,12 @@ import * as Actions from 'actions';
                            columns={this._getColumns()} 
                            dataSource={tempData.list} 
                            bordered={true}
+                           pagination={{
+                            defaultPageSize:10,
+                            total: tempData.sum,
+                            onChange: this.onChangePagination,
+                            showTotal:total => `共 ${tempData.sum == 0 ? 0 : tempData.sum} 条数据`
+                          }}
                         />
                     </div>
                 </div>
@@ -132,6 +163,7 @@ import * as Actions from 'actions';
 }
 const mapStateToProps = state => ({
       temp: state.System.temp,
+      corpData: state.System.corpData,
 })
 const mapDispatchToProps = dispatch => ({
       getTempList: bindActionCreators(Actions.SystemActions.getTempList, dispatch),

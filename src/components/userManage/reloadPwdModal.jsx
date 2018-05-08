@@ -38,7 +38,7 @@ import * as Actions from 'actions';
     userInfoReloadpwd = () => {
         const {new_pwd} = this.state;
         const {userInfoReloadpwd, getUserInfoList, user_id} = this.props;
-        userInfoReloadpwd({userID: user_id, new_pwd}, getUserInfoList)
+        userInfoReloadpwd({userID: user_id, new_pwd: md5(new_pwd)}, getUserInfoList)
     }
   
 

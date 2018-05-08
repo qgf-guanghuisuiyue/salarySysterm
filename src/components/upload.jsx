@@ -5,7 +5,7 @@ import columns from 'data/table-columns/upload';
 import DetailModalComponent from './upload/detailModal';
 
 import {AjaxByToken} from 'utils/ajax';
-import {Input, Upload, Button, DatePicker, Table, Modal, notification} from 'antd';
+import {Input, Upload, Button, DatePicker, Table, Modal, notification, Select} from 'antd';
 
 //redux
 import {bindActionCreators} from 'redux';
@@ -22,17 +22,19 @@ import * as Actions from 'actions';
         exptPayDate: null,
         record: {},
         page: 1,
-        fileName: ''
+        fileName: '',
+        corpCode: ''
     }
      
 
     params = {
         skip: 0,
-        count: 5
+        count: 10
     }
 
     componentDidMount() {
-        this.props.getApplyList(this.params)
+        this.props.getApplyList(this.params);
+        this.props.getCorpList()
     }
 
     componentWillReceiveProps(nextProps) {
@@ -95,7 +97,7 @@ import * as Actions from 'actions';
     }
 
     uploadDemo = () => {
-        let {fileList, exptPayDate} = this.state,
+        let {fileList, exptPayDate, corpCode} = this.state,
             {payAgentApply, getApplyList} = this.props;
         // 判断是否上传了文件
         if(fileList.length === 0){
@@ -111,12 +113,18 @@ import * as Actions from 'actions';
         this.setState({
             fileName: data
         })
-        payAgentApply({"fileName":data,"exptPayDate":exptPayDate}, getApplyList)
+        payAgentApply({"fileName":data,"exptPayDate":exptPayDate, corpCode}, getApplyList)
     }
 
     onDateChange = (date, dateString) => {
         this.setState({
             exptPayDate: moment(date).format('YYYYMMDD')
+        })
+    }
+
+    onHandleChange = (field, value) => {
+        this.setState({
+            [field]: value
         })
     }
     
@@ -130,7 +138,7 @@ import * as Actions from 'actions';
  
     getColumns = () => {
         columns[0].render = (text,record,index) => {           
-            return  <Link>{index+1+(this.state.page-1)*5}</Link>
+            return  <Link>{index+1+(this.state.page-1)*10}</Link>
         }
         columns[columns.length-2].render = (text,record,index) => {
             return  <span>{record.status===-1?"撤销":record.status===0?"全部成功":record.status===2?"待处理":record.status===3?"处理中":"拒绝处理"}</span>
@@ -149,8 +157,8 @@ import * as Actions from 'actions';
         const {record} = this.state;
         const {batchno} = record;
         const {getApplyList} = this.props;
-        this.params.skip = page * 5 - 5;
-        getApplyList({batchNo:batchno,count:5,skip:this.params.skip})
+        this.params.skip = page * 10 - 10;
+        getApplyList({batchNo:batchno,count:10,skip:this.params.skip})
     }
     
     onSelectChange = (selectedRowKeys, selectedRows) => {
@@ -193,17 +201,31 @@ import * as Actions from 'actions';
 
     render(){
         const {fileList,error,errorMsg, record} = this.state;
-        const {applyList, detailList, payAgentApplyDetaillist} = this.props;
+        const {applyList, detailList, payAgentApplyDetaillist, corpData} = this.props;
         const {applyData} = applyList;
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
            onChange: this.onSelectChange,
-       };
+        };
+        let list = corpData.list?corpData.list:[];
         return(
             <div className="layout common">
                 <div className="upLoad">
                     <h2 className="File-title">上传文件</h2>
                     <div className="handle-block">
+                        <div className="inline-block">
+                            <span className="title">公司名称：</span>
+                            <Select style={{width: 200}}
+                                    placeholder='请选择公司名称'
+                                    onChange={this.onHandleChange.bind(this, 'corpCode')}
+                            >
+                                {
+                                    list.map( (item,index)=>{
+                                        return <Option key={index} value={item.corpCode}>{item.corpName}</Option>
+                                    })
+                                }
+                            </Select>
+                        </div>
                         <div className="inline-block">
                             <span className="title">文件名:</span>
                             <Upload 
@@ -285,7 +307,8 @@ import * as Actions from 'actions';
 }
 const mapStateToProps = state => ({
     isUploadSucc: state.Apply.isUploadSucc,
-    applyList: state.Apply.applyList
+    applyList: state.Apply.applyList,
+    corpData: state.System.corpData,
 })
 const mapDispatchToProps = dispatch => ({
     downloadExcel: bindActionCreators(Actions.UploadActions.downloadExcel, dispatch),
@@ -296,6 +319,7 @@ const mapDispatchToProps = dispatch => ({
     showDetailModal: bindActionCreators(Actions.ApplyActions.showDetailModal, dispatch),
     payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),   
     removeUploadFIle: bindActionCreators(Actions.FileActions.removeUploadFIle, dispatch), 
+    getCorpList: bindActionCreators(Actions.SystemActions.getCorpList, dispatch),
 })
 
 export default connect(

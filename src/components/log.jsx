@@ -156,6 +156,7 @@ import * as Actions from 'actions';
                             dataSource={logList.list} 
                             bordered={true}
                             loading={isLogLoading}
+                            size={"middle"}
                             pagination={{
                                 defaultPageSize: 10,
                                 total: logList.sum,

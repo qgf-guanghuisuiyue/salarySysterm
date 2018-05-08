@@ -46,6 +46,12 @@ export const AjaxByPost = (uri, data) => {
                         description:msg,
                         style:{top:40}
                     });
+                }else if(msg === "权限不足" && code === '000008'){
+                    notification.warning({
+                        message:"错误信息",
+                        description:msg,
+                        style:{top:40}
+                    });
                 }else{
                     notification.error({
                         message:"错误信息",

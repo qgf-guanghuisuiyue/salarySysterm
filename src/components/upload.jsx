@@ -33,8 +33,10 @@ import * as Actions from 'actions';
     }
 
     componentDidMount() {
-        this.props.getApplyList(this.params);
-        this.props.getCorpList();
+        const {getApplyList, getFileNames, getCorpList} = this.props;
+        getApplyList(this.params);
+        getCorpList();
+        getFileNames();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -110,9 +112,6 @@ import * as Actions from 'actions';
             return ;
         }
         const {data} = response;
-        this.setState({
-            fileName: data
-        })
         payAgentApply({"fileName":data,"exptPayDate":exptPayDate, corpCode}, getApplyList)
     }
 
@@ -201,19 +200,28 @@ import * as Actions from 'actions';
 
     downloadExcel = () => {
         const {fileName} = this.state;
-        const {downloadExcel} = this.props;
-        downloadExcel(fileName)
+        if(!fileName){
+            notification.warning({
+                message: '请选择模板文件',
+                style:{top:40}
+            });
+        }else {
+            const {downloadExcel} = this.props;
+            downloadExcel(fileName)
+        }
+        
     }
 
     render(){
         const {fileList,error,errorMsg, record} = this.state;
-        const {applyList, detailList, payAgentApplyDetaillist, corpData} = this.props;
+        const {applyList, detailList, payAgentApplyDetaillist, corpData, fileNameData} = this.props;
         const {applyData} = applyList;
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
            onChange: this.onSelectChange,
         };
         let list = corpData.list?corpData.list:[];
+        let fileNameList = fileNameData.list?fileNameData.list:[];
         return(
             <div className="layout common">
                 <div className="upLoad">
@@ -273,8 +281,22 @@ import * as Actions from 'actions';
                             }
                     </div>
                     <div className="handle-block">
-                        <span className="title">模版文件下载：</span>
-                        <Link onClick={this.downloadExcel}>模板.xls</Link>
+                        <span className="title">选择模版文件下载：</span>
+                        <Select style={{width: 300}}
+                                placeholder='选择模版文件'
+                                onChange={this.onHandleChange.bind(this, 'fileName')}
+                        >
+                            {
+                                fileNameList.map( (item,index)=>{
+                                    return <Option key={index} value={item}>{item}</Option>
+                                })
+                            }
+                        </Select>
+                        <Button 
+                            type="primary"
+                            style={{marginLeft: 50}}
+                            onClick={this.downloadExcel}
+                        >下载</Button>
                     </div>
                     <h2 className="File-title">列表</h2>
                     <div className="table-area">
@@ -325,6 +347,7 @@ const mapStateToProps = state => ({
     applyList: state.Apply.applyList,
     corpData: state.System.corpData,
     isVisiable: state.Upload.isPayAgentCommitModalVisiable,
+    fileNameData: state.Upload.fileNameData,
 })
 const mapDispatchToProps = dispatch => ({
     downloadExcel: bindActionCreators(Actions.UploadActions.downloadExcel, dispatch),
@@ -338,6 +361,7 @@ const mapDispatchToProps = dispatch => ({
     getCorpList: bindActionCreators(Actions.SystemActions.getCorpList, dispatch),
     showPayAgentCommitModal: bindActionCreators(Actions.UploadActions.showPayAgentCommitModal, dispatch),
     hidePayAgentCommitModal: bindActionCreators(Actions.UploadActions.hidePayAgentCommitModal, dispatch),
+    getFileNames: bindActionCreators(Actions.UploadActions.getFileNames, dispatch),
 })
 
 export default connect(

@@ -78,7 +78,7 @@ export default class LoginPage extends Component {
             return ;
         }
     }
-    componentWillUpdate(nextProps,nextState) {
+    componentWillReceiveProps(nextProps) {
         if(nextState.errMsg !== ''){
             setTimeout(()=>{
                 this.setState({ 

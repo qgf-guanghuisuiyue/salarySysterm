@@ -27,7 +27,7 @@ const initialState = {
     acceptDetailVisible: false
 };
 
-export default function upload(state = initialState,actions){
+export default function apply(state = initialState,actions){
     switch(actions.type){
         case UPLOAD_START: 
             return {...state, isUploadSucc: false};

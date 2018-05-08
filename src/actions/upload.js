@@ -3,11 +3,14 @@ import {AjaxByPost} from 'utils/ajax';
 import axios from 'axios';
 import store from 'store';
 
+const SHOW_PAY_AGENT_COMMIT_MODAL = { type: types.SHOW_PAY_AGENT_COMMIT_MODAL };
+const HIDE_PAY_AGENT_COMMIT_MODAL = { type: types.HIDE_PAY_AGENT_COMMIT_MODAL };
+
 //模板下载
 export const downloadExcel = (fileName) => (dispatch, getState) => {
     const token = store.get('token');
     axios({
-        url: `/api/web/file/downloadFile`,
+        url: `/api/web/file/downloadTemplate`,
         method: 'get',
         responseType: 'arraybuffer',
         params: {
@@ -22,3 +25,11 @@ export const downloadExcel = (fileName) => (dispatch, getState) => {
         console.log(error)
     });
 }
+
+export const showPayAgentCommitModal = () => (dispatch,getState) => {
+    dispatch(SHOW_PAY_AGENT_COMMIT_MODAL);
+}
+export const hidePayAgentCommitModal = () => (dispatch,getState) => {
+    dispatch(HIDE_PAY_AGENT_COMMIT_MODAL);
+}
+

@@ -58,7 +58,9 @@ export const payAgentCommit = (batchNoList) => (ispatch, getState) => {
         },
         data: batchNoList
     }).then(res => {
-        console.log(res)
+        notification.success({
+                message: "提交成功"
+        })
     }, err => {
         console.log(err)
     })

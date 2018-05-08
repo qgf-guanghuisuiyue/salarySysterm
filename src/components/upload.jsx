@@ -34,7 +34,7 @@ import * as Actions from 'actions';
 
     componentDidMount() {
         this.props.getApplyList(this.params);
-        this.props.getCorpList()
+        this.props.getCorpList();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -168,16 +168,22 @@ import * as Actions from 'actions';
         this.setState({batchNoList})
     }
 
-    handlePayAgentCommit = () => {
+    handleOk = () => {
+        const {payAgentCommit, hidePayAgentCommitModal} = this.props;
         const {batchNoList} = this.state;
+        hidePayAgentCommitModal()
         if(batchNoList.length == 0) {
             notification.warning({
                 message: '请选择代发申请文件',
                 style:{top:40}
             });
         }else {
-            this.props.payAgentCommit({"batchNo":batchNoList})
+            payAgentCommit({"batchNo":batchNoList})
         }    
+    }
+
+    showPayAgentCommitModal = () => {
+        this.props.showPayAgentCommitModal();
     }
 
     handlePayAgentDel = () => {
@@ -196,7 +202,7 @@ import * as Actions from 'actions';
     downloadExcel = () => {
         const {fileName} = this.state;
         const {downloadExcel} = this.props;
-        // downloadExcel(fileName)
+        downloadExcel(fileName)
     }
 
     render(){
@@ -252,7 +258,7 @@ import * as Actions from 'actions';
                                 className="upLoad-btn upLoad-submit" type="primary"
                                 onClick={this.uploadDemo}
                             >
-                                提交
+                                上传
                             </Button>
                         </div>  
                             {error &&
@@ -282,8 +288,8 @@ import * as Actions from 'actions';
                             <Button 
                                 icon="check-circle"
                                 type="primary"
-                                onClick={this.handlePayAgentCommit}
-                            >确认代发</Button>
+                                onClick={this.showPayAgentCommitModal}
+                            >申请提交</Button>
                         </div>
                         <Table 
                             loading={applyList.isLoading}
@@ -292,7 +298,7 @@ import * as Actions from 'actions';
                             dataSource={applyData.list}
                             bordered
                             pagination={{
-                                defaultPageSize:5,
+                                defaultPageSize:10,
                                 total: applyData.sum,
                                 onChange: this.onChangePagination,
                                 showTotal:total => `共 ${applyData.sum == 0 ? 0 : applyData.sum} 条数据`
@@ -301,6 +307,15 @@ import * as Actions from 'actions';
                     </div>
                 </div>
                 <DetailModalComponent record={record}  payAgentApplyDetaillist={payAgentApplyDetaillist}/>
+                <Modal
+                    title={<h2>确认提交</h2>}
+                    wrapClassName="vertical-center-modal"
+                    visible={this.props.isVisiable}
+                    onCancel={() => this.props.hidePayAgentCommitModal()}
+                    onOk={this.handleOk}
+                >
+                  <p>请确认是否提交？</p>
+                </Modal>
             </div>
         )
     }
@@ -309,6 +324,7 @@ const mapStateToProps = state => ({
     isUploadSucc: state.Apply.isUploadSucc,
     applyList: state.Apply.applyList,
     corpData: state.System.corpData,
+    isVisiable: state.Upload.isPayAgentCommitModalVisiable,
 })
 const mapDispatchToProps = dispatch => ({
     downloadExcel: bindActionCreators(Actions.UploadActions.downloadExcel, dispatch),
@@ -320,6 +336,8 @@ const mapDispatchToProps = dispatch => ({
     payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),   
     removeUploadFIle: bindActionCreators(Actions.FileActions.removeUploadFIle, dispatch), 
     getCorpList: bindActionCreators(Actions.SystemActions.getCorpList, dispatch),
+    showPayAgentCommitModal: bindActionCreators(Actions.UploadActions.showPayAgentCommitModal, dispatch),
+    hidePayAgentCommitModal: bindActionCreators(Actions.UploadActions.hidePayAgentCommitModal, dispatch),
 })
 
 export default connect(

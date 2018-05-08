@@ -5,12 +5,22 @@ import {Modal} from 'antd';
 const SHOW_LEADINGFILE_MODAL = {type:types.SHOW_LEADINGFILE_MODAL};
 const HIDE_LEADINGFILE_MODAL = {type:types.HIDE_LEADINGFILE_MODAL};
 const LEADING_RESULT_QUERY = {type:types.LEADING_RESULT_QUERY};
+const SHOW_UPLOAD_MODAL = {type:types.SHOW_UPLOAD_MODAL};
+const HIDE_UPLOAD_MODAL = {type:types.HIDE_UPLOAD_MODAL};
+
 
     export const showLeadingFileModal = () => (dispatch,getState) => {
         dispatch({...SHOW_LEADINGFILE_MODAL})
     }
     export const hideLeadingFileModal = () => (dispatch,getState) => {
         dispatch({...HIDE_LEADINGFILE_MODAL})
+    }
+    export const showUploadFileModal = () => (dispatch,getState) => {
+        dispatch({...SHOW_UPLOAD_MODAL})
+    }
+    export const hideUploadFileModal = (cancelFile) => (dispatch,getState) => {
+        dispatch({...HIDE_UPLOAD_MODAL});
+        cancelFile()
     }
     //导入结果列表查询
     export const leadingResultQuery = (data) => (dispatch,getState) => {
@@ -42,3 +52,20 @@ const LEADING_RESULT_QUERY = {type:types.LEADING_RESULT_QUERY};
             console.log(err)
         });
     }
+    export const upLoadFile = (data,hideUploadFileModal) => (dispatch,getState) => {
+        AjaxByToken('api/accept/payagent_importFile',{
+            head: {
+                transcode: 'C000007',
+            },
+            data: data
+        })
+        .then(res=>{
+            Notification.success({
+                message:res.msg
+            })
+            hideUploadFileModal()
+        },err=>{
+            console.log(err)
+        });
+    }
+

@@ -12,7 +12,9 @@ export const removeUploadFIle = (data) => (dispatch,getState) => {
         },
         data: data
     }).then(res => {
-        console.log(res)
+        notification.success({
+            message:res.msg
+        })
     }, err => {
         console.log(err)
     })

@@ -16,8 +16,11 @@ import * as Actions from 'actions';
     constructor(){
         super();
         this.state={
-            
+          
         }
+    }
+    showUploadFileModal = () => {
+      this.props.showUploadFileModal()
     }
     render(){
         const {isLeadingFileModal} = this.props;
@@ -95,19 +98,6 @@ import * as Actions from 'actions';
             result:"成功"
           }];
           
-          // 通过 rowSelection 对象表明需要行选择
-          const rowSelection = {
-            onChange(selectedRowKeys, selectedRows) {
-              console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
-            onSelect(record, selected, selectedRows) {
-              console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-              console.log(selected, selectedRows, changeRows);
-            },
-          };
-          
         return(
           <Modal
                 title={<h2>导入结果代发文件</h2>}
@@ -128,16 +118,15 @@ import * as Actions from 'actions';
                       <li><span>处理状态：</span><span>受理中</span></li>
                   </ul>
                   <div className="File-btn">
-                      <Button type="primary">导入结果文件</Button>
+                      <Button type="primary" onClick={this.showUploadFileModal}>导入结果文件</Button>
                   </div>
                   <div className="result-table">
                       <Table 
-                        rowSelection={rowSelection} 
-                        columns={columns} 
-                        dataSource={data} 
-                        bordered={true}
-                        scroll={{y:500}}
-                        pagination={false}
+                          columns={columns} 
+                          dataSource={data} 
+                          bordered={true}
+                          scroll={{y:500}}
+                          pagination={false}
                       />
                   </div>
               </div>
@@ -150,6 +139,7 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
   hideLeadingFileModal: bindActionCreators(Actions.LeadingResultActions.hideLeadingFileModal, dispatch),
+  showUploadFileModal: bindActionCreators(Actions.LeadingResultActions.showUploadFileModal, dispatch)
 })
 
 export default connect(

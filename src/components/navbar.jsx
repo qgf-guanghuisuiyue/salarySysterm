@@ -1,8 +1,8 @@
 import React, {PropTypes}from 'react';
-import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
 
+import store from 'store';
 import {AjaxByToken} from 'utils/ajax';
 
 import { Menu, Icon ,Tabs} from 'antd';
@@ -23,7 +23,9 @@ import * as Actions from 'actions';
      state = {
         systemBackground:"",
         applyBackground:"",
-        handleBackground:""
+        handleBackground:"",
+        name:"",
+        role:""
      }
     handleClick = (name) => { //cn
         this.props.handleClick(name)
@@ -80,10 +82,15 @@ import * as Actions from 'actions';
         const {routes} = this.props;
         const path = routes[routes.length-1].path;
         this.makeBackground(path);
+        const userInfo = store.get('userInfo');
+        this.setState({
+            name:userInfo.name,
+            role:userInfo.role
+        })
     }
     render(){
         const {page , article } = this.props;
-        const {applyBackground,handleBackground,systemBackground} = this.state;
+        const {applyBackground, handleBackground, systemBackground, name, role} = this.state;
         return(
                 <div className="homeContent">
                     <div className="header">
@@ -95,40 +102,49 @@ import * as Actions from 'actions';
                                 onClick= {this.onClick}
                                 className="menu"
                             >
-                                <SubMenu key="apply" title={<a className="subMenuBk" style={{background:`${applyBackground}`}}>代发申请&nbsp;&nbsp;∨</a>}>
                                 {
-                                    this.apply.map((item,index)=>{
-                                        const {path,name} = item;
-                                        return <Menu.Item key={index+1}>
-                                                    <Link to={path} style={{fontSize:14}} onClick={this.handleClick.bind(this,item.name)} >{item.name}</Link>
-                                               </Menu.Item>
-                                    })
+                                    (role ==="1" || role ==="2") &&
+                                    <SubMenu key="apply" title={<a className="subMenuBk" style={{background:`${applyBackground}`}}>代发申请&nbsp;&nbsp;∨</a>}>
+                                    {
+                                        this.apply.map((item,index)=>{
+                                            const {path,name} = item;
+                                            return <Menu.Item key={index+1}>
+                                                        <Link to={path} style={{fontSize:14}} onClick={this.handleClick.bind(this,item.name)} >{item.name}</Link>
+                                                </Menu.Item>
+                                        })
+                                    }
+                                    </SubMenu>
                                 }
-                                </SubMenu>
-                                <SubMenu key="handle" title={<a className="subMenuBk" style={{background:`${handleBackground}`}}>代发薪受理&nbsp;&nbsp;∨</a>}>
-                                    {
-                                        this.salaryHandle.map((item,index)=>{
-                                            const {path,name} = item;
-                                            return <Menu.Item key={index+3} >
-                                                        <Link to={path} style={{fontSize:14}} onClick={this.handleClick.bind(this,item.name)} >{item.name}</Link>
-                                                </Menu.Item>
-                                        })
-                                    }
-                                </SubMenu>
-                                <SubMenu key="basicManage" title={<a className="subMenuBk" style={{background:`${systemBackground}`}}>系统管理&nbsp;&nbsp;∨</a>}>
-                                    {
-                                        this.systemManage.map((item,index)=>{
-                                            const {path,name} = item;
-                                            return <Menu.Item key={index+7}>
-                                                        <Link to={path} style={{fontSize:14}} onClick={this.handleClick.bind(this,item.name)} >{item.name}</Link>
-                                                </Menu.Item>
-                                        })
-                                    }
-                                </SubMenu>
+                                {
+                                    (role ==="0" || role ==="2") &&
+                                    <SubMenu key="handle" title={<a className="subMenuBk" style={{background:`${handleBackground}`}}>代发薪受理&nbsp;&nbsp;∨</a>}>
+                                        {
+                                            this.salaryHandle.map((item,index)=>{
+                                                const {path,name} = item;
+                                                return <Menu.Item key={index+3} >
+                                                            <Link to={path} style={{fontSize:14}} onClick={this.handleClick.bind(this,item.name)} >{item.name}</Link>
+                                                    </Menu.Item>
+                                            })
+                                        }
+                                    </SubMenu>
+                                }
+                                {
+                                    role ==="2" &&
+                                    <SubMenu key="basicManage" title={<a className="subMenuBk" style={{background:`${systemBackground}`}}>系统管理&nbsp;&nbsp;∨</a>}>
+                                        {
+                                            this.systemManage.map((item,index)=>{
+                                                const {path,name} = item;
+                                                return <Menu.Item key={index+7}>
+                                                            <Link to={path} style={{fontSize:14}} onClick={this.handleClick.bind(this,item.name)} >{item.name}</Link>
+                                                    </Menu.Item>
+                                            })
+                                        }
+                                    </SubMenu>
+                                }
                             </Menu>
                             <ul className="userInfo">
-                                <li>用户名：邱光飞</li>
-                                <li>所属机构：上海分公司</li>
+                                <li>用户名：<span>{name}</span></li>
+                                <li>所属部门：<span>{role==="0"?"超级用户":role==="1"?"财务":role==="2" && "管理员"}</span></li>
                                 <li onClick={this.userLoginout}>
                                     注销
                                 </li>

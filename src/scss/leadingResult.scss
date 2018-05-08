@@ -46,4 +46,24 @@
             }
         }
     }
+    .fileName{
+         position: absolute;
+        // left: 500px;
+        line-height: 30px
+    }
+    .upLoadFile-btn{
+        overflow: hidden;
+        .ant-upload-list{
+            height: 30px;
+            width: 50%;
+            float: left;
+            border: 1px solid #D9D9D9;
+            margin-left: 60px;
+            margin-right: 30px;
+            .ant-upload-list-item{
+                margin-top: 2px;
+            }
+        }
+    }
+    
 }

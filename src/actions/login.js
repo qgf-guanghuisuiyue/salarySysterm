@@ -42,7 +42,9 @@ export const userLogin = (userInfo={},context) => (dispatch,getState) => {
     .then(res=>{
         dispatch(LOGIN_DONE);
         const data = pick(res.data,['token','tokenKey']);
+        const userInfo = pick(res.data,['role','name'])
         store.set('token',data);
+        store.set('userInfo',userInfo)
         context.router.push('/');
         NProgress.done();
     },err=>{
@@ -67,7 +69,8 @@ export const userLoginout = (context) => (dispatch,getState) => {
     })
     .then(res=>{
         NProgress.done();
-        store.remove('token')
+        store.remove('token');
+        store.remove('userInfo');
         context.router.push('/login'); 
     },err=>{
         NProgress.done();

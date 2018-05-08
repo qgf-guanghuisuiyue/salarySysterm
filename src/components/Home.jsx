@@ -1,9 +1,6 @@
 import React from 'react';
-import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
-
-import {AjaxByToken} from 'utils/ajax';
 
 import { Menu, Icon ,Tabs } from 'antd';
 const TabPane = Tabs.TabPane;

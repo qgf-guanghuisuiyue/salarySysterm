@@ -1,13 +1,18 @@
 import * as types from '../constants/upload';
-import {AjaxByPost} from 'utils/ajax';
+import {AjaxByToken} from 'utils/ajax';
 import axios from 'axios';
 import store from 'store';
+import FileSaver from 'file-saver';
+
+const SHOW_PAY_AGENT_COMMIT_MODAL = { type: types.SHOW_PAY_AGENT_COMMIT_MODAL };
+const HIDE_PAY_AGENT_COMMIT_MODAL = { type: types.HIDE_PAY_AGENT_COMMIT_MODAL };
+const GET_FILENAMES = { type: types.GET_FILENAMES };
 
 //模板下载
 export const downloadExcel = (fileName) => (dispatch, getState) => {
     const token = store.get('token');
     axios({
-        url: `/api/web/file/downloadFile`,
+        url: `${prefixUri}/api/web/file/downloadTemplate`,
         method: 'get',
         responseType: 'arraybuffer',
         params: {
@@ -22,3 +27,23 @@ export const downloadExcel = (fileName) => (dispatch, getState) => {
         console.log(error)
     });
 }
+
+export const showPayAgentCommitModal = () => (dispatch,getState) => {
+    dispatch(SHOW_PAY_AGENT_COMMIT_MODAL);
+}
+export const hidePayAgentCommitModal = () => (dispatch,getState) => {
+    dispatch(HIDE_PAY_AGENT_COMMIT_MODAL);
+}
+
+export const getFileNames = () => (dispatch,getState) => {
+    AjaxByToken('api/system/template/filenames', {
+        head: {
+            transcode: 'S000022',
+        },
+    }).then(res => {
+        dispatch({...GET_FILENAMES, fileNameData: res.data});
+    }, err => {
+        console.log(err)
+    })
+}
+

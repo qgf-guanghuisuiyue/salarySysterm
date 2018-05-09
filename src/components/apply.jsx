@@ -122,18 +122,6 @@ import * as Actions from 'actions';
         const {isLoading , dataSwitchList={}} = this.props,
         data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
         count = dataSwitchList.count;//总条数   
-        // 通过 rowSelection 对象表明需要行选择
-        const rowSelection = {
-            onChange(selectedRowKeys, selectedRows) {
-              console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
-            onSelect(record, selected, selectedRows) {
-              console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-              console.log(selected, selectedRows, changeRows);
-            },
-          };
         return(
             <div className="layout common">
                 {/* 申请结果查询 */}
@@ -182,7 +170,6 @@ import * as Actions from 'actions';
                     <div className="table-area">
                         <Table 
                             loading={isLoading}
-                            rowSelection={rowSelection}
                             columns={this.getColumns()}
                             dataSource={data}
                             bordered

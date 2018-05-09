@@ -33,8 +33,10 @@ import * as Actions from 'actions';
     }
 
     componentDidMount() {
-        this.props.getApplyList(this.params);
-        this.props.getCorpList()
+        const {getApplyList, getFileNames, getCorpList} = this.props;
+        getApplyList(this.params);
+        getCorpList();
+        getFileNames();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -110,9 +112,6 @@ import * as Actions from 'actions';
             return ;
         }
         const {data} = response;
-        this.setState({
-            fileName: data
-        })
         payAgentApply({"fileName":data,"exptPayDate":exptPayDate, corpCode}, getApplyList)
     }
 
@@ -168,16 +167,22 @@ import * as Actions from 'actions';
         this.setState({batchNoList})
     }
 
-    handlePayAgentCommit = () => {
+    handleOk = () => {
+        const {payAgentCommit, hidePayAgentCommitModal} = this.props;
         const {batchNoList} = this.state;
+        hidePayAgentCommitModal()
         if(batchNoList.length == 0) {
             notification.warning({
                 message: '请选择代发申请文件',
                 style:{top:40}
             });
         }else {
-            this.props.payAgentCommit({"batchNo":batchNoList})
+            payAgentCommit({"batchNo":batchNoList})
         }    
+    }
+
+    showPayAgentCommitModal = () => {
+        this.props.showPayAgentCommitModal();
     }
 
     handlePayAgentDel = () => {
@@ -195,19 +200,28 @@ import * as Actions from 'actions';
 
     downloadExcel = () => {
         const {fileName} = this.state;
-        const {downloadExcel} = this.props;
-        // downloadExcel(fileName)
+        if(!fileName){
+            notification.warning({
+                message: '请选择模板文件',
+                style:{top:40}
+            });
+        }else {
+            const {downloadExcel} = this.props;
+            downloadExcel(fileName)
+        }
+        
     }
 
     render(){
         const {fileList,error,errorMsg, record} = this.state;
-        const {applyList, detailList, payAgentApplyDetaillist, corpData} = this.props;
+        const {applyList, detailList, payAgentApplyDetaillist, corpData, fileNameData} = this.props;
         const {applyData} = applyList;
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
            onChange: this.onSelectChange,
         };
         let list = corpData.list?corpData.list:[];
+        let fileNameList = fileNameData.list?fileNameData.list:[];
         return(
             <div className="layout common">
                 <div className="upLoad">
@@ -252,7 +266,7 @@ import * as Actions from 'actions';
                                 className="upLoad-btn upLoad-submit" type="primary"
                                 onClick={this.uploadDemo}
                             >
-                                提交
+                                上传
                             </Button>
                         </div>  
                             {error &&
@@ -267,8 +281,22 @@ import * as Actions from 'actions';
                             }
                     </div>
                     <div className="handle-block">
-                        <span className="title">模版文件下载：</span>
-                        <Link onClick={this.downloadExcel}>模板.xls</Link>
+                        <span className="title">选择模版文件下载：</span>
+                        <Select style={{width: 300}}
+                                placeholder='选择模版文件'
+                                onChange={this.onHandleChange.bind(this, 'fileName')}
+                        >
+                            {
+                                fileNameList.map( (item,index)=>{
+                                    return <Option key={index} value={item}>{item}</Option>
+                                })
+                            }
+                        </Select>
+                        <Button 
+                            type="primary"
+                            style={{marginLeft: 50}}
+                            onClick={this.downloadExcel}
+                        >下载</Button>
                     </div>
                     <h2 className="File-title">列表</h2>
                     <div className="table-area">
@@ -282,8 +310,8 @@ import * as Actions from 'actions';
                             <Button 
                                 icon="check-circle"
                                 type="primary"
-                                onClick={this.handlePayAgentCommit}
-                            >确认代发</Button>
+                                onClick={this.showPayAgentCommitModal}
+                            >申请提交</Button>
                         </div>
                         <Table 
                             loading={applyList.isLoading}
@@ -301,6 +329,15 @@ import * as Actions from 'actions';
                     </div>
                 </div>
                 <DetailModalComponent record={record}  payAgentApplyDetaillist={payAgentApplyDetaillist}/>
+                <Modal
+                    title={<h2>确认提交</h2>}
+                    wrapClassName="vertical-center-modal"
+                    visible={this.props.isVisiable}
+                    onCancel={() => this.props.hidePayAgentCommitModal()}
+                    onOk={this.handleOk}
+                >
+                  <p>请确认是否提交？</p>
+                </Modal>
             </div>
         )
     }
@@ -309,6 +346,8 @@ const mapStateToProps = state => ({
     isUploadSucc: state.Apply.isUploadSucc,
     applyList: state.Apply.applyList,
     corpData: state.System.corpData,
+    isVisiable: state.Upload.isPayAgentCommitModalVisiable,
+    fileNameData: state.Upload.fileNameData,
 })
 const mapDispatchToProps = dispatch => ({
     downloadExcel: bindActionCreators(Actions.UploadActions.downloadExcel, dispatch),
@@ -320,6 +359,9 @@ const mapDispatchToProps = dispatch => ({
     payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),   
     removeUploadFIle: bindActionCreators(Actions.FileActions.removeUploadFIle, dispatch), 
     getCorpList: bindActionCreators(Actions.SystemActions.getCorpList, dispatch),
+    showPayAgentCommitModal: bindActionCreators(Actions.UploadActions.showPayAgentCommitModal, dispatch),
+    hidePayAgentCommitModal: bindActionCreators(Actions.UploadActions.hidePayAgentCommitModal, dispatch),
+    getFileNames: bindActionCreators(Actions.UploadActions.getFileNames, dispatch),
 })
 
 export default connect(

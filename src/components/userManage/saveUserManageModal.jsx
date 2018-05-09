@@ -26,7 +26,7 @@ import * as Actions from 'actions';
         username: '' //姓名
     }
 
-    componentWillUpdate(nextProps,nextState) {
+    componentWillReceiveProps(nextProps) {
         if(nextProps.saveUserInfoModal.resetForm){
             this.setState({
                 usertype: null,

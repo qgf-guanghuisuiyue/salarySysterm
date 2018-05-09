@@ -20,7 +20,7 @@ import * as Actions from 'actions';
         new_pwd: '', //新密码MD5 32位小写密码
     }
 
-    componentWillUpdate(nextProps,nextState) {
+    componentWillReceiveProps(nextProps) {
         if(nextProps.reloadPwdModal.resetForm){
             this.setState({
                 new_pwd: '',

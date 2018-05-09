@@ -66,11 +66,7 @@ import * as Actions from 'actions';
                                 columns={this._getColumns()} 
                                 dataSource={detailData.list} 
                                 bordered={true}
-                                pagination={{
-                                    defaultPageSize:5,
-                                    total: detailData.sum,
-                                    onChange: this.onChangePagination
-                                }}
+                                scroll={{ y: 400 }} 
                             />
 
                     </div>

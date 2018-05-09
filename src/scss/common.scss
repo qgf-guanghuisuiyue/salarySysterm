@@ -2,7 +2,8 @@
 @media (min-width:640px) and (max-width: 1350px) {
     .common{
         width: 960px;
-        height: 750px;
+        min-height: 750px;
+        max-height: 1000px;
         //border: 1px solid #E9E9E9;
         background: white;
         //padding-top: 20px;

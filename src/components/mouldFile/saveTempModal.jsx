@@ -26,7 +26,7 @@ import * as Actions from 'actions';
         fileList: [],
     }
 
-    componentWillUpdate(nextProps,nextState) {
+    componentWillReceiveProps(nextProps) {
         if(nextProps.saveTempModal.resetForm){
             this.setState({
                 type: [],

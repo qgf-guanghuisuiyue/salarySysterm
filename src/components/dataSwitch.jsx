@@ -47,7 +47,6 @@ import * as Actions from 'actions';
                 [field]:""
             })
         }
-        
     }
     queryList = () => {
         const {corpName , startDate , endDate} = this.state;
@@ -119,7 +118,7 @@ import * as Actions from 'actions';
     }
     render(){
         const {corpName , startDate , endDate  ,batchno , record} = this.state;
-        const {isLoading , dataSwitchList={}} = this.props,
+        const {isLoading , dataSwitchList={},isAllStatus} = this.props,
                 data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
                 count = dataSwitchList.count;//总条数 
         return(
@@ -193,7 +192,7 @@ import * as Actions from 'actions';
 }
 const mapStateToProps = state => ({
     dataSwitchList: state.DataSwitch.dataSwitchList,
-    isLoading: state.DataSwitch.isLoading
+    isLoading: state.DataSwitch.isLoading,
 })
 const mapDispatchToProps = dispatch => ({
     getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch),

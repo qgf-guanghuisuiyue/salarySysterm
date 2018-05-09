@@ -99,7 +99,7 @@ import * as Actions from 'actions';
             return  <Link>{index+1+(this.state.page-1)*5}</Link>
         }
         columns[columns.length-2].render = (text,record,index) => {
-            return  <span>{record.status===0?"成功":record.status===1?"未处理":record.status===2?"处理中":record.status===3?"失败":"暂无"}</span>
+            return  <span>{record.status===-1?"撤销":record.status===0?"成功":record.status===1?"未处理":record.status===2?"处理中":record.status===3?"失败":record.status===4?"拒绝处理":record.status===5 ? "待提交":record.status===6 && "代发失败"}</span>
         }
         columns[columns.length-1].render = (text,record,index)=>{
             return <a onClick={this.showAcceptDetailModal.bind(this,record)}>明细</a>;

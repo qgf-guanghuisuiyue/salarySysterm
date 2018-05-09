@@ -141,7 +141,7 @@ import * as Actions from 'actions';
             return  <Link>{index+1+(this.state.page-1)*10}</Link>
         }
         columns[columns.length-2].render = (text,record,index) => {
-            return  <span>{record.status===-1?"撤销":record.status===0?"全部成功":record.status===2?"待处理":record.status===3?"处理中":"拒绝处理"}</span>
+            return  <span>{record.status===-1?"撤销":record.status===0?"全部成功":record.status===2?"待处理":record.status===3?"处理中":record.status===4?"拒绝处理":record.status===5 ? "待提交":record.status===6 && "代发失败"}</span>
         }
         columns[columns.length-1].render = (text,record,index)=>{
             return <a onClick={this.showDetailModal.bind(this,record)}>明细</a>;
@@ -292,7 +292,7 @@ import * as Actions from 'actions';
                             dataSource={applyData.list}
                             bordered
                             pagination={{
-                                defaultPageSize:5,
+                                defaultPageSize:10,
                                 total: applyData.sum,
                                 onChange: this.onChangePagination,
                                 showTotal:total => `共 ${applyData.sum == 0 ? 0 : applyData.sum} 条数据`

@@ -67,8 +67,10 @@ import * as Actions from 'actions';
                             record.status===1?"部分成功":
                             record.status===2?"待处理":
                             record.status===3?"处理中":
-                            record.status===4 ? "拒绝处理":
-                            record.status===-1 ? "撤销":"暂无"
+                            record.status===4? "拒绝处理":
+                            record.status===5? "待提交":
+                            record.status===6? "代发失败":
+                            record.status===-1 && "撤销"
                         }
                     </span>
         }

@@ -2,9 +2,9 @@ import React from 'react';
 import moment from 'moment';
 
 import LeadingFileModal from './leadingResult/leadingFileModal';
-import { Table , Button , Tooltip , Input , DatePicker ,Icon ,Modal, Upload} from 'antd';
+import { Table , Button , Tooltip , Input , DatePicker ,Icon ,Modal, Upload, notification} from 'antd';
 const confirm = Modal.confirm;
-
+import DetailModalComponent from './upload/detailModal';
 import columns from 'data/table-columns/leadingResultList'
 //redux
 import {bindActionCreators} from 'redux';
@@ -18,7 +18,9 @@ import * as Actions from 'actions';
         startDate:"",
         endDate:"",
         batchno:"",
-        fileList:[]
+        fileList:[],
+        page:1,
+        record:{}
     }
     componentDidMount(){
         this.leadingResultQuery()
@@ -28,23 +30,71 @@ import * as Actions from 'actions';
         count:10
     }
     showLeadingFileModal = () => {
-        this.props.showLeadingFileModal()
+        const {batchno} = this.state;
+        const {payFileMakeInfo} = this.props;
+        if(!batchno){
+           notification.warning({
+               message: '请先选择下列选项'
+           });
+        }else{
+           this.props.showLeadingFileModal(batchno,payFileMakeInfo)
+           NProgress.done()
+        }
     }
     showConfirm = () => {
         const _this = this;
-        confirm({
-            title: '是否确认该批次的代发结果',
-            style:{top:'30%'},
-            onOk() {
-                _this.props.resultConfirm()
-            },
-            onCancel() {},
-        });
+        const {batchno} = this.state;
+        if(batchno){
+            confirm({
+                title: '是否确认该批次的代发结果',
+                style:{top:'30%'},
+                onOk() {
+                    _this.props.resultConfirm({batchNo:batchno})
+                }
+            });
+        }else{
+            notification.warning({
+                message:"请选择下列代发受理结果文件"
+            })
+        }
+        
     }
     leadingResultQuery = () => {
-        const {leadingResultQuery} = this.props;
+        const {getDataSwitchList} = this.props;
         const { companyName,startDate,endDate} = this.state;
-        leadingResultQuery({...this.params,companyName,startDate,endDate})
+        getDataSwitchList({...this.params,companyName,startDate,endDate})
+    }
+    getColumns = () => {
+        const {page} = this.state;
+        columns[0].render = (text,record,index) => {           
+            return  <a>{(index+1)+(page-1)*5}</a>
+        }
+        columns[columns.length-2].render = (text,record,index) => {
+            return  <span>
+                        {
+                            record.status===0?"全部成功":
+                            record.status===1?"部分成功":
+                            record.status===2?"待处理":
+                            record.status===3?"处理中":
+                            record.status===4? "拒绝处理":
+                            record.status===5? "待提交":
+                            record.status===6? "代发失败":
+                            record.status===-1 && "撤销"
+                        }
+                    </span>
+        }
+        columns[columns.length-1].render = (text,record,index) => {
+            return  <a onClick = {this.showDetailModal.bind(this,record)}>明细</a>;
+        }
+        return columns;
+    }
+    //明细查询
+    showDetailModal = (record) => {
+        const {payAgentApplyDetaillist} = this.props;
+        this.props.showDetailModal({...this.params,
+            batchNo: record.batchno
+        }, payAgentApplyDetaillist);
+        this.setState({record})
     }
     onChange = (e) => {
         this.setState({
@@ -61,6 +111,14 @@ import * as Actions from 'actions';
                 [field]:""
             })
         } 
+    }
+    //页码回调
+    onChangePagination = (page) => {
+        this.setState({
+            page
+        })
+        this.params.skip = page * 5 - 5;
+        this.leadingResultQuery();
     }
     rowSelection = () =>{
         const _this = this;
@@ -124,7 +182,7 @@ import * as Actions from 'actions';
         return true;
     }
     upLoadFile = () => {
-        let {fileList, exptPayDate} = this.state,
+        let {fileList, exptPayDate, batchno} = this.state,
             {upLoadFile, hideUploadFileModal} = this.props;
         // 判断是否上传了文件
         if(fileList.length === 0){
@@ -137,7 +195,7 @@ import * as Actions from 'actions';
             return ;
         }
         const {data} = response;
-        upLoadFile({"fileName":data,"batchNo":""},hideUploadFileModal)
+        upLoadFile({fileName:data,batchNo:batchno},hideUploadFileModal)
     }
     //清空文件
     cancelFile = () => {
@@ -147,9 +205,10 @@ import * as Actions from 'actions';
         })
     }
     render(){
-          const data = [];
-          const { companyName, fileList, error, errorMsg } = this.state;
-          const { isUpLoadModal } = this.props;
+          const { companyName, fileList, error, errorMsg, record } = this.state;
+          const { isUpLoadModal, dataSwitchList, payFileCreate} = this.props,
+                 data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
+                count = dataSwitchList.count;//总条数 
         return(
             <div className="layout common">
                 <div className="error handle">
@@ -209,15 +268,22 @@ import * as Actions from 'actions';
                     <div className="err-table">
                         <Table 
                             rowSelection={this.rowSelection()} 
-                            columns={columns} 
+                            columns={this.getColumns()} 
                             dataSource={data} 
                             bordered={true}
-                            pagination={true}
+                            pagination={{
+                                defaultPageSize: 5,
+                                total: count,
+                                onChange:this.onChangePagination,
+                                showTotal:total => `共 ${count} 条数据`
+                            }}
                         />
                     </div>
                 </div>
 
-                <LeadingFileModal/>
+                <LeadingFileModal payFileCreate={payFileCreate}/>
+
+                <DetailModalComponent record={record}/>
 
                 <Modal
                     title="代发结果文件"
@@ -262,16 +328,22 @@ import * as Actions from 'actions';
         }
     }
     const mapStateToProps = state => ({
-        isUpLoadModal: state.LeadingResult.isUpLoadModal
+        isUpLoadModal: state.LeadingResult.isUpLoadModal,
+        dataSwitchList: state.DataSwitch.dataSwitchList,
+        payFileCreate: state.DataSwitch.payFileCreate
     })
     const mapDispatchToProps = dispatch => ({
         showLeadingFileModal: bindActionCreators(Actions.LeadingResultActions.showLeadingFileModal, dispatch),
         hideLeadingFileModal: bindActionCreators(Actions.LeadingResultActions.hideLeadingFileModal, dispatch),
-        leadingResultQuery: bindActionCreators(Actions.LeadingResultActions.leadingResultQuery, dispatch),
+        //leadingResultQuery: bindActionCreators(Actions.LeadingResultActions.leadingResultQuery, dispatch),
         resultConfirm: bindActionCreators(Actions.LeadingResultActions.resultConfirm, dispatch),
         hideUploadFileModal: bindActionCreators(Actions.LeadingResultActions.hideUploadFileModal, dispatch),
         upLoadFile: bindActionCreators(Actions.LeadingResultActions.upLoadFile, dispatch),
         removeUploadFIle: bindActionCreators(Actions.FileActions.removeUploadFIle, dispatch),
+        getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch),
+        payFileMakeInfo: bindActionCreators(Actions.DataSwitchActions.payFileMakeInfo, dispatch),
+        payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),
+        showDetailModal: bindActionCreators(Actions.ApplyActions.showDetailModal, dispatch),
     })
 
     export default connect(

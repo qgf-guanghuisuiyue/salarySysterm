@@ -129,7 +129,7 @@ import * as Actions from 'actions';
                                     </SubMenu>
                                 }
                                 {
-                                    //role ==="2" &&
+                                    //      role ==="2" &&
                                     <SubMenu key="basicManage" title={<a className="subMenuBk" style={{background:`${systemBackground}`}}>系统管理&nbsp;&nbsp;∨</a>}>
                                         {
                                             this.systemManage.map((item,index)=>{

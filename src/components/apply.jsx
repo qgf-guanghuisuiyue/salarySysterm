@@ -96,10 +96,10 @@ import * as Actions from 'actions';
 
     getColumns = () => {
         columns[0].render = (text,record,index) => {           
-            return  <Link>{index+1+(this.state.page-1)*5}</Link>
+            return  <Link>{index+1+(this.state.page-1)*10}</Link>
         }
         columns[columns.length-2].render = (text,record,index) => {
-            return  <span>{record.status===0?"成功":record.status===1?"未处理":record.status===2?"处理中":record.status===3?"失败":"暂无"}</span>
+            return  <span>{record.status===-1?"撤销":record.status===0?"全部成功":record.status===1?"部分处理":record.status===2?"待处理":record.status===3?"处理中":record.status===4?"拒绝处理":record.status===5?"待提交":record.status===6&&"代发失败"}</span>
         }
         columns[columns.length-1].render = (text,record,index)=>{
             return <a onClick={this.showAcceptDetailModal.bind(this,record)}>明细</a>;
@@ -112,7 +112,7 @@ import * as Actions from 'actions';
         this.setState({
             page
         })
-        this.params.skip = page * 5 - 5;
+        this.params.skip = page * 10 - 10;
         this.queryList()
     }
 
@@ -122,18 +122,7 @@ import * as Actions from 'actions';
         const {isLoading , dataSwitchList={}} = this.props,
         data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
         count = dataSwitchList.count;//总条数   
-        // 通过 rowSelection 对象表明需要行选择
-        const rowSelection = {
-            onChange(selectedRowKeys, selectedRows) {
-              console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
-            onSelect(record, selected, selectedRows) {
-              console.log(record, selected, selectedRows);
-            },
-            onSelectAll(selected, selectedRows, changeRows) {
-              console.log(selected, selectedRows, changeRows);
-            },
-          };
+        
         return(
             <div className="layout common">
                 {/* 申请结果查询 */}
@@ -181,13 +170,11 @@ import * as Actions from 'actions';
                     <h2 className="File-title">列表</h2>
                     <div className="table-area">
                         <Table 
-                            loading={isLoading}
-                            rowSelection={rowSelection}
                             columns={this.getColumns()}
                             dataSource={data}
                             bordered
                             pagination={{
-                                defaultPageSize:5,
+                                defaultPageSize:10,
                                 total: count,
                                 onChange:this.onChangePagination,
                                 showTotal:total => `共 ${count == 0 ? 0 : count} 条数据`

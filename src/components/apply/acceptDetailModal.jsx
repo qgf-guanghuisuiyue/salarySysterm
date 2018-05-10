@@ -64,10 +64,12 @@ import * as Actions from 'actions';
                                 columns={this._getColumns()} 
                                 dataSource={payagentDetail.list} 
                                 bordered={true}
+                                scroll={{ y: 400 }} 
                                 pagination={{
                                     defaultPageSize:10,
                                     total: payagentDetail.size,
-                                    onChange: this.onChangePagination
+                                    onChange:this.onChangePagination,
+                                    showTotal:total => `共 ${payagentDetail.size == 0 ? 0 : payagentDetail.size} 条数据`
                                 }}
                             />
                     </div>

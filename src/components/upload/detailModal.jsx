@@ -67,6 +67,12 @@ import * as Actions from 'actions';
                                 dataSource={detailData.list} 
                                 bordered={true}
                                 scroll={{ y: 400 }} 
+                                pagination={{
+                                    defaultPageSize:10,
+                                    total: detailData.sum,
+                                    onChange:this.onChangePagination,
+                                    showTotal:total => `共 ${detailData.sum == 0 ? 0 : detailData.sum} 条数据`
+                                }}
                             />
 
                     </div>

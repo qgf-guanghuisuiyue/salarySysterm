@@ -122,7 +122,6 @@ import * as Actions from 'actions';
         const {isLoading , dataSwitchList={}} = this.props,
         data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
         count = dataSwitchList.count;//总条数   
-        
         return(
             <div className="layout common">
                 {/* 申请结果查询 */}

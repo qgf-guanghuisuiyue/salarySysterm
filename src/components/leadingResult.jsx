@@ -1,12 +1,9 @@
 import React from 'react';
-import axios from 'axios';
 import moment from 'moment';
-import {Link} from 'react-router';
 
 import LeadingFileModal from './leadingResult/leadingFileModal';
 import { Table , Button , Tooltip , Input , DatePicker ,Icon ,Modal, Upload} from 'antd';
 const confirm = Modal.confirm;
-import {AjaxByToken} from 'utils/ajax';
 
 import columns from 'data/table-columns/leadingResultList'
 //redux

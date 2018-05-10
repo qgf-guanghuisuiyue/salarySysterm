@@ -4,7 +4,7 @@ import {Modal} from 'antd';
 
 const SHOW_LEADINGFILE_MODAL = {type:types.SHOW_LEADINGFILE_MODAL};
 const HIDE_LEADINGFILE_MODAL = {type:types.HIDE_LEADINGFILE_MODAL};
-const LEADING_RESULT_QUERY = {type:types.LEADING_RESULT_QUERY};
+const ERROR_LIST_QUERY = {type:types.ERROR_LIST_QUERY};
 
     export const showLeadingFileModal = () => (dispatch,getState) => {
         dispatch({...SHOW_LEADINGFILE_MODAL})
@@ -21,8 +21,7 @@ const LEADING_RESULT_QUERY = {type:types.LEADING_RESULT_QUERY};
             data: data
         })
         .then(res=>{
-            console.log(res)
-            //dispatch({...LEADING_RESULT_QUERY,payFileCreate:res.data})
+            dispatch({...ERROR_LIST_QUERY,errorList:res.data})
         },err=>{
             console.log(err)
         });

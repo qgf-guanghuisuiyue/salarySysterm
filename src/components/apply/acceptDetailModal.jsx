@@ -34,7 +34,7 @@ import * as Actions from 'actions';
         } = this.props;
         const {batchno} = record;
         this.setState({
-            page
+            page        
         })
         this.skip = (page-1)*10;
         getPayagentDetail({batchNo:batchno,count:10,skip:this.skip})

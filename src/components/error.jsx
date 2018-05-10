@@ -1,11 +1,10 @@
 import React from 'react';
-import axios from 'axios';
 import moment from 'moment';
-import {Link} from 'react-router';
+
+import columns from 'data/table-columns/error'
 
 import { Table , Button , Input , DatePicker , Checkbox , Icon , Modal , Select} from 'antd';
 const confirm = Modal.confirm;
-import {AjaxByToken} from 'utils/ajax';
 
 //redux
 import {bindActionCreators} from 'redux';
@@ -21,7 +20,8 @@ import * as Actions from 'actions';
             companyName:"",
             status:"",
             startDate:"",
-            endDate:""
+            endDate:"",
+            page:1
         }
     }
     params = {
@@ -71,43 +71,16 @@ import * as Actions from 'actions';
     searchErrorList = () => {
         this.props.searchErrorList({...this.params,...this.state})
     }
+    //页码回调
+    onChangePagination = (page) => {
+        this.setState({
+            page
+        })
+        this.params.skip = page * 10 - 10;
+        this.searchErrorList();
+    }
     render(){
-        const columns = [
-            {
-            title: '序号',
-            dataIndex: 'key',
-            }, {
-            title: '批次号',
-            dataIndex: 'name',
-          }, {
-            title: '代发申请日期',
-            dataIndex: 'age',
-          }, {
-            title: '公司名称',
-            dataIndex: 'address',
-          }, {
-            title: '姓名',
-            dataIndex: 'bank',
-          }, {
-            title: '卡号',
-            dataIndex: 'sum',
-          }, {
-            title: '开户行',
-            dataIndex: 'remark',
-          }, {
-            title: '交易日期',
-            dataIndex: 'date',
-          }, {
-            title: '交易金额',
-            dataIndex: 'money',
-          }, {
-            title: '交易备注',
-            dataIndex: 'explain',
-          }, {
-            title: '后续处理备注',
-            dataIndex: 'result',
-          }];
-        const data = [];
+        const { errorList ,sum } = this.props;
         return(
             <div className="layout common">
                 <div className="error">
@@ -165,15 +138,26 @@ import * as Actions from 'actions';
                     <div className="list">
                         <h2>列表</h2>
                         <div className="people-select">
-                            <Button type="primary" onClick= {this.handle}><Icon type="check-circle" />手工处理</Button>
+                            <Button 
+                                type="primary" 
+                                onClick= {this.handle}>
+                                <Icon type="check-circle" 
+                            />
+                                手工处理
+                            </Button>
                         </div>
                     </div>
                     <div className="err-table">
                         <Table 
                             columns={columns} 
-                            dataSource={data} 
+                            dataSource={errorList} 
                             bordered={true}
-                            pagination={true}
+                            pagination={{
+                                defaultPageSize: 10,
+                                total: sum,
+                                onChange:this.onChangePagination,
+                                showTotal:total => `共 ${sum} 条数据`
+                            }}
                         />
                     </div>
                 </div>
@@ -182,7 +166,7 @@ import * as Actions from 'actions';
     }
 }
 const mapStateToProps = state => ({
-    
+    errorList: state.Error.errorList
 })
 const mapDispatchToProps = dispatch => ({
     searchErrorList: bindActionCreators(Actions.ErrorActions.searchErrorList, dispatch)

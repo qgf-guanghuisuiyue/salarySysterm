@@ -1,6 +1,6 @@
 import * as types from '../constants/leadingResult';
 import {AjaxByToken} from 'utils/ajax';
-import {Modal} from 'antd';
+import {Modal, Notification} from 'antd';
 
 const SHOW_LEADINGFILE_MODAL = {type:types.SHOW_LEADINGFILE_MODAL};
 const HIDE_LEADINGFILE_MODAL = {type:types.HIDE_LEADINGFILE_MODAL};
@@ -9,8 +9,9 @@ const SHOW_UPLOAD_MODAL = {type:types.SHOW_UPLOAD_MODAL};
 const HIDE_UPLOAD_MODAL = {type:types.HIDE_UPLOAD_MODAL};
 
 
-    export const showLeadingFileModal = () => (dispatch,getState) => {
+    export const showLeadingFileModal = (batchno,payFileMakeInfo) => (dispatch,getState) => {
         dispatch({...SHOW_LEADINGFILE_MODAL})
+        payFileMakeInfo({batchNo:batchno})
     }
     export const hideLeadingFileModal = () => (dispatch,getState) => {
         dispatch({...HIDE_LEADINGFILE_MODAL})
@@ -46,8 +47,9 @@ const HIDE_UPLOAD_MODAL = {type:types.HIDE_UPLOAD_MODAL};
             data: data
         })
         .then(res=>{
-            console.log(res)
-            //dispatch({...LEADING_RESULT_QUERY,payFileCreate:res.data})
+            Notification.success({
+                message:res.msg
+            })
         },err=>{
             console.log(err)
         });

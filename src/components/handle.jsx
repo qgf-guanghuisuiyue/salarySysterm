@@ -1,10 +1,9 @@
 import React from 'react';
-import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
-
-import {AjaxByToken} from 'utils/ajax';
-
+import columns from 'data/table-columns/handle';
+import DetailModalComponent from './upload/detailModal';
+import store from 'store';
 //redux
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
@@ -19,7 +18,9 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
             companyName:"",
             status:"",
             startDate:"",
-            endDate:""
+            endDate:"",
+            page:1,
+            record:{}
         }
     }
     params = {
@@ -54,45 +55,60 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
     ]
     searchHandleList = () => {
         const { batchNo , companyName , status , startDate , endDate } = this.state;
-        this.props.searchHandleList({...this.params,...this.state})
+        this.props.getDataSwitchList({...this.params,...this.state})
+    }
+    getColumns = () => {
+        const {page} = this.state;
+        const token = store.get('token'),
+            origin = window.location.origin,
+            url = `/PayAgent/api/web/file/downloadFile?token=${token.token}&tokenKey=${token.tokenKey}&fileName=`;
+
+        columns[0].render = (text,record,index) => {           
+            return  <a>{(index+1)+(page-1)*5}</a>
+        }
+        columns[3].render = (text,record,index) => { 
+            return  <a href={`${origin + url + record.payapplyfilename}`} title="点击下载文件">{record.payapplyfilename}}</a>
+        }
+        columns[columns.length-2].render = (text,record,index) => {
+            return  <span>
+                        {
+                            record.status===0?"全部成功":
+                            record.status===1?"部分成功":
+                            record.status===2?"待处理":
+                            record.status===3?"处理中":
+                            record.status===4? "拒绝处理":
+                            record.status===5? "待提交":
+                            record.status===6? "代发失败":
+                            record.status===-1 && "撤销"
+                        }
+                    </span>
+        }
+        columns[columns.length-1].render = (text,record,index)=>{
+            return <a onClick = {this.showDetailModal.bind(this,record)}>明细</a>;
+        }
+        return columns;
+    }
+    //明细查询
+    showDetailModal = (record) => {
+        const {payAgentApplyDetaillist} = this.props;
+        this.props.showDetailModal({...this.params,
+            batchNo: record.batchno
+        }, payAgentApplyDetaillist);
+        this.setState({record})
+    }
+    //页码回调
+    onChangePagination = (page) => {
+        this.setState({
+            page
+        })
+        this.params.skip = page * 5 - 5;
+        this.searchHandleList();
     }
     render(){
-        const columns = [
-            {
-            title: '序号',
-            dataIndex: 'key',
-            }, {
-            title: '批次号',
-            dataIndex: 'name',
-          }, {
-            title: '代发申请日期',
-            dataIndex: 'age',
-          }, {
-            title: '公司名称',
-            dataIndex: 'address',
-          }, {
-            title: '姓名',
-            dataIndex: 'bank',
-          }, {
-            title: '卡号',
-            dataIndex: 'sum',
-          }, {
-            title: '开户行',
-            dataIndex: 'remark',
-          }, {
-            title: '交易日期',
-            dataIndex: 'date',
-          }, {
-            title: '交易金额',
-            dataIndex: 'money',
-          }, {
-            title: '交易备注',
-            dataIndex: 'explain',
-          }, {
-            title: '后续处理备注',
-            dataIndex: 'result',
-          }];
-        const data = [];
+        const {record} = this.state;
+        const { isUpLoadModal, dataSwitchList, payFileCreate} = this.props,
+            data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
+            count = dataSwitchList.count;//总条数 
         return(
             <div className="layout common">
                 <div className="error handle">
@@ -152,31 +168,38 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
                     
                     <div className="list">
                         <h2>列表</h2>
-                        {/* <div className="people-select">
-                            <Icon type="retweet" />&nbsp;&nbsp;生成银行代发文件
-                        </div> */}
                     </div>
                     <div 
                         className="err-table" 
                         style={{marginTop:20}}
                     >
                         <Table 
-                            columns={columns} 
+                            columns={this.getColumns()} 
                             dataSource={data} 
                             bordered={true}
                             pagination={true}
+                            pagination={{
+                                defaultPageSize: 5,
+                                total: count,
+                                onChange:this.onChangePagination,
+                                showTotal:total => `共 ${count} 条数据`
+                            }}
                         />
                     </div>
                 </div>
+                <DetailModalComponent record={record}/>
             </div>
         )
     }
 }
 const mapStateToProps = state => ({
-    
+    dataSwitchList: state.DataSwitch.dataSwitchList,
 })
 const mapDispatchToProps = dispatch => ({
-    searchHandleList: bindActionCreators(Actions.HandleActions.searchHandleList, dispatch)
+    //searchHandleList: bindActionCreators(Actions.HandleActions.searchHandleList, dispatch)
+    getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch),
+    payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),
+    showDetailModal: bindActionCreators(Actions.ApplyActions.showDetailModal, dispatch),
 })
 
 export default connect(

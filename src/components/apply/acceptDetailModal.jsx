@@ -13,11 +13,15 @@ import { connect } from 'react-redux';
 import * as Actions from 'actions';
 
 
- class DetailModalComponent extends React.Component{
-   state = {
-       page: 1
-   }
-   skip=0
+ class AcceptDetailModalComponent extends React.Component{
+
+    constructor(){
+        super();
+        this.state={
+            page: 1
+        }
+    }
+    skip='0'
 
     _getColumns() {
         columns[0].render = (text,record,index) => {           
@@ -27,70 +31,65 @@ import * as Actions from 'actions';
     }
 
     //页码回调
-    onChangePagination = (page) => {
+    onChange = (page) => {
         const {
             record,
-            payAgentApplyDetaillist
+            getPayagentDetail
         } = this.props;
         const {batchno} = record;
         this.setState({
-            page
+            page        
         })
-        this.skip = page * 10 - 10;
-        payAgentApplyDetaillist({batchNo:batchno,count:10,skip:this.skip})
-
+        this.skip = (page-1)*10;
+        getPayagentDetail({batchNo:batchno,count:'10',skip:this.skip})
     }
 
-
     render(){ 
-        const {detailList, record} = this.props;
-        const {detailData} = detailList;
-        const {page} = this.state;
+        const {acceptDetailVisible, detailList, record, payagentDetail} = this.props;
         return(
                 <Modal
                     title={<h2>列表</h2>}
                     wrapClassName="vertical-center-modal"
-                    visible={detailList.visible}
+                    visible={acceptDetailVisible}
                     width={1000}
                     footer={false}
-                    onCancel={() => this.props.hideDetailModal()}
+                    onCancel={() => this.props.hideAcceptDetailModal()}
                 >
                     <div className="dataSwitch">
                         <ul className="data-info switchFileUl">
                             <li><span>批次号：</span><span>{record.batchno}</span></li>
                             <li><span>公司名称：</span><span>{record.corpname}</span></li>
                             <li><span>代发文件名：</span><span>{record.payapplyfilename}</span></li>
-                            <li><span>总笔数：</span><span>{record.totalcount}</span></li>
-                            <li><span>总金额：</span><span>{record.totalamount}</span></li>
+                            <li><span>总笔数</span><span>{record.totalcount}</span></li>
+                            <li><span>总金额</span><span>{record.totalamount}</span></li>
                             <li><span>申请日期：</span><span>{record.applydate}</span></li>
                         </ul>
                             <Table 
                                 columns={this._getColumns()} 
-                                dataSource={detailData.list} 
+                                dataSource={payagentDetail.list} 
                                 bordered={true}
+                                scroll={{ y: 400 }} 
                                 pagination={{
                                     defaultPageSize:10,
-                                    total: detailData.sum,
-                                    current:page,
-                                    onChange:this.onChangePagination,
-                                    showTotal:total => `共 ${detailData.sum == 0 ? 0 : detailData.sum} 条数据`
+                                    total: payagentDetail.size,
+                                    onChange:this.onChange.bind(this),
+                                    showTotal:total => `共 ${payagentDetail.size == 0 ? 0 : payagentDetail.size} 条数据`
                                 }}
                             />
-
                     </div>
                 </Modal>
         )
     }
 }
 const mapStateToProps = state => ({
-    detailList: state.Apply.detailList,
+    acceptDetailVisible: state.Apply.acceptDetailVisible,
+    payagentDetail: state.DataSwitch.payagentDetail,
 })
 const mapDispatchToProps = dispatch => ({
-    hideDetailModal: bindActionCreators(Actions.ApplyActions.hideDetailModal, dispatch),
-    payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch)
+    hideAcceptDetailModal: bindActionCreators(Actions.ApplyActions.hideAcceptDetailModal, dispatch),
 })
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(DetailModalComponent);
+)(AcceptDetailModalComponent);

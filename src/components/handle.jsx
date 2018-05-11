@@ -3,7 +3,7 @@ import moment from 'moment';
 import {Link} from 'react-router';
 import columns from 'data/table-columns/handle';
 import DetailModalComponent from './upload/detailModal';
-
+import store from 'store';
 //redux
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
@@ -59,10 +59,16 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
     }
     getColumns = () => {
         const {page} = this.state;
+        const token = store.get('token'),
+            origin = window.location.origin,
+            url = `/PayAgent/api/web/file/downloadFile?token=${token.token}&tokenKey=${token.tokenKey}&fileName=`;
+
         columns[0].render = (text,record,index) => {           
             return  <a>{(index+1)+(page-1)*5}</a>
         }
-        
+        columns[3].render = (text,record,index) => { 
+            return  <a href={`${origin + url + record.payapplyfilename}`} title="点击下载文件">{record.payapplyfilename}}</a>
+        }
         columns[columns.length-2].render = (text,record,index) => {
             return  <span>
                         {

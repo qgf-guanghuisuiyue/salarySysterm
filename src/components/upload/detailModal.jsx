@@ -22,7 +22,7 @@ import * as Actions from 'actions';
 
     _getColumns() {
         columns[0].render = (text,record,index) => {           
-            return  <a>{index+1+(this.state.page-1)*5}</a>
+            return  <a>{index+1+(this.state.page-1)*10}</a>
         }
         return columns;
     }
@@ -37,13 +37,23 @@ import * as Actions from 'actions';
         this.setState({
             page
         })
-        this.skip = page * 5 - 5;
-        payAgentApplyDetaillist({batchNo:batchno,count:5,skip:this.skip})
+        this.skip = page * 10 - 10;
+        payAgentApplyDetaillist({batchNo:batchno,count:10,skip:this.skip})
+    }
+    componentWillReceiveProps(nextProps){
+        if(!nextProps.detailList.visible){
+            this.skip = 0,
+            this.setState({
+                page:1
+            })
+        }
+        
     }
 
     render(){ 
         const {detailList, record} = this.props;
-        const {detailData} = detailList
+        const {detailData} = detailList;
+        const {page} = this.state;
         return(
                 <Modal
                     title={<h2>列表</h2>}
@@ -70,6 +80,7 @@ import * as Actions from 'actions';
                                 pagination={{
                                     defaultPageSize:10,
                                     total: detailData.sum,
+                                    current:page,
                                     onChange:this.onChangePagination,
                                     showTotal:total => `共 ${detailData.sum == 0 ? 0 : detailData.sum} 条数据`
                                 }}

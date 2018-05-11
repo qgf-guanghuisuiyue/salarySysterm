@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 
+import store from 'store';
 import LeadingFileModal from './leadingResult/leadingFileModal';
 import { Table , Button , Tooltip , Input , DatePicker ,Icon ,Modal, Upload, notification} from 'antd';
 const confirm = Modal.confirm;
@@ -66,8 +67,15 @@ import * as Actions from 'actions';
     }
     getColumns = () => {
         const {page} = this.state;
+        const token = store.get('token'),
+            origin = window.location.origin,
+            url = `/PayAgent/api/web/file/downloadFile?token=${token.token}&tokenKey=${token.tokenKey}&fileName=`;
+
         columns[0].render = (text,record,index) => {           
             return  <a>{(index+1)+(page-1)*5}</a>
+        }
+        columns[3].render = (text,record,index) => { 
+            return  <a href={`${origin + url + record.payapplyfilename}`}>{record.payapplyfilename}}</a>
         }
         columns[columns.length-2].render = (text,record,index) => {
             return  <span>
@@ -90,8 +98,8 @@ import * as Actions from 'actions';
     }
     //明细查询
     showDetailModal = (record) => {
-        const {payAgentApplyDetaillist} = this.props;
-        this.props.showDetailModal({...this.params,
+        const {showDetailModal,payAgentApplyDetaillist} = this.props;
+        showDetailModal({...this.params,
             batchNo: record.batchno
         }, payAgentApplyDetaillist);
         this.setState({record})

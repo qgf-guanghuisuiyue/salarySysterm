@@ -14,10 +14,14 @@ import * as Actions from 'actions';
 
 
  class AcceptDetailModalComponent extends React.Component{
-    state = {
-        page: 1
+
+    constructor(){
+        super();
+        this.state={
+            page: 1
+        }
     }
-    skip=0
+    skip='0'
 
     _getColumns() {
         columns[0].render = (text,record,index) => {           
@@ -27,7 +31,7 @@ import * as Actions from 'actions';
     }
 
     //页码回调
-    onChangePagination = (page) => {
+    onChange = (page) => {
         const {
             record,
             getPayagentDetail
@@ -37,7 +41,7 @@ import * as Actions from 'actions';
             page        
         })
         this.skip = (page-1)*10;
-        getPayagentDetail({batchNo:batchno,count:10,skip:this.skip})
+        getPayagentDetail({batchNo:batchno,count:'10',skip:this.skip})
     }
 
     render(){ 
@@ -68,7 +72,7 @@ import * as Actions from 'actions';
                                 pagination={{
                                     defaultPageSize:10,
                                     total: payagentDetail.size,
-                                    onChange:this.onChangePagination,
+                                    onChange:this.onChange.bind(this),
                                     showTotal:total => `共 ${payagentDetail.size == 0 ? 0 : payagentDetail.size} 条数据`
                                 }}
                             />

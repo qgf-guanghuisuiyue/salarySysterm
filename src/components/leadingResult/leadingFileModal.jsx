@@ -1,11 +1,9 @@
 import React from 'react';
-import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
 
 import columns from 'data/table-columns/leadingFileInfo';
 import { Table , Button , Tooltip , Input , DatePicker ,Icon , Modal} from 'antd';
-import {AjaxByToken} from 'utils/ajax';
 
 //redux
 import {bindActionCreators} from 'redux';

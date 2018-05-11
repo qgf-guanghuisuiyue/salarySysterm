@@ -5,7 +5,7 @@ import columns from 'data/table-columns/upload';
 import DetailModalComponent from './upload/detailModal';
 
 import {AjaxByToken} from 'utils/ajax';
-import {Input, Upload, Button, DatePicker, Table, Modal, notification, Select} from 'antd';
+import {Input, Upload, Button, DatePicker, Table, Modal, notification, Select, message} from 'antd';
 
 //redux
 import {bindActionCreators} from 'redux';
@@ -23,7 +23,8 @@ import * as Actions from 'actions';
         record: {},
         page: 1,
         fileName: '',
-        corpCode: '',
+        cropCode: '',
+        templateName: ''
     }
      
 
@@ -34,9 +35,8 @@ import * as Actions from 'actions';
     }
 
     componentDidMount() {
-        const {getApplyList, getFileNames, getCorpList} = this.props;
+        const {getApplyList, getFileNames} = this.props;
         getApplyList(this.params);
-        getCorpList();
         getFileNames();
     }
 
@@ -100,7 +100,7 @@ import * as Actions from 'actions';
     }
 
     uploadDemo = () => {
-        let {fileList, exptPayDate, corpCode} = this.state,
+        let {fileList, exptPayDate, cropCode,templateName} = this.state,
             {payAgentApply, getApplyList} = this.props;
         // 判断是否上传了文件
         if(fileList.length === 0){
@@ -110,10 +110,15 @@ import * as Actions from 'actions';
         // 判断文件是否上传成功,上传失败fileList中的response为undefined
         const {name,response} = fileList[0];
         if(!response){
+            this.triggerError(true,'上传失败！');
+            return ;
+        }
+        if(!cropCode||!templateName){
+            this.triggerError(true,'请选择模板类型！');
             return ;
         }
         const {data} = response;
-        payAgentApply({"fileName":data,"exptPayDate":exptPayDate, corpCode}, getApplyList)
+        payAgentApply({"fileName":data,"exptPayDate":exptPayDate, cropCode, templateName}, getApplyList)
     }
 
     onDateChange = (date, dateString) => {
@@ -125,6 +130,15 @@ import * as Actions from 'actions';
     onHandleChange = (field, value) => {
         this.setState({
             [field]: value
+        })
+    }
+
+    onCorpCodeChange = (value) => {
+        let cropList = []; 
+        cropList = value.split('&');
+        this.setState({
+            cropCode: cropList[0],
+            templateName: cropList[1]
         })
     }
     
@@ -153,12 +167,10 @@ import * as Actions from 'actions';
     onChangePagination = (page) => {
         this.setState({
             page
-        })
-        const {record} = this.state;
-        const {batchno} = record;
+        });
         const {getApplyList} = this.props;
         this.params.skip = page * 10 - 10;
-        getApplyList({batchNo:batchno,count:10,skip:this.params.skip})
+        getApplyList({apply: 'Y', count:10, skip:this.params.skip})
     }
     
     onSelectChange = (selectedRowKeys, selectedRows) => {
@@ -169,16 +181,16 @@ import * as Actions from 'actions';
     }
 
     handleOk = () => {
-        const {payAgentCommit, hidePayAgentCommitModal} = this.props;
+        const {payAgentCommit, hidePayAgentCommitModal, getApplyList} = this.props;
         const {batchNoList} = this.state;
-        hidePayAgentCommitModal()
+        hidePayAgentCommitModal()       
         if(batchNoList.length == 0) {
             notification.warning({
                 message: '请选择代发申请文件',
                 style:{top:40}
             });
         }else {
-            payAgentCommit({"batchNo":batchNoList})
+            payAgentCommit({"batchNo":batchNoList}, getApplyList)
         }    
     }
 
@@ -214,14 +226,13 @@ import * as Actions from 'actions';
     }
 
     render(){
-        const {fileList,error,errorMsg, record} = this.state;
-        const {applyList, detailList, payAgentApplyDetaillist, corpData, fileNameData} = this.props;
+        const {fileList,error,errorMsg, record, combineName} = this.state;
+        const {applyList, detailList, payAgentApplyDetaillist, fileNameData} = this.props;
         const {applyData} = applyList;
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
            onChange: this.onSelectChange,
         };
-        let list = corpData.list?corpData.list:[];
         let fileNameList = fileNameData.list?fileNameData.list:[];
         return(
             <div className="layout common">
@@ -229,22 +240,42 @@ import * as Actions from 'actions';
                     <h2 className="File-title">上传文件</h2>
                     <div className="handle-block">
                         <div className="inline-block">
-                            <span className="title">公司名称：</span>
-                            <Select style={{width: 200}}
+                            <span className="title" style={{width: 100}}>公司名称：</span>
+                            <Select style={{width: 300}}
                                     placeholder='请选择公司名称'
-                                    onChange={this.onHandleChange.bind(this, 'corpCode')}
+                                    onChange={this.onCorpCodeChange}
                             >
                                 {
-                                    list.map( (item,index)=>{
-                                        return <Option key={index} value={item.corpCode}>{item.corpName}</Option>
+                                    fileNameList.map( (item,index)=>{
+                                        return <Option key={index} value={`${item.cropCode}&${item.templateName}`}>{`${item.cropCode}-${item.templateName}`}</Option>
                                     })
                                 }
                             </Select>
                         </div>
                         <div className="inline-block">
-                            <span className="title">文件名:</span>
+                            <span className="title" style={{width: 165}}>选择模版文件下载：</span>
+                            <Select style={{width: 300}}
+                                    placeholder='选择模版文件'
+                                    onChange={this.onHandleChange.bind(this, 'fileName')}
+                            >
+                                {
+                                    fileNameList.map( (item,index)=>{
+                                        return <Option key={index} value={item.templateFileName}>{item.templateFileName}</Option>
+                                    })
+                                }
+                            </Select>
+                            <Button 
+                                type="primary"
+                                style={{marginLeft: 20}}
+                                onClick={this.downloadExcel}
+                            >下载</Button>
+                        </div>
+                    </div>
+                    <div className="handle-block">
+                       <div className="inline-block">
+                            <span className="title" style={{width: 100}}>文件名：</span>
                             <Upload 
-                                className="upLoad-btn upLoad-choose"
+                                className="upLoad-btn"
                                 name='file'
                                 fileList={fileList}
                                 action={`${prefixUri}/api/web/file/uploadFile`} 
@@ -252,52 +283,35 @@ import * as Actions from 'actions';
                                 onRemove={this.onFileRemove}
                                 beforeUpload={this.onFilebeforeUpload}
                             >
-                                <Button className="upLoad-btn upLoad-submit" type="primary">
+                                <Button type="primary">
                                     选择文件
                                 </Button>
                             </Upload>
                         </div>
                         <div className="inline-block">
-                            <span className="title">期望代发日期：</span>
+                            <span className="title" style={{width: 165}}>期望代发日期：</span>
                             <DatePicker 
                                 format='YYYY-MM-DD'
                                 onChange={this.onDateChange}
                             />
                             <Button 
-                                className="upLoad-btn upLoad-submit" type="primary"
+                                type="primary"
                                 onClick={this.uploadDemo}
+                                style={{marginLeft: 20}}
                             >
-                                上传
+                                上传  
                             </Button>
-                        </div>  
-                            {error &&
-                                <span className="error-text" style={{
-                                    verticalAlign: 'bottom',
-                                    marginLeft: 5,
-                                    color: 'red',
-                                    fontSize: 12
-                                }}>
-                                    {errorMsg}
-                                </span>
-                            }
-                    </div>
-                    <div className="handle-block">
-                        <span className="title">选择模版文件下载：</span>
-                        <Select style={{width: 300}}
-                                placeholder='选择模版文件'
-                                onChange={this.onHandleChange.bind(this, 'fileName')}
-                        >
-                            {
-                                fileNameList.map( (item,index)=>{
-                                    return <Option key={index} value={item}>{item}</Option>
-                                })
-                            }
-                        </Select>
-                        <Button 
-                            type="primary"
-                            style={{marginLeft: 50}}
-                            onClick={this.downloadExcel}
-                        >下载</Button>
+                        </div> 
+                        {error &&
+                            <span className="error-text" style={{
+                                verticalAlign: 'bottom',
+                                marginLeft: 5,
+                                color: 'red',
+                                fontSize: 12
+                            }}>
+                                {errorMsg}
+                            </span>
+                        }
                     </div>
                     <h2 className="File-title">列表</h2>
                     <div className="table-area">
@@ -346,7 +360,6 @@ import * as Actions from 'actions';
 const mapStateToProps = state => ({
     isUploadSucc: state.Apply.isUploadSucc,
     applyList: state.Apply.applyList,
-    corpData: state.System.corpData,
     isVisiable: state.Upload.isPayAgentCommitModalVisiable,
     fileNameData: state.Upload.fileNameData,
 })
@@ -359,7 +372,6 @@ const mapDispatchToProps = dispatch => ({
     showDetailModal: bindActionCreators(Actions.ApplyActions.showDetailModal, dispatch),
     payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),   
     removeUploadFIle: bindActionCreators(Actions.FileActions.removeUploadFIle, dispatch), 
-    getCorpList: bindActionCreators(Actions.SystemActions.getCorpList, dispatch),
     showPayAgentCommitModal: bindActionCreators(Actions.UploadActions.showPayAgentCommitModal, dispatch),
     hidePayAgentCommitModal: bindActionCreators(Actions.UploadActions.hidePayAgentCommitModal, dispatch),
     getFileNames: bindActionCreators(Actions.UploadActions.getFileNames, dispatch),

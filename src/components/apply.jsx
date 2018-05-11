@@ -18,8 +18,8 @@ import * as Actions from 'actions';
 
  class Apply extends React.Component{
     state = {
-        startDate: null,
-        endDate: null,
+        startDate: '',
+        endDate: '',
         endOpen: false,
         corpName: '',
         record: {},
@@ -84,7 +84,10 @@ import * as Actions from 'actions';
 
     queryList = () => {
         const {corpName , startDate , endDate} = this.state;
-        this.props.getApplyList({...this.params})
+        let startTime = startDate ? moment(startDate).format('YYYYMMDD') : '';
+        let endTime = endDate ? moment(endDate).format('YYYYMMDD') : '';
+        console.log(corpName , startDate , endDate)
+        this.props.getApplyList({...this.params, 'companyname':corpName, 'startDate':startTime, 'endDate':endTime})
     }
 
     showDetailModal = (record) => {
@@ -140,7 +143,6 @@ import * as Actions from 'actions';
                             <span className="title">申请日期：</span>
                             <DatePicker
                                 disabledDate={this.disabledStartDate}
-                                showTime
                                 format="YYYY-MM-DD"
                                 value={startDate}
                                 placeholder="Start"
@@ -150,7 +152,6 @@ import * as Actions from 'actions';
                             <span className="title">To</span>
                             <DatePicker
                                 disabledDate={this.disabledEndDate}
-                                showTime
                                 format="YYYY-MM-DD"
                                 value={endDate}
                                 placeholder="End"

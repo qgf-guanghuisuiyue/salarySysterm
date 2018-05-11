@@ -21,7 +21,8 @@ const initialState = {
         visible: false,
         isLoading: false,
         detailData: {}
-    }
+    },
+    destroyInvisibleModal: false
 };
 
 export default function apply(state = initialState,actions){
@@ -37,9 +38,9 @@ export default function apply(state = initialState,actions){
         case GET_APPLY_LIST: 
             return {...state, applyList: {...state.applyList, applyData: actions.applyData}}; 
         case SHOW_DETAIL_MODAL: 
-            return {...state, detailList: {...state.detailList, visible: true}}; 
+            return {...state, detailList: {...state.detailList, visible: true}, destroyInvisibleModal: false}; 
         case HIDE_DETAIL_MODAL: 
-            return {...state, detailList: {...state.detailList, visible: false}}; 
+            return {...state, detailList: {...state.detailList, visible: false}, destroyInvisibleModal: true}; 
         case DETAIL_LIST_START: 
             return {...state, detailList: {...state.detailList, isLoading: true}}; 
         case DETAIL_LIST_DONE: 

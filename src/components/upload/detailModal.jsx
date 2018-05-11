@@ -15,9 +15,20 @@ import * as Actions from 'actions';
 
  class DetailModalComponent extends React.Component{
    state = {
-       page: 1
+       page: 1,
    }
    skip=0
+
+   componentWillReceiveProps(nextProps) {
+    const { destroyInvisibleModal = false } = this.props;
+        if (destroyInvisibleModal) {
+            if (nextProps.detailList.visible) {
+                this.setState({ page: 1 });
+                this.skip = 0;
+            }
+        }
+    }
+
 
     _getColumns() {
         columns[0].render = (text,record,index) => {           
@@ -51,9 +62,11 @@ import * as Actions from 'actions';
                     title={<h2>列表</h2>}
                     wrapClassName="vertical-center-modal"
                     visible={detailList.visible}
+                    
                     width={1000}
                     footer={false}
                     onCancel={() => this.props.hideDetailModal()}
+                    maskClosable={false}
                 >
                     <div className="dataSwitch">
                         <ul className="data-info switchFileUl">
@@ -65,6 +78,7 @@ import * as Actions from 'actions';
                             <li><span>申请日期：</span><span>{record.applydate}</span></li>
                         </ul>
                             <Table 
+                                isLoading={detailList.isLoading}
                                 columns={this._getColumns()} 
                                 dataSource={detailData.list} 
                                 bordered={true}
@@ -84,6 +98,7 @@ import * as Actions from 'actions';
 }
 const mapStateToProps = state => ({
     detailList: state.Apply.detailList,
+    destroyInvisibleModal: state.Apply.destroyInvisibleModal,
 })
 const mapDispatchToProps = dispatch => ({
     hideDetailModal: bindActionCreators(Actions.ApplyActions.hideDetailModal, dispatch),

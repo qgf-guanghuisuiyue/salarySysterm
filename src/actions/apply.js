@@ -33,6 +33,7 @@ export const payAgentApply = (data, getApplyList) => (dispatch, getState) => {
 
 //代发申请列表查询接口
 export const getApplyList = (params) => (dispatch, getState) => {
+    console.log('代发申请列表查询接口')
     dispatch(APPLY_LIST_START);
     AjaxByToken('api/apply/payagent_applylist', {
         head: {
@@ -49,7 +50,7 @@ export const getApplyList = (params) => (dispatch, getState) => {
 }
 
 //提供批次号 提交代发申请 
-export const payAgentCommit = (batchNoList) => (ispatch, getState) => {
+export const payAgentCommit = (batchNoList, getApplyList) => (ispatch, getState) => {
     AjaxByToken('api/apply/payagent_commit', {
         head: {
             transcode: 'A000003',
@@ -57,8 +58,9 @@ export const payAgentCommit = (batchNoList) => (ispatch, getState) => {
         data: batchNoList
     }).then(res => {
         notification.success({
-                message: "提交成功"
+           message: "提交成功"
         })
+        getApplyList({skip: 0,count: 10, apply: 'Y'})
     }, err => {
         console.log(err)
     })
@@ -72,7 +74,10 @@ export const payAgentDel = (batchNoList, getApplyList) => (ispatch, getState) =>
         },
         data: batchNoList
     }).then(res => {
-        getApplyList({skip: 0,count: 10})
+        notification.success({
+           message: "删除成功"
+        })
+        getApplyList({skip: 0,count: 10, apply: 'Y'})
     }, err => {
         console.log(err)
     })

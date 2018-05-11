@@ -18,11 +18,10 @@ import * as Actions from 'actions';
        page: 1
    }
    skip=0
-   
 
     _getColumns() {
         columns[0].render = (text,record,index) => {           
-            return  <a>{index+1+(this.state.page-1)*5}</a>
+            return  <a>{index+1+(this.state.page-1)*10}</a>
         }
         return columns;
     }
@@ -37,8 +36,8 @@ import * as Actions from 'actions';
         this.setState({
             page
         })
-        this.skip = page * 5 - 5;
-        payAgentApplyDetaillist({batchNo:batchno,count:5,skip:this.skip})
+        this.skip = page * 10 - 10;
+        payAgentApplyDetaillist({batchNo:batchno,count:10,skip:this.skip})
     }
 
     render(){ 
@@ -66,7 +65,6 @@ import * as Actions from 'actions';
                                 columns={this._getColumns()} 
                                 dataSource={detailData.list} 
                                 bordered={true}
-                                scroll={{ y: 400 }} 
                                 pagination={{
                                     defaultPageSize:10,
                                     total: detailData.sum,

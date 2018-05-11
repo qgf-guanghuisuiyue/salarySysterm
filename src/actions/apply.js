@@ -13,8 +13,6 @@ const HIDE_DETAIL_MODAL = { type: types.HIDE_DETAIL_MODAL };
 const DETAIL_LIST_START = { type: types.DETAIL_LIST_START };
 const DETAIL_LIST_DONE = { type: types.DETAIL_LIST_DONE };
 const GET_DETAIL_LIST = { type: types.GET_DETAIL_LIST };
-const SHOW_ACCEPT_DETAIL_MODAL = { type: types.SHOW_ACCEPT_DETAIL_MODAL };
-const HIDE_ACCEPT_DETAIL_MODAL = { type: types.HIDE_ACCEPT_DETAIL_MODAL };
 
 //api/apply/payagent_apply
 export const payAgentApply = (data, getApplyList) => (dispatch, getState) => {
@@ -26,7 +24,7 @@ export const payAgentApply = (data, getApplyList) => (dispatch, getState) => {
         data: data
     }).then(res => {
         dispatch({...UPLOAD_DONE,isUploadSucc:true});
-        getApplyList({skip: 0,count: 10})
+        getApplyList({skip: 0, count: 10, apply: 'Y'})
     }, err => {
         dispatch(UPLOAD_DONE);
         console.log(err)
@@ -103,12 +101,4 @@ export const showDetailModal = (data, payAgentApplyDetaillist) => (dispatch,getS
 }
 export const hideDetailModal = () => (dispatch,getState) => {
     dispatch(HIDE_DETAIL_MODAL)
-}
-
-export const showAcceptDetailModal = (data, getPayagentDetail) => (dispatch,getState) => {
-    dispatch(SHOW_ACCEPT_DETAIL_MODAL);
-    getPayagentDetail(data)
-}
-export const hideAcceptDetailModal = () => (dispatch,getState) => {
-    dispatch(HIDE_ACCEPT_DETAIL_MODAL)
 }

@@ -26,8 +26,5 @@ module.exports = [
     }, {
         title: '申请结果',
         dataIndex: 'status',
-    }, {
-        title: '',
-        dataIndex: 'detail',
     }
 ]

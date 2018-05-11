@@ -23,13 +23,14 @@ import * as Actions from 'actions';
         record: {},
         page: 1,
         fileName: '',
-        corpCode: ''
+        corpCode: '',
     }
      
 
     params = {
         skip: 0,
-        count: 10
+        count: 10,
+        apply: 'Y'
     }
 
     componentDidMount() {

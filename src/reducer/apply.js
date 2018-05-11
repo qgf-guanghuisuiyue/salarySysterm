@@ -9,8 +9,6 @@ import {
     GET_DETAIL_LIST,
     UPLOAD_START,
     UPLOAD_DONE,
-    SHOW_ACCEPT_DETAIL_MODAL,
-    HIDE_ACCEPT_DETAIL_MODAL
 } from '../constants/apply';
 
 const initialState = {
@@ -23,8 +21,7 @@ const initialState = {
         visible: false,
         isLoading: false,
         detailData: {}
-    },
-    acceptDetailVisible: false
+    }
 };
 
 export default function apply(state = initialState,actions){
@@ -48,11 +45,7 @@ export default function apply(state = initialState,actions){
         case DETAIL_LIST_DONE: 
             return {...state, detailList: {...state.detailList, isLoading: false}}; 
         case GET_DETAIL_LIST: 
-            return {...state, detailList: {...state.detailList, detailData: actions.detailData}}; 
-        case SHOW_ACCEPT_DETAIL_MODAL: 
-            return {...state, acceptDetailVisible: true}; 
-        case HIDE_ACCEPT_DETAIL_MODAL: 
-            return {...state, acceptDetailVisible: false};     
+            return {...state, detailList: {...state.detailList, detailData: actions.detailData}};    
         default: 
             return state;
     }

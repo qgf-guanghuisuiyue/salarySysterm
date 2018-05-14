@@ -18,6 +18,7 @@ import * as Actions from 'actions';
         fileList: [],
         batchNoList: [],
         recordList: [],
+        selectedRowKeys: [],        
         error: false,
         errorMsg: '',
         exptPayDate: null,
@@ -25,7 +26,7 @@ import * as Actions from 'actions';
         page: 1,
         fileName: '',
         cropCode: '',
-        templateName: ''
+        templateName: '',
     }
      
 
@@ -41,10 +42,17 @@ import * as Actions from 'actions';
         getFileNames();
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps) {//清空数组
         if(nextProps.isUploadSucc){
             this.setState({
                 fileList: []
+            })
+        }
+        if(nextProps.applyList.isLoading){
+            this.setState({
+                batchNoList: [],
+                recordList: [],
+                selectedRowKeys: []
             })
         }
     }
@@ -180,7 +188,8 @@ import * as Actions from 'actions';
         });
         this.setState({
             batchNoList,
-            recordList: selectedRows
+            recordList: selectedRows,
+            selectedRowKeys
         })
     }
 
@@ -254,6 +263,7 @@ import * as Actions from 'actions';
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
            onChange: this.onSelectChange,
+           selectedRowKeys: this.state.selectedRowKeys
         };
         let fileNameList = fileNameData.list?fileNameData.list:[];
         return(

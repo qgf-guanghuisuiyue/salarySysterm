@@ -6,7 +6,7 @@ import {
 
 const initialState = {
     isPayAgentCommitModalVisiable: false,
-    fileNameData: {}
+    fileNameData: {},
 };
 
 export default function upload(state = initialState,actions){
@@ -16,7 +16,7 @@ export default function upload(state = initialState,actions){
         case HIDE_PAY_AGENT_COMMIT_MODAL: 
             return {...state, isPayAgentCommitModalVisiable: false};
         case GET_FILENAMES:
-            return {...state, fileNameData: actions.fileNameData}    
+            return {...state, fileNameData: actions.fileNameData};
         default: 
             return state;
     }

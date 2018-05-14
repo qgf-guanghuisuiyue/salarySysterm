@@ -13,8 +13,8 @@ const HIDE_DETAIL_MODAL = { type: types.HIDE_DETAIL_MODAL };
 const DETAIL_LIST_START = { type: types.DETAIL_LIST_START };
 const DETAIL_LIST_DONE = { type: types.DETAIL_LIST_DONE };
 const GET_DETAIL_LIST = { type: types.GET_DETAIL_LIST };
-const SHOW_ACCEPT_DETAIL_MODAL = { type: types.SHOW_ACCEPT_DETAIL_MODAL };
-const HIDE_ACCEPT_DETAIL_MODAL = { type: types.HIDE_ACCEPT_DETAIL_MODAL };
+const RESET_PAYAGENTDATA_TRUE = { type: types.RESET_PAYAGENTDATA_TRUE };
+const RESET_PAYAGENTDATA_FALSE = { type: types.RESET_PAYAGENTDATA_FALSE };
 
 //api/apply/payagent_apply
 export const payAgentApply = (data, getApplyList) => (dispatch, getState) => {
@@ -26,7 +26,7 @@ export const payAgentApply = (data, getApplyList) => (dispatch, getState) => {
         data: data
     }).then(res => {
         dispatch({...UPLOAD_DONE,isUploadSucc:true});
-        getApplyList({skip: 0,count: 10})
+        getApplyList({skip: 0, count: 10, apply: 'Y'})
     }, err => {
         dispatch(UPLOAD_DONE);
         console.log(err)
@@ -35,6 +35,7 @@ export const payAgentApply = (data, getApplyList) => (dispatch, getState) => {
 
 //代发申请列表查询接口
 export const getApplyList = (params) => (dispatch, getState) => {
+    console.log('代发申请列表查询接口')
     dispatch(APPLY_LIST_START);
     AjaxByToken('api/apply/payagent_applylist', {
         head: {
@@ -51,7 +52,7 @@ export const getApplyList = (params) => (dispatch, getState) => {
 }
 
 //提供批次号 提交代发申请 
-export const payAgentCommit = (batchNoList) => (ispatch, getState) => {
+export const payAgentCommit = (batchNoList, getApplyList) => (dispatch, getState) => {
     AjaxByToken('api/apply/payagent_commit', {
         head: {
             transcode: 'A000003',
@@ -59,22 +60,28 @@ export const payAgentCommit = (batchNoList) => (ispatch, getState) => {
         data: batchNoList
     }).then(res => {
         notification.success({
-                message: "提交成功"
+           message: "提交成功"
         })
+        getApplyList({skip: 0,count: 10, apply: 'Y'});
+        dispatch(RESET_PAYAGENTDATA_TRUE);
     }, err => {
         console.log(err)
     })
 }
 
 //提供批次号 删除该次申请
-export const payAgentDel = (batchNoList, getApplyList) => (ispatch, getState) => {
+export const payAgentDel = (batchNoList, getApplyList) => (dispatch, getState) => {
     AjaxByToken('api/apply/payagent_del', {
         head: {
             transcode: 'A000004',
         },
         data: batchNoList
     }).then(res => {
-        getApplyList({skip: 0,count: 10})
+        notification.success({
+           message: "删除成功"
+        })
+        getApplyList({skip: 0,count: 10, apply: 'Y'});
+        dispatch(RESET_PAYAGENTDATA_TRUE);
     }, err => {
         console.log(err)
     })
@@ -89,12 +96,16 @@ export const payAgentApplyDetaillist = (data) => (dispatch, getState) => {
         },
         data: data
     }).then(res => {
-        dispatch(DETAIL_LIST_DONE)
+        dispatch(DETAIL_LIST_DONE);
         dispatch({...GET_DETAIL_LIST, detailData:res.data})
     }, err => {
         dispatch(DETAIL_LIST_DONE)
         console.log(err)
     })
+};
+
+export const resetPayagentFalse = () => (dispatch, getState) => {
+    dispatch(RESET_PAYAGENTDATA_FALSE);
 }
 
 export const showDetailModal = (data, payAgentApplyDetaillist) => (dispatch,getState) => {
@@ -103,12 +114,4 @@ export const showDetailModal = (data, payAgentApplyDetaillist) => (dispatch,getS
 }
 export const hideDetailModal = () => (dispatch,getState) => {
     dispatch(HIDE_DETAIL_MODAL)
-}
-
-export const showAcceptDetailModal = (data, getPayagentDetail) => (dispatch,getState) => {
-    dispatch(SHOW_ACCEPT_DETAIL_MODAL);
-    getPayagentDetail(data)
-}
-export const hideAcceptDetailModal = () => (dispatch,getState) => {
-    dispatch(HIDE_ACCEPT_DETAIL_MODAL)
 }

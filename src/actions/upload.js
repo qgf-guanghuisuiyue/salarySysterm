@@ -22,7 +22,7 @@ export const downloadExcel = (fileName) => (dispatch, getState) => {
     })
     .then(res=>{
         const blob = new Blob([res.data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-        FileSaver.saveAs(blob,'模板.xlsx');
+        FileSaver.saveAs(blob,`${res.config.params.fileName}`);
     }).catch(error=>{
         console.log(error)
     });

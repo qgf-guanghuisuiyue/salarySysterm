@@ -3,7 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import {Link} from 'react-router';
 import columns from 'data/table-columns/upload';
-import AcceptDetailModalComponent from './apply/acceptDetailModal';
+import DetailModalComponent from './upload/detailModal';
 
 import {AjaxByToken} from 'utils/ajax';
 import {Input, Button, DatePicker, Table, Select } from 'antd';
@@ -18,8 +18,8 @@ import * as Actions from 'actions';
 
  class Apply extends React.Component{
     state = {
-        startDate: null,
-        endDate: null,
+        startDate: '',
+        endDate: '',
         endOpen: false,
         corpName: '',
         record: {},
@@ -28,11 +28,12 @@ import * as Actions from 'actions';
 
     params = {
         skip: 0,
-        count: 10
+        count: 10,
+        apply: 'N'
     }
 
     componentDidMount(){
-        this.props.getDataSwitchList(this.params)
+        this.props.getApplyList(this.params)
     }
 
     disabledStartDate = (startDate) => {
@@ -83,14 +84,17 @@ import * as Actions from 'actions';
 
     queryList = () => {
         const {corpName , startDate , endDate} = this.state;
-        this.props.getDataSwitchList({...this.params, corpName , startDate , endDate})
+        let startTime = startDate ? moment(startDate).format('YYYYMMDD') : '';
+        let endTime = endDate ? moment(endDate).format('YYYYMMDD') : '';
+        console.log(corpName , startDate , endDate)
+        this.props.getApplyList({...this.params, 'companyname':corpName, 'startDate':startTime, 'endDate':endTime})
     }
 
-    showAcceptDetailModal = (record) => {
-        const {getPayagentDetail} = this.props;
-        this.props.showAcceptDetailModal({...this.params,
+    showDetailModal = (record) => {
+        const {showDetailModal, payAgentApplyDetaillist} = this.props;
+        showDetailModal({...this.params,
             batchNo: record.batchno
-        }, getPayagentDetail);
+        }, payAgentApplyDetaillist);
         this.setState({record})
     }
 
@@ -102,7 +106,7 @@ import * as Actions from 'actions';
             return  <span>{record.status===-1?"撤销":record.status===0?"全部成功":record.status===1?"部分处理":record.status===2?"待处理":record.status===3?"处理中":record.status===4?"拒绝处理":record.status===5?"待提交":record.status===6&&"代发失败"}</span>
         }
         columns[columns.length-1].render = (text,record,index)=>{
-            return <a onClick={this.showAcceptDetailModal.bind(this,record)}>明细</a>;
+            return <a onClick={this.showDetailModal.bind(this,record)}>明细</a>;
         }
         return columns;
     }
@@ -118,10 +122,8 @@ import * as Actions from 'actions';
 
     render(){
         const { startDate, endDate, endOpen, corpName, record } = this.state;
-        const {applyList, getPayagentDetail} = this.props;
-        const {isLoading , dataSwitchList={}} = this.props,
-        data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
-        count = dataSwitchList.count;//总条数   
+        const {applyList, payAgentApplyDetaillist} = this.props;
+        const {applyData} = applyList;
         return(
             <div className="layout common">
                 {/* 申请结果查询 */}
@@ -141,7 +143,6 @@ import * as Actions from 'actions';
                             <span className="title">申请日期：</span>
                             <DatePicker
                                 disabledDate={this.disabledStartDate}
-                                showTime
                                 format="YYYY-MM-DD"
                                 value={startDate}
                                 placeholder="Start"
@@ -151,7 +152,6 @@ import * as Actions from 'actions';
                             <span className="title">To</span>
                             <DatePicker
                                 disabledDate={this.disabledEndDate}
-                                showTime
                                 format="YYYY-MM-DD"
                                 value={endDate}
                                 placeholder="End"
@@ -168,32 +168,32 @@ import * as Actions from 'actions';
                     </div>
                     <h2 className="File-title">列表</h2>
                     <div className="table-area">
-                        <Table 
-                            columns={this.getColumns()}
-                            dataSource={data}
-                            bordered
-                            pagination={{
-                                defaultPageSize:10,
-                                total: count,
-                                onChange:this.onChangePagination,
-                                showTotal:total => `共 ${count == 0 ? 0 : count} 条数据`
-                            }}
-                        />
+                    <Table 
+                        loading={applyList.isLoading}
+                        columns={this.getColumns()}
+                        dataSource={applyData.list}
+                        bordered
+                        pagination={{
+                            defaultPageSize:10,
+                            total: applyData.sum,
+                            onChange: this.onChangePagination,
+                            showTotal:total => `共 ${applyData.sum == 0 ? 0 : applyData.sum} 条数据`
+                        }}
+                    />
                     </div>
                 </div>
-                <AcceptDetailModalComponent  record={record} getPayagentDetail={getPayagentDetail}/>
+                <DetailModalComponent record={record}  payAgentApplyDetaillist={payAgentApplyDetaillist}/>
             </div>
         )
     }
 }
 const mapStateToProps = state => ({
-    dataSwitchList: state.DataSwitch.dataSwitchList,
-    isLoading: state.DataSwitch.isLoading,
+    applyList: state.Apply.applyList,
 })
 const mapDispatchToProps = dispatch => ({
-    getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch),
-    showAcceptDetailModal: bindActionCreators(Actions.ApplyActions.showAcceptDetailModal, dispatch),
-    getPayagentDetail: bindActionCreators(Actions.DataSwitchActions.getPayagentDetail, dispatch)
+    getApplyList: bindActionCreators(Actions.ApplyActions.getApplyList, dispatch),
+    payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),
+    showDetailModal: bindActionCreators(Actions.ApplyActions.showDetailModal, dispatch),
 })
 
 export default connect(

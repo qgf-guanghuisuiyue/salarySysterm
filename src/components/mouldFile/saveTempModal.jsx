@@ -182,7 +182,7 @@ import * as Actions from 'actions';
                         <li>
                             <span className="data-title">模板文件:</span>
                             <Upload 
-                                className="upLoad-btn upLoad-choose"
+                                className="upLoad-btn"
                                 name='file'
                                 fileList={fileList}
                                 action={`${prefixUri}/api/web/file/uploadtemplate`} 
@@ -190,7 +190,7 @@ import * as Actions from 'actions';
                                 onRemove={this.onFileRemove}
                                 beforeUpload={this.onFilebeforeUpload}
                             >
-                                <Button className="upLoad-btn upLoad-submit" type="primary">
+                                <Button className="upLoad-btn" type="primary">
                                     选择文件
                                 </Button>
                                 {error &&

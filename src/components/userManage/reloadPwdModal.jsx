@@ -22,6 +22,7 @@ import * as Actions from 'actions';
 
     componentWillReceiveProps(nextProps) {
         if(nextProps.reloadPwdModal.resetForm){
+            console.log(nextProps.reloadPwdModal.resetForm)
             this.setState({
                 new_pwd: '',
             });

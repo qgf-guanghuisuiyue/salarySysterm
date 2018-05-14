@@ -15,10 +15,20 @@ import * as Actions from 'actions';
 
  class DetailModalComponent extends React.Component{
    state = {
-       page: 1
+       page: 1,
    }
    skip=0
-   
+
+   componentWillReceiveProps(nextProps) {
+    const { destroyInvisibleModal = false } = this.props;
+        if (destroyInvisibleModal) {
+            if (nextProps.detailList.visible) {
+                this.setState({ page: 1 });
+                this.skip = 0;
+            }
+        }
+    }
+
 
     _getColumns() {
         columns[0].render = (text,record,index) => {           
@@ -39,16 +49,9 @@ import * as Actions from 'actions';
         })
         this.skip = page * 10 - 10;
         payAgentApplyDetaillist({batchNo:batchno,count:10,skip:this.skip})
+
     }
-    componentWillReceiveProps(nextProps){
-        if(!nextProps.detailList.visible){
-            this.skip = 0,
-            this.setState({
-                page:1
-            })
-        }
-        
-    }
+
 
     render(){ 
         const {detailList, record} = this.props;
@@ -59,24 +62,26 @@ import * as Actions from 'actions';
                     title={<h2>列表</h2>}
                     wrapClassName="vertical-center-modal"
                     visible={detailList.visible}
+                    
                     width={1000}
                     footer={false}
                     onCancel={() => this.props.hideDetailModal()}
+                    maskClosable={false}
                 >
                     <div className="dataSwitch">
                         <ul className="data-info switchFileUl">
                             <li><span>批次号：</span><span>{record.batchno}</span></li>
                             <li><span>公司名称：</span><span>{record.corpname}</span></li>
                             <li><span>代发文件名：</span><span>{record.payapplyfilename}</span></li>
-                            <li><span>总笔数：</span><span>{record.totalcount}</span></li>
-                            <li><span>总金额：</span><span>{record.totalamount}</span></li>
-                            <li><span>申请日期：</span><span>{record.applydate}</span></li>
+                            <li style={{marginTop: 0}}><span>总笔数：</span><span>{record.totalcount}</span></li>
+                            <li style={{marginTop: 0}}><span>总金额：</span><span>{record.totalamount}</span></li>
+                            <li style={{marginTop: 0}}><span>申请日期：</span><span>{record.applydate}</span></li>
                         </ul>
                             <Table 
+                                isLoading={detailList.isLoading}
                                 columns={this._getColumns()} 
                                 dataSource={detailData.list} 
                                 bordered={true}
-                                scroll={{ y: 400 }} 
                                 pagination={{
                                     defaultPageSize:10,
                                     total: detailData.sum,
@@ -93,6 +98,7 @@ import * as Actions from 'actions';
 }
 const mapStateToProps = state => ({
     detailList: state.Apply.detailList,
+    destroyInvisibleModal: state.Apply.destroyInvisibleModal,
 })
 const mapDispatchToProps = dispatch => ({
     hideDetailModal: bindActionCreators(Actions.ApplyActions.hideDetailModal, dispatch),

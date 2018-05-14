@@ -9,6 +9,8 @@ import {
     GET_DETAIL_LIST,
     UPLOAD_START,
     UPLOAD_DONE,
+    RESET_PAYAGENTDATA_TRUE,
+    RESET_PAYAGENTDATA_FALSE,
 } from '../constants/apply';
 
 const initialState = {
@@ -22,7 +24,8 @@ const initialState = {
         isLoading: false,
         detailData: {}
     },
-    destroyInvisibleModal: false
+    destroyInvisibleModal: false,
+    resetPayagent: false,
 };
 
 export default function apply(state = initialState,actions){
@@ -46,7 +49,11 @@ export default function apply(state = initialState,actions){
         case DETAIL_LIST_DONE: 
             return {...state, detailList: {...state.detailList, isLoading: false}}; 
         case GET_DETAIL_LIST: 
-            return {...state, detailList: {...state.detailList, detailData: actions.detailData}};    
+            return {...state, detailList: {...state.detailList, detailData: actions.detailData}};  
+        case RESET_PAYAGENTDATA_TRUE:
+            return {...state, resetPayagent: true};
+        case RESET_PAYAGENTDATA_FALSE:
+            return {...state, resetPayagent: false};  
         default: 
             return state;
     }

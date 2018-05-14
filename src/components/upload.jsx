@@ -42,18 +42,19 @@ import * as Actions from 'actions';
         getFileNames();
     }
 
-    componentWillReceiveProps(nextProps) {//清空数组
+    componentWillReceiveProps(nextProps) {//清空数组    
         if(nextProps.isUploadSucc){
             this.setState({
                 fileList: []
             })
         }
-        if(nextProps.applyList.isLoading){
+        if(nextProps.resetPayagent){
             this.setState({
                 batchNoList: [],
                 recordList: [],
                 selectedRowKeys: []
-            })
+            });
+            this.props.resetPayagentFalse()
         }
     }
 
@@ -392,6 +393,7 @@ import * as Actions from 'actions';
 const mapStateToProps = state => ({
     isUploadSucc: state.Apply.isUploadSucc,
     applyList: state.Apply.applyList,
+    resetPayagent: state.Apply.resetPayagent,
     isVisiable: state.Upload.isPayAgentCommitModalVisiable,
     fileNameData: state.Upload.fileNameData,
 })
@@ -399,6 +401,7 @@ const mapDispatchToProps = dispatch => ({
     downloadExcel: bindActionCreators(Actions.UploadActions.downloadExcel, dispatch),
     getApplyList: bindActionCreators(Actions.ApplyActions.getApplyList, dispatch),
     payAgentCommit: bindActionCreators(Actions.ApplyActions.payAgentCommit, dispatch),
+    resetPayagentFalse: bindActionCreators(Actions.ApplyActions.resetPayagentFalse, dispatch),
     payAgentApply: bindActionCreators(Actions.ApplyActions.payAgentApply, dispatch),
     payAgentDel: bindActionCreators(Actions.ApplyActions.payAgentDel, dispatch),
     showDetailModal: bindActionCreators(Actions.ApplyActions.showDetailModal, dispatch),

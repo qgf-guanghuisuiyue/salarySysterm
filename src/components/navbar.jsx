@@ -38,6 +38,8 @@ import * as Actions from 'actions';
         {name:'数据转换',path:'dataSwitch'},
         {name:'导入结果',path:'leadingResult'},
         {name:'受理查询',path:'handle'},
+        {name:'开票查询',path:'receiptQuery'},
+        {name:'开票计算',path:'receiptCount'},
         {name:'失败结果查询',path:'errorResult'}
     ];
     systemManage = [
@@ -59,7 +61,7 @@ import * as Actions from 'actions';
                 handleBackground:"",
                 systemBackground:""
             })
-        }else if(path==="dataSwitch" || path==="leadingResult" ||path==="handle" || path==="errorResult"){
+        }else if(path==="dataSwitch" || path==="leadingResult" ||path==="handle" || path==="errorResult" ||path==="receiptQuery" || path==="receiptCount"){
             this.setState({
                 handleBackground:'rgb(0, 105, 159)',
                 systemBackground:"",
@@ -134,7 +136,7 @@ import * as Actions from 'actions';
                                         {
                                             this.systemManage.map((item,index)=>{
                                                 const {path,name} = item;
-                                                return <Menu.Item key={index+7}>
+                                                return <Menu.Item key={index+9}>
                                                             <Link to={path} style={{fontSize:14}} onClick={this.handleClick.bind(this,item.name)} >{item.name}</Link>
                                                     </Menu.Item>
                                             })

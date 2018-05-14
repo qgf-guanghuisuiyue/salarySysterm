@@ -31,7 +31,7 @@ import * as Actions from 'actions';
                 return false
             }
         }
-        const activeKey = name==="上传文件"?"upload":name==="申请结果查询"?"apply":name==="数据转换"?"dataSwitch":name==="导入结果"?"leadingResult":name==="受理查询"?'handle':name==="失败结果查询"?'errorResult':name==="基础管理"?'basicManage':name==="模板文件"?'mouldFile':name==="用户管理"?'userManage':name==='权限设置'?"accessPermission":name==="日志查询" && "log";
+        const activeKey = name==="上传文件"?"upload":name==="申请结果查询"?"apply":name==="数据转换"?"dataSwitch":name==="导入结果"?"leadingResult":name==="受理查询"?'handle':name==="开票查询"?'receiptQuery':name==="开票计算"?'receiptCount':name==="失败结果查询"?'errorResult':name==="基础管理"?'basicManage':name==="模板文件"?'mouldFile':name==="用户管理"?'userManage':name==='权限设置'?"accessPermission":name==="日志查询" && "log";
         panes.push({ title: name, key: activeKey });
         this.setState({ panes, activeKey });
     }
@@ -77,6 +77,10 @@ import * as Actions from 'actions';
     componentDidMount(){
         const {location} = this.props,
         pathname = location.pathname;
+        setTimeout(()=>{
+            $('.active').parent().parent().css({ background:'#108ee9', color: 'white',borderBottom: "none"}).find('.anticon-close').css({ color: '#fff'})
+        })
+        
         switch (pathname) {
             case "/upload":
                 this.setState({
@@ -138,6 +142,16 @@ import * as Actions from 'actions';
                     panes:[{ title: '数据转换', key: 'dataSwitch' }]
                 });
             break;
+            case "/receiptQuery":
+                this.setState({
+                    panes:[{ title: '开票查询', key: 'receiptQuery' }]
+                });
+            break;
+            case "/receiptCount":
+                this.setState({
+                    panes:[{ title: '开票计算', key: 'receiptCount' }]
+                });
+            break;
             
             default:
                 this.setState({
@@ -149,6 +163,10 @@ import * as Actions from 'actions';
    componentWillReceiveProps(nextProps,nextState){
         const {pathname} = nextProps.location;
         const panes = this.state.panes;
+        setTimeout(()=>{
+            $('.active').parent().parent().css({ background:'#108ee9', color: 'white',borderBottom: "none"}).siblings().css({ background:'white', color: '#666',borderBottom: "1px solid #CCCCCC"}).find('.anticon-close').css({ color: '#666'})
+            $('.active').siblings().css({ color: '#fff'})
+        }) 
         switch (pathname) {
             case "/createFile":
                  panes.push({ title: '数据转换', key: 'dataSwitch' })
@@ -166,7 +184,7 @@ import * as Actions from 'actions';
     
     render(){
         const {routes,location, userLoginout} = this.props,
-            pathname = location.pathname;
+            pathname = location.pathname;            
         return(
             <div>
                 {pathname!=='/login' && pathname!=='login' && pathname!=='/forgetPsd' && pathname!=='forgetPsd' &&
@@ -181,11 +199,6 @@ import * as Actions from 'actions';
                         </div>
                     </div>
                 }
-                {/* {pathname!=='/login' && pathname!=='login' && pathname!=='/forgetPsd' && pathname!=='forgetPsd' &&
-                    <div className="breadName layout">
-                        {routes[routes.length - 1 ].breadcrumbName} 
-                    </div>
-                } */}
                 {
                     pathname==='/' && !routes[routes.length - 1 ].path &&
                     <div className="breadName layout">
@@ -211,6 +224,8 @@ import * as Actions from 'actions';
                                                 :pane.title==="数据转换"?"dataSwitch"
                                                 :pane.title==="导入结果"?"leadingResult"
                                                 :pane.title==="受理查询"?'handle'
+                                                :pane.title==="开票查询"?'receiptQuery'
+                                                :pane.title==="开票计算"?'receiptCount'
                                                 :pane.title==="失败结果查询"?'errorResult'
                                                 :pane.title==="基础管理"?'basicManage'
                                                 :pane.title==="模板文件"?'mouldFile'

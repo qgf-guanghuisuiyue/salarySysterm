@@ -64,10 +64,10 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
             url = `/PayAgent/api/web/file/downloadFile?token=${token.token}&tokenKey=${token.tokenKey}&fileName=`;
 
         columns[0].render = (text,record,index) => {           
-            return  <a>{(index+1)+(page-1)*5}</a>
+            return  <a>{(index+1)+(page-1)*10}</a>
         }
         columns[3].render = (text,record,index) => { 
-            return  <a href={`${origin + url + record.payapplyfilename}`} title="点击下载文件">{record.payapplyfilename}}</a>
+            return  <a href={`${origin + url + record.payapplyfilename}`} title="点击下载文件">{record.payapplyfilename}</a>
         }
         columns[columns.length-2].render = (text,record,index) => {
             return  <span>
@@ -101,7 +101,7 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
         this.setState({
             page
         })
-        this.params.skip = page * 5 - 5;
+        this.params.skip = page * 10 - 10;
         this.searchHandleList();
     }
     render(){
@@ -179,7 +179,7 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
                             bordered={true}
                             pagination={true}
                             pagination={{
-                                defaultPageSize: 5,
+                                defaultPageSize: 10,
                                 total: count,
                                 onChange:this.onChangePagination,
                                 showTotal:total => `共 ${count} 条数据`
@@ -196,7 +196,6 @@ const mapStateToProps = state => ({
     dataSwitchList: state.DataSwitch.dataSwitchList,
 })
 const mapDispatchToProps = dispatch => ({
-    //searchHandleList: bindActionCreators(Actions.HandleActions.searchHandleList, dispatch)
     getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch),
     payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),
     showDetailModal: bindActionCreators(Actions.ApplyActions.showDetailModal, dispatch),

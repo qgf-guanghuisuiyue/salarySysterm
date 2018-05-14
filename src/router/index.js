@@ -144,6 +144,30 @@ const Log = {
         }, 'Log')
     } 
 }
+// 引入开票查询路由组件
+const ReceiptQuery = {
+    path: 'receiptQuery',
+    breadcrumbName: '代发薪受理 ＞ 开票查询',
+    onEnter:requireAuthHook,
+    onLeave:onLeavePage,
+    getComponent(nextState,cb){
+        require.ensure([], (require) => {
+            cb(null, require('components/receiptQuery').default)
+        }, 'ReceiptQuery')
+    } 
+}
+// 引入开票计算路由组件
+const ReceiptCount = {
+    path: 'receiptCount',
+    breadcrumbName: '代发薪受理 ＞ 开票计算',
+    onEnter:requireAuthHook,
+    onLeave:onLeavePage,
+    getComponent(nextState,cb){
+        require.ensure([], (require) => {
+            cb(null, require('components/receiptCount').default)
+        }, 'ReceiptCount')
+    } 
+}
 // 引入忘记密码路由组件
 const ForgetPsd = {
     path: 'forgetPsd',
@@ -193,6 +217,8 @@ const RouteConfig = {
         UserManage,
         AccessPermission,
         Log,
+        ReceiptQuery,
+        ReceiptCount,
         CreateFile
     ]
 }

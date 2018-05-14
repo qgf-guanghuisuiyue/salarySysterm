@@ -75,7 +75,7 @@ import * as Actions from 'actions';
             return  <a>{(index+1)+(page-1)*5}</a>
         }
         columns[3].render = (text,record,index) => { 
-            return  <a href={`${origin + url + record.payapplyfilename}`}>{record.payapplyfilename}}</a>
+            return  <a href={`${origin + url + record.payapplyfilename}`} title="点击下载文件">{record.payapplyfilename}}</a>
         }
         columns[columns.length-2].render = (text,record,index) => {
             return  <span>
@@ -343,7 +343,6 @@ import * as Actions from 'actions';
     const mapDispatchToProps = dispatch => ({
         showLeadingFileModal: bindActionCreators(Actions.LeadingResultActions.showLeadingFileModal, dispatch),
         hideLeadingFileModal: bindActionCreators(Actions.LeadingResultActions.hideLeadingFileModal, dispatch),
-        //leadingResultQuery: bindActionCreators(Actions.LeadingResultActions.leadingResultQuery, dispatch),
         resultConfirm: bindActionCreators(Actions.LeadingResultActions.resultConfirm, dispatch),
         hideUploadFileModal: bindActionCreators(Actions.LeadingResultActions.hideUploadFileModal, dispatch),
         upLoadFile: bindActionCreators(Actions.LeadingResultActions.upLoadFile, dispatch),

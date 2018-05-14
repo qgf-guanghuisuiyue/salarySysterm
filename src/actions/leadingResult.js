@@ -23,21 +23,6 @@ const HIDE_UPLOAD_MODAL = {type:types.HIDE_UPLOAD_MODAL};
         dispatch({...HIDE_UPLOAD_MODAL});
         cancelFile()
     }
-    //导入结果列表查询
-    export const leadingResultQuery = (data) => (dispatch,getState) => {
-        AjaxByToken('api/accept/payagent_importquery',{
-            head: {
-                transcode: 'C000005',
-            },
-            data: data
-        })
-        .then(res=>{
-            console.log(res)
-            //dispatch({...LEADING_RESULT_QUERY,payFileCreate:res.data})
-        },err=>{
-            console.log(err)
-        });
-    }
     //批次结果确认
     export const resultConfirm = (data) => (dispatch,getState) => {
         AjaxByToken('api/accept/payagent_confirm',{

@@ -12,19 +12,4 @@ const LEADING_RESULT_QUERY = {type:types.LEADING_RESULT_QUERY};
     export const hideLeadingFileModal = () => (dispatch,getState) => {
         dispatch({...HIDE_LEADINGFILE_MODAL})
     }
-    //导入结果列表查询
-    export const searchHandleList = (data) => (dispatch,getState) => {
-        AjaxByToken('api/accept/payagent/accept/list',{
-            head: {
-                transcode: 'C000007',
-            },
-            data: data
-        })
-        .then(res=>{
-            console.log(res)
-            //dispatch({...LEADING_RESULT_QUERY,payFileCreate:res.data})
-        },err=>{
-            console.log(err)
-        });
-    }
     

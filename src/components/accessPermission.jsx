@@ -73,9 +73,9 @@ import * as Actions from 'actions';
     //表格选择框选择
     onSelectChange = (selectedRowKeys, selectedRows) => {
       this.setState({selectedRowKeys});
-  }
+    }
     rowSelection = () =>{
-      const {selectedRowKeys} = this.state;
+         const {selectedRowKeys} = this.state;
          const _this = this;
         // 通过 rowSelection 对象表明需要行选择
          return {

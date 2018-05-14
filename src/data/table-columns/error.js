@@ -6,7 +6,7 @@ module.exports = [
     }, 
     {
     title: '批次号',
-    dataIndex: 'batchNo',
+    dataIndex: 'batchno',
     }, 
     {
     title: '代发申请日期',
@@ -22,11 +22,11 @@ module.exports = [
     },
     {
     title: '卡号',
-    dataIndex: 'cardNo',
+    dataIndex: 'cardno',
     }, 
     {
     title: '开户行',
-    dataIndex: 'bankName',
+    dataIndex: 'bankname',
     }, 
     {
     title: '交易日期',
@@ -42,6 +42,6 @@ module.exports = [
     }, 
     {
     title: '后续处理备注',
-    dataIndex: 'result',
+    dataIndex: 'processingnote',
     }
 ]

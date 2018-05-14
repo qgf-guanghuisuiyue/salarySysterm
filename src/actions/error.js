@@ -1,6 +1,6 @@
 import * as types from '../constants/error';
 import {AjaxByToken} from 'utils/ajax';
-import {Modal} from 'antd';
+import {Modal, notification} from 'antd';
 
 const SHOW_LEADINGFILE_MODAL = {type:types.SHOW_LEADINGFILE_MODAL};
 const HIDE_LEADINGFILE_MODAL = {type:types.HIDE_LEADINGFILE_MODAL};
@@ -22,6 +22,23 @@ const ERROR_LIST_QUERY = {type:types.ERROR_LIST_QUERY};
         })
         .then(res=>{
             dispatch({...ERROR_LIST_QUERY,errorList:res.data})
+        },err=>{
+            console.log(err)
+        });
+    }
+    //手工处理
+    export const handleMsg = (data,searchErrorList) => (dispatch,getState) => {
+        AjaxByToken('api/accept/payagent/failure/with',{
+            head: {
+                transcode: 'C000014',
+            },
+            data: data
+        })
+        .then(res=>{
+            notification.success({
+                message:res.msg
+            })
+            searchErrorList()
         },err=>{
             console.log(err)
         });

@@ -4,14 +4,14 @@ import {Link} from 'react-router';
 
 import {Input, Upload, Button, DatePicker, Table} from 'antd';
 
-import columns from 'data/table-columns/log'
+import columns from 'data/table-columns/receiptCount';
 //redux
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import * as Actions from 'actions';
 
 
- class Log extends React.Component{
+ class ReceiptQuery extends React.Component{
     state = {
         startValue: null,
         endValue: null,
@@ -25,23 +25,7 @@ import * as Actions from 'actions';
         count:10
     }
     componentDidMount(){
-        this.searchLogList()
-    }
 
-    disabledStartDate = (startValue) => {
-        const endValue = this.state.endValue;
-        if (!startValue || !endValue) {
-            return false;
-        }
-        return startValue.valueOf() > endValue.valueOf();
-    }
-
-    disabledEndDate = (endValue) => {
-        const startValue = this.state.startValue;
-        if (!endValue || !startValue) {
-            return false;
-        }
-        return endValue.valueOf() <= startValue.valueOf();
     }
 
     onChange = (field, value) => {
@@ -70,34 +54,21 @@ import * as Actions from 'actions';
         this.params.skip = page * 10 - 10;
         this.searchLogList();
     }
-    handleStartOpenChange = (open) => {
-        if (!open) {
-            this.setState({ endOpen: true });
-        }
-    }
-
-    handleEndOpenChange = (open) => {
-        this.setState({ endOpen: open });
-    }
+   
     onInputChange = (field,e) => {
         this.setState({
             [field]:e.target.value
         })
     }
     searchLogList = () => {
-        const {startValue, endValue, userName, corpName} = this.state;
-        const startDate =startValue? moment(startValue).format("YYYYMMDD"):"";
-        const endDate = endValue?moment(endValue).format("YYYYMMDD"):"";
-        this.props.userInfoRoleLogList({...this.params,startDate,endDate,userName,corpName})
+        
     }
     render(){
         const { startValue, endValue, endOpen, userName, corpName } = this.state;
-        const { isLogLoading , logList } = this.props;
         return(
             <div className=" layout common">
-                {/* 日志查询 */}
-                <div className="log">
-                    <h2 className="File-title">日志查询</h2>
+                <div className="receipt">
+                    <h2 className="File-title">开票查询</h2>
                     <div className="handle-block">
                         <div className="inline-block">
                             <span className="title">姓名:</span>
@@ -109,7 +80,7 @@ import * as Actions from 'actions';
                             />
                         </div>
                         <div className="inline-block">
-                            <span className="title">公司名称：</span>
+                            <span className="title">收款公司：</span>
                             <Input 
                                 style={{width: 200}} 
                                 value={corpName}
@@ -119,19 +90,15 @@ import * as Actions from 'actions';
                         </div>  
                     </div>
                     <div className="handle-block">
-                        <span className="title">申请日期：</span>
+                        <span className="title">收款日期：</span>
                         <DatePicker
-                            disabledDate={this.disabledStartDate}
-                            value={startValue}
-                            placeholder="开始时间"
-                            onChange={this.onChange.bind(this,"startValue")}
+                            placeholder="开始日期" 
+                            //onChange={this.dateChange.bind(this,"startDate")}
                         />
-                        <span className="title">To&nbsp;&nbsp;&nbsp;</span>
+                        <span className="title">收款日期：</span>
                         <DatePicker
-                            disabledDate={this.disabledEndDate}
-                            value={endValue}
-                            placeholder="结束时间"
-                            onChange={this.onChange.bind(this,"endValue")}
+                            placeholder="开始日期" 
+                            //onChange={this.dateChange.bind(this,"startDate")}
                         />
                         <Button 
                             type="primary" 
@@ -145,16 +112,8 @@ import * as Actions from 'actions';
                     <div className="table-area">
                         <Table 
                             columns={this.getColumns()} 
-                            dataSource={logList.list} 
+                            dataSource={[]} 
                             bordered={true}
-                            loading={isLogLoading}
-                            size={"middle"}
-                            pagination={{
-                                defaultPageSize: 10,
-                                total: logList.sum,
-                                onChange:this.onChangePagination,
-                                showTotal:total => `共 ${logList.sum} 条数据`
-                            }}
                         />
                     </div>
                     
@@ -174,4 +133,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Log);
+)(ReceiptQuery);

@@ -12,12 +12,6 @@ import * as Actions from 'actions';
 
 
  class LeadingFile extends React.Component{
-    constructor(){
-        super();
-        this.state={
-          
-        }
-    }
     showUploadFileModal = () => {
       this.props.showUploadFileModal()
     }
@@ -61,7 +55,7 @@ import * as Actions from 'actions';
                 onCancel={() => this.props.hideLeadingFileModal()}
           >
               <div className="leadingResult">
-                  <ul className="data-info">
+                  <ul className="data-info switchFileUl">
                       <li><span>批次号：</span><span>{tblPayApplyModel?tblPayApplyModel.batchno:""}</span></li>
                       <li><span>公司名称：</span><span>{tblPayApplyModel?tblPayApplyModel.corpname:""}</span></li>
                       <li><span>代发文件名：</span><span>{tblPayApplyModel?tblPayApplyModel.payapplyfilename:""}</span></li>
@@ -80,7 +74,7 @@ import * as Actions from 'actions';
                           columns={this.getColumns()} 
                           dataSource={data} 
                           bordered={true}
-                          scroll={{y:500}}
+                          style={{height:400}}
                           pagination={false}
                       />
                   </div>

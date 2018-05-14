@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import columns from 'data/table-columns/error'
 
-import { Table , Button , Input , DatePicker , Checkbox , Icon , Modal , Select} from 'antd';
+import { Table , Button , Input , DatePicker , Checkbox , Icon , Modal , Select,notification} from 'antd';
 const confirm = Modal.confirm;
 
 //redux
@@ -21,7 +21,10 @@ import * as Actions from 'actions';
             status:"",
             startDate:"",
             endDate:"",
-            page:1
+            page:1,
+            msg:"",
+            detailID:"",
+            selectedRowKeys:[],
         }
     }
     params = {
@@ -32,18 +35,34 @@ import * as Actions from 'actions';
         this.searchErrorList()
     }
     onChange = (e) => {
-      console.log(e.target.value)
+        this.setState({
+            msg:e.target.value
+        })
     }
     handle = () => {
-        confirm({
-            title:"手工处理" ,
-            content:<label>处理备注：<Input onChange={this.onChange}/></label>,
-            className:"handWork",
-            okText:"保存",
-            onOk() {
-                console.log('确定');
-              },
-        });
+        const {detailID} = this.state;
+        const _this = this;
+        if(detailID){
+            confirm({
+                title:"手工处理" ,
+                content:<label>处理备注：<Input onChange={this.onChange}/></label>,
+                className:"handWork",
+                okText:"保存",
+                onOk() {
+                    const {detailID, msg} = _this.state;
+                    _this.props.handleMsg({detailID, msg},_this.searchErrorList);
+                    _this.setState({
+                        selectedRowKeys:[],
+                        detailID:""
+                    })
+                  },
+            });
+        }else{
+            notification.warning({
+                message:"请先选择失败文件"
+            })
+        }
+       
     }
     onInputChange = (field,e) => {
         this.setState({
@@ -79,8 +98,36 @@ import * as Actions from 'actions';
         this.params.skip = page * 10 - 10;
         this.searchErrorList();
     }
+    //清空表格选择框
+    clearTableCheckbox = () => {
+        const {selectedRowKeys} = this.state;
+        if(selectedRowKeys.length === 0) return ;
+        this.setState({
+            selectedRowKeys:[],
+        })
+    }
+    //表格选择框选择
+    onSelectChange = (selectedRowKeys, selectedRows) => {
+        this.setState({selectedRowKeys});
+    }
+    rowSelection = () =>{
+        const {selectedRowKeys} = this.state;
+        const _this = this;
+       // 通过 rowSelection 对象表明需要行选择
+        return {
+           type:'radio',
+           selectedRowKeys,
+           onChange: this.onSelectChange,
+           onSelect(record, selected, selectedRows) {
+                   _this.setState({
+                        detailID:record.detailid
+                   })
+               }
+       };
+    } 
     render(){
-        const { errorList ,sum } = this.props;
+        const { errorList } = this.props,
+            {count , list} = errorList;
         return(
             <div className="layout common">
                 <div className="error">
@@ -149,14 +196,15 @@ import * as Actions from 'actions';
                     </div>
                     <div className="err-table">
                         <Table 
+                            rowSelection={this.rowSelection()}
                             columns={columns} 
-                            dataSource={errorList} 
+                            dataSource={list} 
                             bordered={true}
                             pagination={{
                                 defaultPageSize: 10,
-                                total: sum,
+                                total: count,
                                 onChange:this.onChangePagination,
-                                showTotal:total => `共 ${sum} 条数据`
+                                showTotal:total => `共 ${count} 条数据`
                             }}
                         />
                     </div>
@@ -169,7 +217,8 @@ const mapStateToProps = state => ({
     errorList: state.Error.errorList
 })
 const mapDispatchToProps = dispatch => ({
-    searchErrorList: bindActionCreators(Actions.ErrorActions.searchErrorList, dispatch)
+    searchErrorList: bindActionCreators(Actions.ErrorActions.searchErrorList, dispatch),
+    handleMsg: bindActionCreators(Actions.ErrorActions.handleMsg, dispatch)
 })
 
 export default connect(

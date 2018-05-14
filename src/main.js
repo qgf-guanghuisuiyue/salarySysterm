@@ -4,7 +4,6 @@ import ReactDom from 'react-dom';
 // css文件
 import './scss/main.scss';
 
-//import RouterConfig from './routerConfig'
 import routes from './router';
 
 // react-router

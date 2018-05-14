@@ -50,7 +50,7 @@ export const getApplyList = (params) => (dispatch, getState) => {
 }
 
 //提供批次号 提交代发申请 
-export const payAgentCommit = (batchNoList, getApplyList) => (ispatch, getState) => {
+export const payAgentCommit = (batchNoList, getApplyList) => (dispatch, getState) => {
     AjaxByToken('api/apply/payagent_commit', {
         head: {
             transcode: 'A000003',
@@ -67,7 +67,7 @@ export const payAgentCommit = (batchNoList, getApplyList) => (ispatch, getState)
 }
 
 //提供批次号 删除该次申请
-export const payAgentDel = (batchNoList, getApplyList) => (ispatch, getState) => {
+export const payAgentDel = (batchNoList, getApplyList) => (dispatch, getState) => {
     AjaxByToken('api/apply/payagent_del', {
         head: {
             transcode: 'A000004',

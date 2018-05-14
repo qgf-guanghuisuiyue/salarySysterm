@@ -17,6 +17,7 @@ import * as Actions from 'actions';
     state = {
         fileList: [],
         batchNoList: [],
+        recordList: [],
         error: false,
         errorMsg: '',
         exptPayDate: null,
@@ -176,30 +177,43 @@ import * as Actions from 'actions';
     onSelectChange = (selectedRowKeys, selectedRows) => {
         let batchNoList = selectedRows.map((item,index) => {
             return item.batchno;
+        });
+        this.setState({
+            batchNoList,
+            recordList: selectedRows
         })
-        this.setState({batchNoList})
-    }
-
-    handleOk = () => {
-        const {payAgentCommit, hidePayAgentCommitModal, getApplyList} = this.props;
-        const {batchNoList} = this.state;
-        hidePayAgentCommitModal()       
-        if(batchNoList.length == 0) {
-            notification.warning({
-                message: '请选择代发申请文件',
-                style:{top:40}
-            });
-        }else {
-            payAgentCommit({"batchNo":batchNoList}, getApplyList)
-        }    
     }
 
     showPayAgentCommitModal = () => {
         this.props.showPayAgentCommitModal();
     }
 
+    handleOk = () => {
+        const {payAgentCommit, hidePayAgentCommitModal, getApplyList} = this.props;
+        const {batchNoList, recordList} = this.state;
+        hidePayAgentCommitModal()       
+        if(batchNoList.length == 0) {
+            notification.warning({
+                message: '请选择代发申请文件',
+                style:{top:40}
+            });
+        }else{
+            recordList.map((item, index) => {
+                item.status == 2 ? 
+                notification.warning({
+                    message: '待处理不可提交',
+                    style:{top:40}
+                })
+                :
+                payAgentCommit({"batchNo":batchNoList}, getApplyList)
+            })
+        }    
+    }
+
+    
+
     handlePayAgentDel = () => {
-        const {batchNoList} = this.state;
+        const {batchNoList, recordList} = this.state;
         const {payAgentDel, getApplyList} = this.props;
         if(batchNoList.length == 0) {
             notification.warning({
@@ -207,7 +221,15 @@ import * as Actions from 'actions';
                 style:{top:40}
             });
         }else {
-            payAgentDel({"batchNo":batchNoList}, getApplyList);
+            recordList.map((item, index) => {
+                item.status == 2 ? 
+                notification.warning({
+                    message: '待处理不可提交',
+                    style:{top:40}
+                })
+                :
+                payAgentDel({"batchNo":batchNoList}, getApplyList)
+            })    
         }
     }
 

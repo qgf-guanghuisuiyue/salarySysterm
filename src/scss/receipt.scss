@@ -11,3 +11,56 @@
         }
     }
 }
+.receipt-modal{
+    .ant-modal-body{
+        height: 400px
+    }
+    .ant-modal-footer{
+        text-align: center;
+        height: 100px;
+        .ant-btn{
+            margin: 20px 30px;
+            width: 100px;
+        }
+    }
+    li{
+        margin: 20px 0px 20px;
+    }
+    .left-ul{
+        width: 400px;
+        float: left;
+        margin-left: 50px;
+        li{
+            a:nth-child(1){
+                display: inline-block;
+                width: 120px;
+                font-size: 16px;
+                font-weight: bold;
+                text-align: right
+            };
+            a:nth-child(2){
+                display: inline-block;
+                width: 280px;
+            }
+        }
+        
+    }
+    .right-ul{
+        width: 400px;
+        float:right;
+        margin-right: 50px;
+        li{
+            a:nth-child(1){
+                display: inline-block;
+                width: 120px;
+                font-size: 16px;
+                font-weight: bold;
+                text-align: right
+            };
+            a:nth-child(2){
+                display: inline-block;
+                width: 280px;
+            }
+        }
+    }
+}

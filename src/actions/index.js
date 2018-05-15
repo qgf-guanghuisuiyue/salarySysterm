@@ -8,6 +8,7 @@ import * as HandleActions from './handle';
 import * as ErrorActions from './error';
 import * as SystemActions from './system';
 import * as FileActions from './file';
+import * as ReceiptActions from './receipt';
 
 module.exports = {
     loginActions,
@@ -19,5 +20,6 @@ module.exports = {
     HandleActions,
     ErrorActions,
     SystemActions,
-    FileActions
+    FileActions,
+    ReceiptActions
 }

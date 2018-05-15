@@ -9,6 +9,7 @@ import Handle from './handle';
 import System from './system';
 import File from './file';
 import Error from './error';
+import Receipt from './receipt';
 
 const rootReducer = combineReducers({
     DataSwitch,
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
     Handle,
     System,
     File,
-    Error
+    Error,
+    Receipt
 });
 
 export default rootReducer;

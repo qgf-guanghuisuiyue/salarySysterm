@@ -2,9 +2,9 @@ import React from 'react';
 import moment from 'moment';
 import {Link} from 'react-router';
 
-import {Input, Upload, Button, DatePicker, Table} from 'antd';
-
-import columns from 'data/table-columns/receiptCount';
+import {Input, Upload, Button, DatePicker, Table, Select} from 'antd';
+const Option = Select.Option;
+import columns from 'data/table-columns/receiptQuery';
 //redux
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
@@ -13,10 +13,10 @@ import * as Actions from 'actions';
 
  class ReceiptQuery extends React.Component{
     state = {
-        startValue: null,
-        endValue: null,
-        endOpen: false,
-        userName:"",
+        batchNo: "",
+        rate: "",
+        startDate: "",
+        endDate: "",
         corpName:"",
         page:1
     };
@@ -25,12 +25,16 @@ import * as Actions from 'actions';
         count:10
     }
     componentDidMount(){
-
+        this.props.searchReceiptList()
     }
-
-    onChange = (field, value) => {
+    onChangeSelect = (value) => {
         this.setState({
-            [field]: value,
+            rate:value
+        })
+    }
+    dateChange = (field, value) => {
+        this.setState({
+            [field]: moment(value).format("YYYYMMDD"),
         });
     }
     getColumns = () => {
@@ -60,50 +64,62 @@ import * as Actions from 'actions';
             [field]:e.target.value
         })
     }
-    searchLogList = () => {
-        
+    searchReceiptList = () => {
+        const { startDate, endDate, batchNo, corpName ,rate} = this.state;
+        this.props.searchReceiptList({startDate, endDate, batchNo, corpName ,rate})
     }
     render(){
-        const { startValue, endValue, endOpen, userName, corpName } = this.state;
+        const { startDate, endDate, batchNo, corpName ,rate} = this.state;
+        const {receiptList} = this.props;
         return(
             <div className=" layout common">
                 <div className="receipt">
                     <h2 className="File-title">开票查询</h2>
-                    <div className="handle-block">
+                    <div className="handle-block" style={{width:"80%"}}>
                         <div className="inline-block">
-                            <span className="title">姓名:</span>
+                            <span className="title">公司名称：</span>
                             <Input 
                                 style={{width: 200}} 
-                                value={userName} 
-                                placeholder="请输入姓名"
-                                onChange={this.onInputChange.bind(this,"userName")}
-                            />
-                        </div>
-                        <div className="inline-block">
-                            <span className="title">收款公司：</span>
-                            <Input 
-                                style={{width: 200}} 
-                                value={corpName}
+                                value={corpName} 
                                 placeholder="请输入公司名称"
                                 onChange={this.onInputChange.bind(this,"corpName")}
                             />
-                        </div>  
+                        </div>
+                        <div className="inline-block">
+                            <span className="title">批次号：</span>
+                            <Input 
+                                style={{width: 200}} 
+                                value={batchNo}
+                                placeholder="请输入批次号"
+                                onChange={this.onInputChange.bind(this,"batchNo")}
+                            />
+                        </div>
+                        <div className="inline-block">
+                            <span className="title">处理状态：</span>
+                            <Select style={{width: 200}} placeholder="请选择处理状态" onChange={this.onChangeSelect}>
+                                <Option value={0}>开票信息未处理</Option>
+                                <Option value={1}>开票信息已处理</Option>
+                            </Select>
+                            
+                        </div>    
                     </div>
-                    <div className="handle-block">
+                    <div className="handle-block" style={{width:"80%"}}>
                         <span className="title">收款日期：</span>
                         <DatePicker
-                            placeholder="开始日期" 
-                            //onChange={this.dateChange.bind(this,"startDate")}
+                            placeholder="开始日期"
+                            style={{width:200}}
+                            onChange={this.dateChange.bind(this,"startDate")}
                         />
-                        <span className="title">收款日期：</span>
+                        <span className="title">&nbsp;&nbsp;TO &nbsp;&nbsp;&nbsp;</span>
                         <DatePicker
-                            placeholder="开始日期" 
-                            //onChange={this.dateChange.bind(this,"startDate")}
+                            placeholder="结束日期"
+                            style={{width:200}} 
+                            onChange={this.dateChange.bind(this,"endDate")}
                         />
                         <Button 
                             type="primary" 
                             style={{left:50}}
-                            onClick={this.searchLogList}
+                            onClick={this.searchReceiptList}
                         >
                             查询
                         </Button>
@@ -112,7 +128,7 @@ import * as Actions from 'actions';
                     <div className="table-area">
                         <Table 
                             columns={this.getColumns()} 
-                            dataSource={[]} 
+                            dataSource={receiptList.list} 
                             bordered={true}
                         />
                     </div>
@@ -123,11 +139,10 @@ import * as Actions from 'actions';
     }
 }
 const mapStateToProps = state => ({
-    isLogLoading: state.System.isLogLoading,
-    logList: state.System.logList
+    receiptList: state.Receipt.receiptList
 })
 const mapDispatchToProps = dispatch => ({
-    userInfoRoleLogList: bindActionCreators(Actions.SystemActions.userInfoRoleLogList, dispatch)
+    searchReceiptList: bindActionCreators(Actions.ReceiptActions.searchReceiptList, dispatch)
 })
 
 export default connect(

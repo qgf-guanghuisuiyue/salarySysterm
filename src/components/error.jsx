@@ -134,19 +134,20 @@ import * as Actions from 'actions';
                     <h2 className="File-title">失败交易查询</h2>
                     <ul className="data-info err-info">
                         <li>
-                            <span>批次号：</span>
-                            <Input 
-                                placeholder="请输入批次号"
-                                onChange = {this.onInputChange.bind(this,"batchNo")}
-                            />
-                        </li>
-                        <li>
                             <span>公司名称：</span>
                             <Input 
                                 placeholder="请输入公司名称"
                                 onChange = {this.onInputChange.bind(this,"companyName")}
                             />
                         </li>
+                        <li>
+                            <span>批次号：</span>
+                            <Input 
+                                placeholder="请输入批次号"
+                                onChange = {this.onInputChange.bind(this,"batchNo")}
+                            />
+                        </li>
+                        
                         <li>
                             <span>处理结果：</span>
                             <Select 
@@ -163,15 +164,17 @@ import * as Actions from 'actions';
                             </Select>
                         </li>
                     </ul>
-                    <div className="date">
-                        <span className="date-title">代发申请日期：</span>
+                    <div className="date" style={{width:"86.5%"}}>
+                        <span className="date-title">申请日期：</span>
                         <DatePicker 
                             placeholder="请选择开始日期"
+                            style={{width:180}}
                             onChange={this.onDateChange.bind(this,"startDate")}
                         />
                         <span className="date-to">To</span>
                         <DatePicker 
                             placeholder="请选择结束日期"
+                            style={{width:180}}
                             onChange={this.onDateChange.bind(this,"endDate")}
                         />
                         <Button 

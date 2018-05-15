@@ -115,13 +115,6 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
                     <h2 className="File-title">受理查询</h2>
                     <ul className="data-info handle-info" >
                         <li style={{marginLeft:100}}>
-                            <span>批次号：</span>
-                            <Input 
-                                placeholder="请输入批次号"
-                                onChange = {this.onChange.bind(this,"batchNo")}
-                            />
-                        </li>
-                        <li>
                             <span>公司名称：</span>
                             <Input 
                                 className="input"
@@ -129,6 +122,14 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
                                 onChange = {this.onChange.bind(this,"companyName")}
                             />
                         </li>
+                        <li >
+                            <span>批次号：</span>
+                            <Input 
+                                placeholder="请输入批次号"
+                                onChange = {this.onChange.bind(this,"batchNo")}
+                            />
+                        </li>
+                        
                         <li>
                             <span className="select-name">处理结果：</span>
                             <Select 
@@ -158,7 +159,7 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
                             <Button 
                                 className="query-btn" 
                                 type="primary" 
-                                style={{left:288}} 
+                                style={{left:270}} 
                                 onClick= {this.searchHandleList}
                             >
                                 查询

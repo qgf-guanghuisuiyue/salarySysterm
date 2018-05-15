@@ -1,47 +1,35 @@
 
 module.exports = [
     {
-        title: '收款日期',
+        title: '序号',
         dataIndex: 'index',
     }, 
     {
+        title: '批次号',
+        dataIndex: 'batchNo',
+    },
+    {
+        title: '公司名称',
+        dataIndex: 'corpName',
+    }, 
+    {
+        title: '代发总金额',
+        dataIndex: 'totalAmount',
+    }, 
+    {
         title: '代发日期',
-        dataIndex: 'corpname',
+        dataIndex: 'applyDate',
     },
     {
-        title: '付款公司',
-        dataIndex: 'username',
-    }, 
-    {
-        title: '收款公司',
-        dataIndex: 'createby',
-    }, 
-    {
-        title: '本次入账金额（元）',
-        dataIndex: 'logindate',
+        title: '收款日期',
+        dataIndex: 'paymentTime',
     },
     {
-        title: '本次代发金额（元）',
-        dataIndex: 'logoutdate',
+        title: '开票状态',
+        dataIndex: 'rate',
     },
     {
-        title: '收益点数',
-        dataIndex: 'logoutdate',
-    },
-    {
-        title: '本次开票金额（元）',
-        dataIndex: 'logoutdate',
-    },
-    {
-        title: '税率',
-        dataIndex: 'logoutdate',
-    },
-    {
-        title: '实际缴纳税额',
-        dataIndex: 'logoutdate',
-    },
-    {
-        title: '税后净收益',
-        dataIndex: 'logoutdate',
+        title: '',
+        dataIndex: 'detail',
     }
 ]

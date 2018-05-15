@@ -85,7 +85,7 @@ import * as Actions from 'actions';
                                 onChange={this.onInputChange.bind(this,"corpName")}
                             />
                         </div>
-                        <div className="inline-block">
+                        <div className="inline-block" style={{marginLeft:90}}>
                             <span className="title">批次号：</span>
                             <Input 
                                 style={{width: 200}} 
@@ -93,15 +93,7 @@ import * as Actions from 'actions';
                                 placeholder="请输入批次号"
                                 onChange={this.onInputChange.bind(this,"batchNo")}
                             />
-                        </div>
-                        <div className="inline-block">
-                            <span className="title">处理状态：</span>
-                            <Select style={{width: 200}} placeholder="请选择处理状态" onChange={this.onChangeSelect}>
-                                <Option value={0}>开票信息未处理</Option>
-                                <Option value={1}>开票信息已处理</Option>
-                            </Select>
-                            
-                        </div>    
+                        </div>   
                     </div>
                     <div className="handle-block" style={{width:"80%"}}>
                         <span className="title">收款日期：</span>

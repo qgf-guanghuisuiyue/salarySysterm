@@ -114,8 +114,8 @@ import * as Actions from 'actions';
                 message: '请选择代发申请文件'
             });
          }else{
-            window.location.hash = `#/createFile?batchno=${batchno}`
-            NProgress.done()
+            window.location.hash = `#/createFile?batchno=${batchno}`;
+            document.body.scrollTop = document.documentElement.scrollTop = 0;
          }
     }
     render(){

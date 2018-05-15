@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import {Link} from 'react-router';
 
-import {Input, Upload, Button, DatePicker, Table, Select, Icon, Modal} from 'antd';
+import {Input, Upload, Button, DatePicker, Table, Select, Icon, Modal, notification} from 'antd';
 
 import ReceiptModal from './receipt/receiptModal';
 import columns from 'data/table-columns/receiptCount';
@@ -19,14 +19,17 @@ import * as Actions from 'actions';
         startDate: "",
         endDate: "",
         corpName:"",
-        page:1
+        page:1,
+        record:{},
+        selectedRowKeys:[]
     };
     params = {
         skip:0,
         count:10
     }
     componentDidMount(){
-        this.searchReceiptList()
+        this.searchReceiptList();
+        this.props.getCompanyName()
     }
 
     onChangeSelect = (value) => {
@@ -42,11 +45,24 @@ import * as Actions from 'actions';
         columns[columns.length-2].render = (text,record,index) => { 
             return  <span>{record.rate==0?"未核算":record.rate==1?"已核算未开票":record.rate==2 && "已开票"}</span>
         }
-        columns[columns.length-1].render = (text,record,index) => {           
-            return  <a>开票详情</a>
+        columns[columns.length-1].render = (text,record,index) => {
+            return  <a onClick={this.showReceiptModal.bind(this,record)}>开票详情</a>
         }
         return columns
     }
+    //清空表格选择框
+    clearTableCheckbox = () => {
+        const {selectedRowKeys} = this.state;
+        if(selectedRowKeys.length === 0) return ;
+        this.setState({
+            selectedRowKeys:[],
+        })
+    }
+    //表格选择框选择
+    onSelectChange = (selectedRowKeys, selectedRows) => {
+        this.setState({selectedRowKeys});
+    }
+    
     //页码回调
     onChangePagination = (page) => {
         this.setState({
@@ -79,22 +95,54 @@ import * as Actions from 'actions';
     }
     rowSelection = () =>{
         const _this = this;
+        const {selectedRowKeys} = this.state;
        // 通过 rowSelection 对象表明需要行选择
         return {
            type:'radio',
+           selectedRowKeys,
+           onChange: this.onSelectChange,
            onSelect(record, selected, selectedRows) {
                    _this.setState({
-                       batchno:record.batchno
+                        record
                    })
                }
        };
     } 
-    showReceiptModal = () => {
-        this.props.showReceiptModal()
+    showReceiptModal = (value) => {
+        const {record} = this.state;
+        if(record.activeflag || value.activeflag){
+            if(value.activeflag){
+                this.setState({
+                    record:value
+                })
+            }
+            this.props.showReceiptModal()
+        }else{
+            notification.warn({
+                message:"请先选择付款公司"
+            })
+        }
+    }
+    cancelRecord = () =>{
+        this.setState({
+            record:{}
+        })
+        this.clearTableCheckbox()
     }
     render(){
-        const { startDate, endDate, batchNo, corpName ,rate} = this.state;
-        const {receiptList, isReceiptModal, hideReceiptModal} = this.props;
+        const { startDate, endDate, batchNo, corpName ,rate, record} = this.state;
+        const {
+            receiptList, 
+            isReceiptModal, 
+            hideReceiptModal,
+            companyList,
+            getCompanyName,
+            rateAndEarnList,
+            calculateList,
+            calculate,
+            saveData,
+            isCalLoading
+        } = this.props;
         return(
             <div className="layout common">
                 <div className="receipt">
@@ -177,6 +225,15 @@ import * as Actions from 'actions';
                 <ReceiptModal 
                     isReceiptModal={isReceiptModal} 
                     hideReceiptModal={hideReceiptModal}
+                    record= {record}
+                    companyList= {companyList}
+                    getCompanyName= {getCompanyName}
+                    rateAndEarnList= {rateAndEarnList}
+                    calculateList = {calculateList}
+                    calculate={calculate}
+                    saveData= {saveData}
+                    isCalLoading= {isCalLoading}
+                    cancelRecord = {this.cancelRecord}
                 />
             </div>
         )
@@ -184,12 +241,19 @@ import * as Actions from 'actions';
 }
 const mapStateToProps = state => ({
     receiptList: state.Receipt.receiptList,
-    isReceiptModal: state.Receipt.isReceiptModal
+    isReceiptModal: state.Receipt.isReceiptModal,
+    companyList: state.Receipt.companyList,
+    rateAndEarnList: state.Receipt.rateAndEarnList,
+    calculateList: state.Receipt.calculateList,
+    isCalLoading: state.Receipt.isCalLoading
 })
 const mapDispatchToProps = dispatch => ({
     searchReceiptList: bindActionCreators(Actions.ReceiptActions.searchReceiptList, dispatch),
     showReceiptModal: bindActionCreators(Actions.ReceiptActions.showReceiptModal, dispatch),
-    hideReceiptModal: bindActionCreators(Actions.ReceiptActions.hideReceiptModal, dispatch)
+    hideReceiptModal: bindActionCreators(Actions.ReceiptActions.hideReceiptModal, dispatch),
+    getCompanyName: bindActionCreators(Actions.ReceiptActions.getCompanyName, dispatch),
+    calculate: bindActionCreators(Actions.ReceiptActions.calculate, dispatch),
+    saveData: bindActionCreators(Actions.ReceiptActions.saveData, dispatch),
 })
 
 export default connect(

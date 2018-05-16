@@ -18,7 +18,8 @@ import * as Actions from 'actions';
 
     state = {
         type: [],   //1-公司模版；2-银行模版 模版类型
-        corpCode: [],   //公司名称
+        corpCode: '',   //公司代码
+        corpName: '',   //公司名称
         templateName: '',    //模版名称
         templateFileName: '', //模板文件
         error: false,
@@ -42,6 +43,15 @@ import * as Actions from 'actions';
     onHandleChange = (field, value) => {
         this.setState({
             [field]: value
+        })
+    }
+
+    onHandleCorp = (value) => {
+        let corpList = [];
+        corpList=value.split('&');
+        this.setState({
+            corpName: corpList[0],
+            corpCode: corpList[1],
         })
     }
 
@@ -102,7 +112,7 @@ import * as Actions from 'actions';
     }
 
     uploadTemp = () => {
-        let {fileList, type, corpCode, templateName } = this.state,
+        let {fileList, type, corpCode, templateName, corpName} = this.state,
             {getTempList,tempSave} = this.props;
         
         if(!type) {
@@ -127,7 +137,7 @@ import * as Actions from 'actions';
         if(!response){
             return ;
         }
-        tempSave({type, corpCode, templateName, templateFileName: name, fileName:response.data},getTempList);
+        tempSave({type, corpCode, corpName, templateName, templateFileName: name, fileName:response.data},getTempList);
     }
 
 
@@ -136,7 +146,7 @@ import * as Actions from 'actions';
             type, corpCode, templateName, templateFileName, fileList,error,errorMsg
         } = this.state;
         const {saveTempModal, hideSaveTempModal, corpData} = this.props;
-        let list = corpData.list?corpData.list:corpCode;
+        let list = corpData.list?corpData.list:[];
         return(
                 <Modal
                     title={<h2>列表</h2>}
@@ -161,11 +171,11 @@ import * as Actions from 'actions';
                             <span className="data-title">公司名称:</span>
                             <Select style={{width: 200}}
                                     placeholder='请选择公司名称'
-                                    onChange={this.onHandleChange.bind(this, 'corpCode')}
+                                    onChange={this.onHandleCorp}
                             >
                                 {
                                     list.map( (item,index)=>{
-                                        return <Option key={index} value={item.corpName}>{item.corpName}</Option>
+                                        return <Option key={index} value={`${item.corpName}&${item.corpCode}`}>{item.corpName}</Option>
                                     })
                                 }
                             </Select>

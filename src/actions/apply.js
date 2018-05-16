@@ -35,7 +35,6 @@ export const payAgentApply = (data, getApplyList) => (dispatch, getState) => {
 
 //代发申请列表查询接口
 export const getApplyList = (params) => (dispatch, getState) => {
-    console.log('代发申请列表查询接口')
     dispatch(APPLY_LIST_START);
     AjaxByToken('api/apply/payagent_applylist', {
         head: {
@@ -115,3 +114,4 @@ export const showDetailModal = (data, payAgentApplyDetaillist) => (dispatch,getS
 export const hideDetailModal = () => (dispatch,getState) => {
     dispatch(HIDE_DETAIL_MODAL)
 }
+

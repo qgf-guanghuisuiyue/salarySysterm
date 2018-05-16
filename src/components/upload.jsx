@@ -3,6 +3,7 @@ import moment from 'moment';
 import {Link} from 'react-router';
 import columns from 'data/table-columns/upload';
 import DetailModalComponent from './upload/detailModal';
+import pickBy from'lodash/pickBy';
 
 import {AjaxByToken} from 'utils/ajax';
 import {Input, Upload, Button, DatePicker, Table, Modal, notification, Select, message} from 'antd';
@@ -26,9 +27,12 @@ import * as Actions from 'actions';
         page: 1,
         fileName: '',
         cropCode: '',
-        templateName: '',
+        corpName: '',
+        templateList: [],
+        companyData: [], 
+        templateData: {},
+        templateName:''
     }
-     
 
     params = {
         skip: 0,
@@ -37,9 +41,12 @@ import * as Actions from 'actions';
     }
 
     componentDidMount() {
-        const {getApplyList, getFileNames} = this.props;
+        const {getApplyList, getCompanytemplate} = this.props;
         getApplyList(this.params);
-        getFileNames();
+        getCompanytemplate();
+        setTimeout(()=>{
+            this.getCompanytemplate()
+        }, 500)
     }
 
     componentWillReceiveProps(nextProps) {//清空数组    
@@ -57,7 +64,6 @@ import * as Actions from 'actions';
             this.props.resetPayagentFalse()
         }
     }
-
 
     triggerError = (error,errorMsg='文件类型不支持！') => {
         this.setState({error,errorMsg});
@@ -110,7 +116,7 @@ import * as Actions from 'actions';
     }
 
     uploadDemo = () => {
-        let {fileList, exptPayDate, cropCode,templateName} = this.state,
+        let {fileList, exptPayDate, corpName,templateName} = this.state,
             {payAgentApply, getApplyList} = this.props;
         // 判断是否上传了文件
         if(fileList.length === 0){
@@ -123,32 +129,18 @@ import * as Actions from 'actions';
             this.triggerError(true,'上传失败！');
             return ;
         }
-        if(!cropCode||!templateName){
+        console.log(corpName, templateName)
+        if(!corpName||!templateName){
             this.triggerError(true,'请选择模板类型！');
             return ;
         }
         const {data} = response;
-        payAgentApply({"fileName":data,"exptPayDate":exptPayDate, cropCode, templateName}, getApplyList)
+        payAgentApply({"fileName":data,"exptPayDate":exptPayDate, corpName, templateName}, getApplyList)
     }
 
     onDateChange = (date, dateString) => {
         this.setState({
             exptPayDate: moment(date).format('YYYYMMDD')
-        })
-    }
-
-    onHandleChange = (field, value) => {
-        this.setState({
-            [field]: value
-        })
-    }
-
-    onCorpCodeChange = (value) => {
-        let cropList = []; 
-        cropList = value.split('&');
-        this.setState({
-            cropCode: cropList[0],
-            templateName: cropList[1]
         })
     }
     
@@ -257,16 +249,56 @@ import * as Actions from 'actions';
         
     }
 
+    getCompanytemplate = () => {
+        const {fileNameData} = this.props;
+        let fileNameList = fileNameData.companylist?fileNameData.companylist:[];
+        let companyData = [], templateData = {};
+        fileNameList.forEach((item, index) => {
+            companyData.push({
+                brief: item.corpcode,
+                name: item.corpname
+            });
+            templateData[item.corpcode] = item.templatelist
+        })
+        this.setState({
+            companyData,
+            templateData
+        })
+    }
+
+    onCorpChange = (value) => {
+        console.log(value)
+        const {companyData, templateData} = this.state;
+        let name = '';
+        companyData.forEach((item,key)=>{
+            if(item.brief == value){
+                name = item.name
+            }
+        })
+        console.log(name)
+        this.setState({
+            corpName: name,
+            templateList: templateData[value],
+            // templateName: ""
+        })
+        
+    }
+
+    onTempChange = (value) => {
+        this.setState({
+            templateName: value,
+        })
+    }
+
     render(){
-        const {fileList,error,errorMsg, record, combineName} = this.state;
-        const {applyList, detailList, payAgentApplyDetaillist, fileNameData} = this.props;
+        const {fileList,error,errorMsg, record,corpName, combineName, companyData, templateData,templateName,templateList} = this.state;
+        const {applyList, detailList, payAgentApplyDetaillist} = this.props;
         const {applyData} = applyList;
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
            onChange: this.onSelectChange,
            selectedRowKeys: this.state.selectedRowKeys
         };
-        let fileNameList = fileNameData.list?fileNameData.list:[];
         return(
             <div className="layout common">
                 <div className="upLoad">
@@ -276,25 +308,30 @@ import * as Actions from 'actions';
                             <span className="title" style={{width: 100}}>公司名称：</span>
                             <Select style={{width: 300}}
                                     placeholder='请选择公司名称'
-                                    onChange={this.onCorpCodeChange}
+                                    onChange={this.onCorpChange}
                             >
                                 {
-                                    fileNameList.map( (item,index)=>{
-                                        return <Option key={index} value={`${item.cropCode}&${item.templateName}`}>{`${item.cropCode}-${item.templateName}`}</Option>
-                                    })
-                                }
+                                    companyData.map((item,index) => {
+                                    
+                                    return <Option value={item.brief}>{item.name}</Option>}
+                                
+                                )}
                             </Select>
                         </div>
                         <div className="inline-block">
-                            <span className="title" style={{width: 165}}>选择模版文件下载：</span>
+                            <span className="title" style={{width: 165}}>选择所使用的模板：</span>
+                            <span></span>
                             <Select style={{width: 300}}
                                     placeholder='选择模版文件'
-                                    onChange={this.onHandleChange.bind(this, 'fileName')}
+                                    value={templateName}
+                                    onChange={this.onTempChange}
+                                    disabled={corpName?false:true}
                             >
                                 {
-                                    fileNameList.map( (item,index)=>{
-                                        return <Option key={index} value={item.templateFileName}>{item.templateFileName}</Option>
+                                    templateList.map((item,index)=>{
+                                        return(<Option value={item.templatename} >{item.templatefilename}</Option>)
                                     })
+                                    
                                 }
                             </Select>
                             <Button 
@@ -405,11 +442,11 @@ const mapDispatchToProps = dispatch => ({
     payAgentApply: bindActionCreators(Actions.ApplyActions.payAgentApply, dispatch),
     payAgentDel: bindActionCreators(Actions.ApplyActions.payAgentDel, dispatch),
     showDetailModal: bindActionCreators(Actions.ApplyActions.showDetailModal, dispatch),
-    payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),   
+    payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),    
     removeUploadFIle: bindActionCreators(Actions.FileActions.removeUploadFIle, dispatch), 
     showPayAgentCommitModal: bindActionCreators(Actions.UploadActions.showPayAgentCommitModal, dispatch),
     hidePayAgentCommitModal: bindActionCreators(Actions.UploadActions.hidePayAgentCommitModal, dispatch),
-    getFileNames: bindActionCreators(Actions.UploadActions.getFileNames, dispatch),
+    getCompanytemplate: bindActionCreators(Actions.UploadActions.getCompanytemplate, dispatch),  
 })
 
 export default connect(

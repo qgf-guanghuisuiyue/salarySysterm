@@ -35,15 +35,16 @@ export const hidePayAgentCommitModal = () => (dispatch,getState) => {
     dispatch(HIDE_PAY_AGENT_COMMIT_MODAL);
 }
 
-export const getFileNames = () => (dispatch,getState) => {
-    AjaxByToken('api/system/template/filenames', {
+//代发申请-公司+模板选项列表
+export const getCompanytemplate = () => (dispatch, getState) => {
+    AjaxByToken('api/apply/companytemplate', {
         head: {
-            transcode: 'S000022',
+            transcode: 'A000007',
         },
     }).then(res => {
         dispatch({...GET_FILENAMES, fileNameData: res.data});
     }, err => {
         console.log(err)
     })
-}
+};
 

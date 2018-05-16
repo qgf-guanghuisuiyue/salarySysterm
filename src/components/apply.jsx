@@ -86,7 +86,6 @@ import * as Actions from 'actions';
         const {corpName , startDate , endDate} = this.state;
         let startTime = startDate ? moment(startDate).format('YYYYMMDD') : '';
         let endTime = endDate ? moment(endDate).format('YYYYMMDD') : '';
-        console.log(corpName , startDate , endDate)
         this.props.getApplyList({...this.params, 'companyname':corpName, 'startDate':startTime, 'endDate':endTime})
     }
 

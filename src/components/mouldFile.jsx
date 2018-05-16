@@ -17,7 +17,7 @@ import * as Actions from 'actions';
  class MouldFile extends React.Component{
     
     state = {
-      corpCode: '', //公司名称
+      corpName: '', //公司名称
       page: 1,
       selectedList: [],
     }
@@ -28,10 +28,15 @@ import * as Actions from 'actions';
     }
 
     componentDidMount() {
-        const  {corpCode} = this.state;
-        const  {getTempList, getCorpList} = this.props;
-        getTempList({corpCode, count:10,skip:this.params.skip });
-        getCorpList()
+        const  {getCorpList} = this.props;
+        getCorpList();
+        this.getTempList();
+    }
+
+    getTempList = () => {
+        const {getTempList} = this.props;
+        const  {corpName} = this.state;
+        getTempList({corpName, count:10,skip:this.params.skip });
     }
 
     _getColumns() {
@@ -49,6 +54,8 @@ import * as Actions from 'actions';
             [field]: value
         })
     }
+
+    
 
     saveTemp = () => {
         this.props.showSaveTempModal();        
@@ -89,16 +96,16 @@ import * as Actions from 'actions';
             page
         });
         const {
-          corpCode,
+          corpName,
         } = this.state;
         const {getTempList} = this.props;
         this.params.skip = (page -1)*10;
-        this.getTempList({count:10,skip:this.params.skip, corpCode})
+        this.getTempList({count:10,skip:this.params.skip, corpName})
     }
 
 
     render(){
-        const {corpCode} = this.state;
+        const {corpName} = this.state;
         const {temp, getTempList, corpData} = this.props;
         let list = corpData.list?corpData.list:[];
         const {tempData} = temp;
@@ -116,16 +123,18 @@ import * as Actions from 'actions';
                             <span className="title">公司名称：</span>
                             <Select style={{width: 200}}
                                     placeholder='请选择公司名称'
-                                    onChange={this.onHandleChange.bind(this, 'corpCode')}
+                                    onChange={this.onHandleChange.bind(this, 'corpName')}
                             >
                                 {
                                     list.map( (item,index)=>{
-                                        return <Option key={index} value={item.corpCode}>{item.corpName}</Option>
+                                        return <Option key={index} value={item.corpName}>{item.corpName}</Option>
                                     })
                                 }
                             </Select>
                         </div>
-                        <Button type="primary" style={{marginLeft: 20}}>查询</Button>
+                        <Button type="primary" style={{marginLeft: 20}}
+                                onClick={this.getTempList}
+                        >查询</Button>
                     </div>
                     <h2 className="File-title">列表</h2>
                     <div className="table-area">
@@ -167,7 +176,6 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
       getTempList: bindActionCreators(Actions.SystemActions.getTempList, dispatch),
-      tempSave: bindActionCreators(Actions.SystemActions.tempSave, dispatch),
       showSaveTempModal: bindActionCreators(Actions.SystemActions.showSaveTempModal, dispatch),
       getCorpList: bindActionCreators(Actions.SystemActions.getCorpList, dispatch),
       tempStop: bindActionCreators(Actions.SystemActions.tempStop, dispatch),

@@ -4,7 +4,7 @@ module.exports = [
         dataIndex: 'key',
     }, {
         title: '公司名称',
-        dataIndex: 'corpcode',
+        dataIndex: 'corpname',
     }, {
         title: '模板文件名称',
         dataIndex: 'templatename',

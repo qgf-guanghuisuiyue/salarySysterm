@@ -10,54 +10,54 @@ module.exports = [
     },
     {
         title: '收款日期',
-        dataIndex: 'index',
+        dataIndex: 'paymentTime',
     }, 
     {
         title: '代发日期',
-        dataIndex: 'corpname',
+        dataIndex: 'actPayDate',
     },
     {
         title: '付款公司',
-        dataIndex: 'username',
+        dataIndex: 'paymentCompany',
     }, 
     {
         title: '收款公司',
-        dataIndex: 'createby',
+        dataIndex: 'oftheCompany',
     }, 
     {
         title: '入账总金额',
-        dataIndex: 'logindate',
+        dataIndex: 'netamount',
     },
     {
         title: '代发金额',
-        dataIndex: 'logoutdate',
+        dataIndex: 'totalamount',
     },
     {
         title: '收益点数',
-        dataIndex: 'logoutdate',
+        dataIndex: 'yieldpoints',
     },
     {
         title: '开票金额',
-        dataIndex: 'logoutdate',
+        dataIndex: 'rateamount',
     },
     {
         title: '税率',
-        dataIndex: 'logoutdate',
+        dataIndex: 'paytax',
     },
     {
         title: '实际缴纳税额',
-        dataIndex: 'logoutdate',
+        dataIndex: 'therate',
     },
     {
         title: '税后净收益',
-        dataIndex: 'logoutdate',
+        dataIndex: 'profits',
     },
     {
         title: '开票日期',
-        dataIndex: 'logoutdate',
+        dataIndex: 'invoicedate',
     },
     {
         title: '备注',
-        dataIndex: 'logoutdate',
+        dataIndex: 'remark',
     }
 ]

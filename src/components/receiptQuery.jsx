@@ -14,7 +14,6 @@ import * as Actions from 'actions';
  class ReceiptQuery extends React.Component{
     state = {
         batchNo: "",
-        rate: "",
         startDate: "",
         endDate: "",
         corpName:"",
@@ -27,26 +26,42 @@ import * as Actions from 'actions';
     componentDidMount(){
         this.props.searchReceiptList()
     }
-    onChangeSelect = (value) => {
-        this.setState({
-            rate:value
-        })
+
+    disabledStartDate = (startDate) => {
+        const endDate = this.state.endDate;
+        if (!startDate || !endDate) {
+            return false;
+        }
+        return startDate.valueOf() > endDate.valueOf();
     }
+
+    disabledEndDate = (endDate) => {
+        const startDate = this.state.startDate;
+        if (!endDate || !startDate) {
+            return false;
+        }
+        return endDate.valueOf() <= startDate.valueOf();
+    }
+   
     dateChange = (field, value) => {
         this.setState({
-            [field]: moment(value).format("YYYYMMDD"),
+            [field]: value,
         });
     }
     getColumns = () => {
         const {page} = this.state;
         columns[0].render = (text,record,index) => {           
-            return  <a>{(index+1)+(page-1)*10}</a>
+            return  <span>{(index+1)+(page-1)*10}</span>
         }
-        columns[4].render = (text,record,index) => { 
-            return  <a>{record.logindate?moment(record.logindate).format("YYYY/MM/DD  h:mm:ss  a"):""}</a>
+        
+        columns[columns.length-5].render = (text,record,index) => {           
+            return  <span>{`${text*100}%`}</span>
         }
-        columns[5].render = (text,record,index) => {           
-            return  <a>{record.logoutdate?moment(record.logoutdate).format("YYYY/MM/DD  h:mm:ss  a"):""}</a>
+        columns[columns.length-4].render = (text,record,index) => {           
+            return  <span>{`${text*100}%`}</span>
+        }
+        columns[columns.length-7].render = (text,record,index) => {           
+            return  <span>{`${text*100}%`}</span>
         }
         return columns
     }
@@ -65,11 +80,14 @@ import * as Actions from 'actions';
         })
     }
     searchReceiptList = () => {
-        const { startDate, endDate, batchNo, corpName ,rate} = this.state;
-        this.props.searchReceiptList({startDate, endDate, batchNo, corpName ,rate})
-    }
+        const { startDate, endDate, batchNo, corpName } = this.state;
+        let startTime = startDate ? moment(startDate).format("YYYYMMDD") : '';
+        let endTime = endDate ? moment(endDate).format("YYYYMMDD") : '';
+        console.log(startTime, endTime)
+        this.props.searchReceiptList({startDate: startTime, endDate: endTime, batchNo, corpName })
+    } 
     render(){
-        const { startDate, endDate, batchNo, corpName ,rate} = this.state;
+        const { startDate, endDate, batchNo, corpName } = this.state;
         const {receiptList} = this.props;
         return(
             <div className=" layout common">
@@ -93,18 +111,21 @@ import * as Actions from 'actions';
                                 placeholder="请输入批次号"
                                 onChange={this.onInputChange.bind(this,"batchNo")}
                             />
-                        </div>   
+                        </div>
+                         
                     </div>
                     <div className="handle-block" style={{width:"80%"}}>
                         <span className="title">收款日期：</span>
                         <DatePicker
                             placeholder="开始日期"
+                            disabledDate={this.disabledStartDate}
                             style={{width:200}}
                             onChange={this.dateChange.bind(this,"startDate")}
                         />
-                        <span className="title">&nbsp;&nbsp;TO &nbsp;&nbsp;&nbsp;</span>
+                        <span className="title">&nbsp;&nbsp;TO &nbsp;&nbsp;&nbsp;&nbsp;</span>
                         <DatePicker
                             placeholder="结束日期"
+                            disabledDate={this.disabledEndDate}
                             style={{width:200}} 
                             onChange={this.dateChange.bind(this,"endDate")}
                         />
@@ -122,6 +143,12 @@ import * as Actions from 'actions';
                             columns={this.getColumns()} 
                             dataSource={receiptList.list} 
                             bordered={true}
+                            pagination={{
+                                defaultPageSize:10,
+                                total: receiptList.count,
+                                onChange: this.onChangePagination,
+                                showTotal:total => `共 ${receiptList.count == 0 ? 0 : receiptList.count} 条数据`
+                            }}
                         />
                     </div>
                     

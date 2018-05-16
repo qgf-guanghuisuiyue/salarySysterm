@@ -11,8 +11,14 @@ const CALCULATE = {type:types.CALCULATE};
 const CALCULATE_START = {type:types.CALCULATE_START};
 //const CANCEL_CAL_LIST = {type:types.CANCEL_CAL_LIST}
 
-    export const showReceiptModal = () => (dispatch,getState) => {
+    export const showReceiptModal = (getCompanyName, searchReceiptList) => (dispatch,getState) => {
         dispatch(SHOW_RECEIPT_MODAL);
+        if(getCompanyName){
+            getCompanyName();
+        }
+        if(searchReceiptList){
+            searchReceiptList()
+        }
     }
     export const hideReceiptModal = () => (dispatch,getState) => {
         dispatch({...HIDE_RECEIPT_MODAL})

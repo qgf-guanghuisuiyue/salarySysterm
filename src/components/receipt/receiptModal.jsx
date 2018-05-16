@@ -22,9 +22,10 @@ export default class EditModal extends React.Component{
         //console.log(record)
      }
      saveData = () => {
-         const {batchNo,corpName,totalAmount,paymentTime,rate, netamount} = this.props.record;
-         const {invoiceAmount,grossAmount,actualAmount} = this.props.calculateList;
-         const {oftheCompany,issuingamount,earn,invoicedate} = this.state;
+         const {searchReceiptList, calculateList, hideReceiptModal, record} = this.props,
+            {batchNo,corpName,totalAmount,paymentTime,rate, netamount} = record,
+            {invoiceAmount,grossAmount,actualAmount} = calculateList,
+            {oftheCompany,issuingamount,earn,invoicedate} = this.state;
          this.props.saveData({
             batchno:batchNo,//批次号
             paymentCompany:corpName,//付款公司
@@ -38,7 +39,7 @@ export default class EditModal extends React.Component{
             invoicedate,//开票日期
             rate,//状态
             paymentTime:moment(paymentTime).format("YYYY-MM-DD")//收款日期
-         },this.props.hideReceiptModal)
+         },hideReceiptModal, searchReceiptList)
      }
      onCancel = () => {
          this.props.hideReceiptModal()
@@ -59,6 +60,7 @@ export default class EditModal extends React.Component{
     }
     
     companySelect = (field,value) => {
+        const {netamount} = this.props.record
         if(field=="oftheCompany"){
             this.setState({
                 rateList:"",
@@ -66,6 +68,11 @@ export default class EditModal extends React.Component{
                 isUse:false
             })
             this.props.getCompanyName({id:value})
+        }
+        if(field=="earn"){
+            this.setState({
+                issuingamount:netamount/(1+value)
+            })
         }
         this.setState({
             [field]:value
@@ -94,6 +101,7 @@ export default class EditModal extends React.Component{
             notification.warning({
                 message:"请输入本次代发金额"
             })
+            this.refs.issuingamount.focus()
             return false
         }else if(!netamount){
             notification.warning({
@@ -156,6 +164,7 @@ export default class EditModal extends React.Component{
                                     onChange={this.companySelect.bind(this,"oftheCompany")}
                                     
                                 >
+                                    <Option value='' disabled selected style={{color:"#CCCCCC"}}>请选择收款公司</Option>
                                     {
                                         list && list.map((item,index)=>{
                                             return(<Option value={item.id}>{item.corpname}</Option>)
@@ -185,13 +194,14 @@ export default class EditModal extends React.Component{
                             </Tooltip>
                         </li>
                         <li>
-                            <a><span style={{color:"red"}}>*</span>本次代发金额：</a>
+                            <a>本次代发金额：</a>
                             <a>
                                 <Input 
+                                    ref="issuingamount"
                                     style={{width:240}} 
-                                    placeholder="请输入本次代发金额"
+                                    placeholder="请先选择收益点数获得"
                                     value={issuingamount}
-                                    onChange={this.onChangeInput}
+                                    disabled
                                 />
                             </a>
                         </li>
@@ -259,7 +269,7 @@ export default class EditModal extends React.Component{
                             </a>
                         </li>
                         <li>
-                            <a><span style={{color:"red"}}>*</span>开票日期：</a>
+                            <a>开票日期：</a>
                             <a>
                                 <DatePicker 
                                     style={{width:240}} 

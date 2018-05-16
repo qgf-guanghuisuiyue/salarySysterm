@@ -5,7 +5,7 @@ import store from 'store';
 import LeadingFileModal from './leadingResult/leadingFileModal';
 import { Table , Button , Tooltip , Input , DatePicker ,Icon ,Modal, Upload, notification} from 'antd';
 const confirm = Modal.confirm;
-import DetailModalComponent from './upload/detailModal';
+import DetailModalComponent from './leadingResult/leadingDetail';
 import columns from 'data/table-columns/leadingResultList'
 //redux
 import {bindActionCreators} from 'redux';
@@ -72,7 +72,7 @@ import * as Actions from 'actions';
             url = `/PayAgent/api/web/file/downloadFile?token=${token.token}&tokenKey=${token.tokenKey}&fileName=`;
 
         columns[0].render = (text,record,index) => {           
-            return  <a>{(index+1)+(page-1)*5}</a>
+            return  <a>{(index+1)+(page-1)*10}</a>
         }
         columns[3].render = (text,record,index) => { 
             return  <a href={`${origin + url + record.payapplyfilename}`} title="点击下载文件">{record.payapplyfilename}}</a>
@@ -98,10 +98,10 @@ import * as Actions from 'actions';
     }
     //明细查询
     showDetailModal = (record) => {
-        const {showDetailModal,payAgentApplyDetaillist} = this.props;
+        const {showDetailModal,payAgentApplyDetaillist, payFileMakeInfo} = this.props;
         showDetailModal({...this.params,
             batchNo: record.batchno
-        }, payAgentApplyDetaillist);
+        }, payAgentApplyDetaillist, payFileMakeInfo);
         this.setState({record})
     }
     onChange = (e) => {
@@ -125,8 +125,9 @@ import * as Actions from 'actions';
         this.setState({
             page
         })
-        this.params.skip = page * 5 - 5;
+        this.params.skip = page * 10 - 10;
         this.leadingResultQuery();
+        document.body.scrollTop = document.documentElement.scrollTop = 0;
     }
     rowSelection = () =>{
         const _this = this;
@@ -214,7 +215,7 @@ import * as Actions from 'actions';
     }
     render(){
           const { companyName, fileList, error, errorMsg, record } = this.state;
-          const { isUpLoadModal, dataSwitchList, payFileCreate} = this.props,
+          const { isUpLoadModal, dataSwitchList, payFileCreate,isDetailModal, hideDetailModal, detailList, payAgentApplyDetaillist} = this.props,
                  data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
                 count = dataSwitchList.count;//总条数 
         return(
@@ -280,7 +281,7 @@ import * as Actions from 'actions';
                             dataSource={data} 
                             bordered={true}
                             pagination={{
-                                defaultPageSize: 5,
+                                defaultPageSize: 10,
                                 total: count,
                                 onChange:this.onChangePagination,
                                 showTotal:total => `共 ${count} 条数据`
@@ -291,7 +292,14 @@ import * as Actions from 'actions';
 
                 <LeadingFileModal payFileCreate={payFileCreate}/>
 
-                <DetailModalComponent record={record}/>
+                <DetailModalComponent 
+                    record={record}
+                    isDetailModal={isDetailModal}
+                    hideDetailModal = {hideDetailModal}
+                    detailList = {detailList}
+                    payAgentApplyDetaillist= {payAgentApplyDetaillist}
+                    payFileCreate = {payFileCreate}
+                />
 
                 <Modal
                     title="代发结果文件"
@@ -338,7 +346,9 @@ import * as Actions from 'actions';
     const mapStateToProps = state => ({
         isUpLoadModal: state.LeadingResult.isUpLoadModal,
         dataSwitchList: state.DataSwitch.dataSwitchList,
-        payFileCreate: state.DataSwitch.payFileCreate
+        payFileCreate: state.DataSwitch.payFileCreate,
+        isDetailModal:state.LeadingResult.isDetailModal,
+        detailList: state.Apply.detailList,
     })
     const mapDispatchToProps = dispatch => ({
         showLeadingFileModal: bindActionCreators(Actions.LeadingResultActions.showLeadingFileModal, dispatch),
@@ -350,7 +360,8 @@ import * as Actions from 'actions';
         getDataSwitchList: bindActionCreators(Actions.DataSwitchActions.getDataSwitchList, dispatch),
         payFileMakeInfo: bindActionCreators(Actions.DataSwitchActions.payFileMakeInfo, dispatch),
         payAgentApplyDetaillist: bindActionCreators(Actions.ApplyActions.payAgentApplyDetaillist, dispatch),
-        showDetailModal: bindActionCreators(Actions.ApplyActions.showDetailModal, dispatch),
+        showDetailModal: bindActionCreators(Actions.LeadingResultActions.showDetailModal, dispatch),
+        hideDetailModal: bindActionCreators(Actions.LeadingResultActions.hideDetailModal, dispatch),
     })
 
     export default connect(

@@ -29,7 +29,7 @@ import * as Actions from 'actions';
     }
     componentDidMount(){
         this.searchReceiptList();
-        this.props.getCompanyName()
+        //this.props.getCompanyName()
     }
 
     onChangeSelect = (value) => {
@@ -92,6 +92,7 @@ import * as Actions from 'actions';
         })
         this.params.skip = page * 10 - 10;
         this.searchReceiptList();
+        document.body.scrollTop = document.documentElement.scrollTop = 0;
     }
     rowSelection = () =>{
         const _this = this;
@@ -115,8 +116,10 @@ import * as Actions from 'actions';
                 this.setState({
                     record:value
                 })
+                this.props.showReceiptModal()
+            }else{
+                this.props.showReceiptModal(this.props.getCompanyName)
             }
-            this.props.showReceiptModal()
         }else{
             notification.warn({
                 message:"请先选择付款公司"
@@ -234,6 +237,7 @@ import * as Actions from 'actions';
                     saveData= {saveData}
                     isCalLoading= {isCalLoading}
                     cancelRecord = {this.cancelRecord}
+                    searchReceiptList = {this.searchReceiptList}
                 />
             </div>
         )

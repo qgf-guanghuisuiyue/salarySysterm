@@ -103,7 +103,7 @@ import * as Actions from 'actions';
                                 onChange={this.onInputChange.bind(this,"corpName")}
                             />
                         </div>
-                        <div className="inline-block">
+                        <div className="inline-block" style={{marginLeft:90}}>
                             <span className="title">批次号：</span>
                             <Input 
                                 style={{width: 200}} 

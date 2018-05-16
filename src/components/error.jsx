@@ -62,7 +62,13 @@ import * as Actions from 'actions';
                 message:"请先选择失败文件"
             })
         }
-       
+    }
+    getColumns = () => {
+        const {page} = this.state;
+        columns[0].render = (text,record,index) => {           
+            return  <a>{(index+1)+(page-1)*10}</a>
+        }
+        return columns
     }
     onInputChange = (field,e) => {
         this.setState({
@@ -200,7 +206,7 @@ import * as Actions from 'actions';
                     <div className="err-table">
                         <Table 
                             rowSelection={this.rowSelection()}
-                            columns={columns} 
+                            columns={this.getColumns()} 
                             dataSource={list} 
                             bordered={true}
                             pagination={{

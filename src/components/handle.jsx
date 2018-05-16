@@ -103,6 +103,7 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
         })
         this.params.skip = page * 10 - 10;
         this.searchHandleList();
+        document.body.scrollTop = document.documentElement.scrollTop = 0;
     }
     render(){
         const {record} = this.state;

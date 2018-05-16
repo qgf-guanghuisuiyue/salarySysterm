@@ -7,6 +7,8 @@ const HIDE_LEADINGFILE_MODAL = {type:types.HIDE_LEADINGFILE_MODAL};
 const LEADING_RESULT_QUERY = {type:types.LEADING_RESULT_QUERY};
 const SHOW_UPLOAD_MODAL = {type:types.SHOW_UPLOAD_MODAL};
 const HIDE_UPLOAD_MODAL = {type:types.HIDE_UPLOAD_MODAL};
+const SHOW_DETAIL_MODAL = {type:types.SHOW_DETAIL_MODAL};
+const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
 
 
     export const showLeadingFileModal = (batchno,payFileMakeInfo) => (dispatch,getState) => {
@@ -22,6 +24,15 @@ const HIDE_UPLOAD_MODAL = {type:types.HIDE_UPLOAD_MODAL};
     export const hideUploadFileModal = (cancelFile) => (dispatch,getState) => {
         dispatch({...HIDE_UPLOAD_MODAL});
         cancelFile()
+    }
+
+    export const showDetailModal = (data,payAgentApplyDetaillist,payFileMakeInfo) => (dispatch,getState) => {
+        dispatch({...SHOW_DETAIL_MODAL})
+        payAgentApplyDetaillist(data);
+        payFileMakeInfo({batchNo:data.batchNo})
+    }
+    export const hideDetailModal = () => (dispatch,getState) => {
+        dispatch({...HIDE_DETAIL_MODAL})
     }
     //批次结果确认
     export const resultConfirm = (data) => (dispatch,getState) => {

@@ -2,12 +2,15 @@ import {
     SHOW_LEADINGFILE_MODAL,
     HIDE_LEADINGFILE_MODAL,
     SHOW_UPLOAD_MODAL,
-    HIDE_UPLOAD_MODAL
+    HIDE_UPLOAD_MODAL,
+    SHOW_DETAIL_MODAL,
+    HIDE_DETAIL_MODAL
 } from '../constants/leadingResult';
 
 const initialState = {
     isLeadingFileModal:false,
-    isUpLoadModal:false
+    isUpLoadModal:false,
+    isDetailModal:false
 };
 
 export default function leadingResult(state = initialState,actions){
@@ -19,7 +22,11 @@ export default function leadingResult(state = initialState,actions){
         case SHOW_UPLOAD_MODAL: 
             return {...state,isUpLoadModal:true};
         case HIDE_UPLOAD_MODAL: 
-            return {...state,isUpLoadModal:false};    
+            return {...state,isUpLoadModal:false};
+        case SHOW_DETAIL_MODAL: 
+            return {...state,isDetailModal:true};
+        case HIDE_DETAIL_MODAL: 
+            return {...state,isDetailModal:false};   
         default: 
             return state;
     }

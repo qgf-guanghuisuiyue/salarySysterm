@@ -105,7 +105,7 @@ import * as Actions from 'actions';
                                 className="menu"
                             >
                                 {
-                                    ///(role ==="1" || role ==="2") &&
+                                    //(role ==="1" || role ==="2") &&
                                     <SubMenu key="apply" title={<a className="subMenuBk" style={{background:`${applyBackground}`}}>代发申请&nbsp;&nbsp;∨</a>}>
                                     {
                                         this.apply.map((item,index)=>{
@@ -118,7 +118,7 @@ import * as Actions from 'actions';
                                     </SubMenu>
                                 }
                                 {
-                                    //(role ==="0" || role ==="2") &&
+                                    (role ==="0" || role ==="2") &&
                                     <SubMenu key="handle" title={<a className="subMenuBk" style={{background:`${handleBackground}`}}>代发薪受理&nbsp;&nbsp;∨</a>}>
                                         {
                                             this.salaryHandle.map((item,index)=>{
@@ -131,7 +131,7 @@ import * as Actions from 'actions';
                                     </SubMenu>
                                 }
                                 {
-                                    //      role ==="2" &&
+                                    (role ==="0" || role ==="2") &&
                                     <SubMenu key="basicManage" title={<a className="subMenuBk" style={{background:`${systemBackground}`}}>系统管理&nbsp;&nbsp;∨</a>}>
                                         {
                                             this.systemManage.map((item,index)=>{

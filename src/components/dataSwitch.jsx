@@ -55,7 +55,7 @@ import * as Actions from 'actions';
     getColumns = () => {
         const {page} = this.state;
         columns[0].render = (text,record,index) => {           
-            return  <a>{(index+1)+(page-1)*5}</a>
+            return  <a>{(index+1)+(page-1)*10}</a>
         }
         columns[columns.length-3].render = (text,record,index)=>{
             return <a>{moment(record.applydate).format("YYYY-MM-DD")}</a>;
@@ -92,8 +92,9 @@ import * as Actions from 'actions';
         this.setState({
             page
         })
-        this.params.skip = page * 5 - 5;
+        this.params.skip = page * 10 - 10;
         this.queryList();
+        document.body.scrollTop = document.documentElement.scrollTop = 0;
     }
     rowSelection = () =>{
          const _this = this;
@@ -114,8 +115,8 @@ import * as Actions from 'actions';
                 message: '请选择代发申请文件'
             });
          }else{
-            window.location.hash = `#/createFile?batchno=${batchno}`
-            NProgress.done()
+            window.location.hash = `#/createFile?batchno=${batchno}`;
+            document.body.scrollTop = document.documentElement.scrollTop = 0;
          }
     }
     render(){
@@ -178,7 +179,7 @@ import * as Actions from 'actions';
                             bordered={true} 
                             loading={isLoading}
                             pagination={{
-                                defaultPageSize: 5,
+                                defaultPageSize: 10,
                                 total: count,
                                 onChange:this.onChangePagination,
                                 showTotal:total => `共 ${count} 条数据`

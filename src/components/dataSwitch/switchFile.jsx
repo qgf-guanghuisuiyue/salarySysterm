@@ -38,6 +38,9 @@ import * as Actions from 'actions';
     goBack = () => {
       this.props.showRefuseModal()
     }
+    back = () => {
+        this.context.router.push('dataSwitch')
+    }
     getColumns = () => {
         const {page} = this.state;
         columns[0].render = (record , text , index) =>{
@@ -98,21 +101,25 @@ import * as Actions from 'actions';
         const {tblPayApplyModel , tblPayInfo={} , list , size} = payagentDetail;
         const { tblPayInfoModel } = payFileCreate;
         const {batchno} = this.props.location.query;
+        console.log(tblPayInfoModel)
         const token = store.get('token'),
               origin = window.location.origin,
-              url = `/PayAgent/api/web/file/downloadExcel?token=${token.token}&tokenKey=${token.tokenKey}&fileName=`
+              url = `/PayAgent/api/web/file/downloadExcel?token=${token.token}&tokenKey=${token.tokenKey}&fileName=`;
         return(
             <div className="layout common">
                 <div className="leadingResult">
                     <h2 className="File-title">生成银行代发文件</h2>
-                    <ul className="data-info switchFileUl">
+                    <ul className="data-info switchFileUl" style={{width:1200,margin:"0 auto"}}>
                         <li><span>批次号：</span><span>{tblPayApplyModel?tblPayApplyModel.batchno:""}</span></li>
                         <li><span>公司名称：</span><span>{tblPayApplyModel?tblPayApplyModel.corpname:""}</span></li>
-                        <li><span>代发文件名：</span><span>{tblPayApplyModel?tblPayApplyModel.payapplyfilename:""}</span></li>
                         <li><span>总笔数：</span><span>{tblPayApplyModel?tblPayApplyModel.totalcount:""}</span></li>
-                        <li style={{height:30}}><span>总金额：</span><span>{tblPayApplyModel?tblPayApplyModel.totalamount:""}</span></li>
+                        <li><span>总金额：</span><span>{tblPayApplyModel?tblPayApplyModel.totalamount:""}</span></li>
                         <li><span>申请日期：</span><span>{tblPayApplyModel?moment(tblPayApplyModel.applydate).format("YYYY-MM-DD"):""}</span></li>
                         <li><span>处理状态：</span><span>{tblPayApplyModel?tblPayApplyModel.status===0?"全部成功":tblPayApplyModel.status===1?"部分成功":tblPayApplyModel.status===2?"待处理":tblPayApplyModel.status===3?"处理中":tblPayApplyModel.status===4 ? "拒绝处理":"暂无":""}</span></li>
+                        <li style={{width:1200}}>
+                            <span>代发文件名：</span>
+                            <span style={{width:1100}}>{tblPayApplyModel?tblPayApplyModel.payapplyfilename:""}</span>
+                        </li>
                     </ul>
                     <div className="File-btn switchFile">
                         <div className="switchFile-select">
@@ -162,11 +169,13 @@ import * as Actions from 'actions';
                         </Tooltip> 
                         &nbsp;&nbsp;
                         <Button type="primary" onClick= {this.goBack}>直接退回</Button>
+                        &nbsp;&nbsp;
+                        <Button icon="rollback" type="primary" onClick={this.back}>返回</Button>
                     </div>
                     <div className="File">
                         <span>银行代发文件：</span>
                         {
-                            tblPayInfoModel?tblPayInfoModel.payfilename.split(",").map((item,index)=>{
+                            tblPayInfoModel && tblPayInfoModel.payfilename ?tblPayInfoModel.payfilename.split(",").map((item,index)=>{
                                 return (<Tooltip title="点击下载银行代发文件">
                                             <a href={`${origin + url + item}`}>{item}</a>
                                             {/* <a onClick={this.downLoadFile.bind(this,item)}>{item}</a> */}

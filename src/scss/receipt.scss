@@ -26,11 +26,23 @@
     li{
         margin: 20px 0px 20px;
     }
+    // .ant-select{
+    //     .ant-select-selection{
+    //         .ant-select-selection__rendered{
+    //             .ant-select-selection__placeholder{
+    //                 display: block!important
+    //             };
+    //         } 
+    //     }
+    // }
     .left-ul{
         width: 400px;
         float: left;
         margin-left: 50px;
         li{
+            .ant-input[disabled]{
+                color: #666
+            }
             a:nth-child(1){
                 display: inline-block;
                 width: 120px;
@@ -50,6 +62,9 @@
         float:right;
         margin-right: 50px;
         li{
+            .ant-input[disabled]{
+                color: #666
+            }
             a:nth-child(1){
                 display: inline-block;
                 width: 120px;

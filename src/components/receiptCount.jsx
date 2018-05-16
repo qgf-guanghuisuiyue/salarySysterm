@@ -21,7 +21,8 @@ import * as Actions from 'actions';
         corpName:"",
         page:1,
         record:{},
-        selectedRowKeys:[]
+        selectedRowKeys:[],
+        isDisabled:false
     };
     params = {
         skip:0,
@@ -114,10 +115,14 @@ import * as Actions from 'actions';
         if(record.activeflag || value.activeflag){
             if(value.activeflag){
                 this.setState({
-                    record:value
+                    record:value,
+                    isDisabled:true
                 })
                 this.props.showReceiptModal()
             }else{
+                this.setState({
+                    isDisabled:false
+                })
                 this.props.showReceiptModal(this.props.getCompanyName)
             }
         }else{
@@ -133,7 +138,7 @@ import * as Actions from 'actions';
         this.clearTableCheckbox()
     }
     render(){
-        const { startDate, endDate, batchNo, corpName ,rate, record} = this.state;
+        const { startDate, endDate, batchNo, corpName ,rate, record, isDisabled} = this.state;
         const {
             receiptList, 
             isReceiptModal, 
@@ -172,8 +177,9 @@ import * as Actions from 'actions';
                         <div className="inline-block">
                             <span className="title">开票状态：</span>
                             <Select style={{width: 200}} placeholder="请选择处理状态" onChange={this.onChangeSelect}>
-                                <Option value={0}>开票信息未处理</Option>
-                                <Option value={1}>开票信息已处理</Option>
+                                <Option value={0}>未进行开票信息</Option>
+                                <Option value={1}>已开票未核算</Option>
+                                <Option value={2}>已开票</Option>
                             </Select>
                         </div>  
                     </div>
@@ -238,6 +244,7 @@ import * as Actions from 'actions';
                     isCalLoading= {isCalLoading}
                     cancelRecord = {this.cancelRecord}
                     searchReceiptList = {this.searchReceiptList}
+                    isDisabled = {isDisabled}
                 />
             </div>
         )

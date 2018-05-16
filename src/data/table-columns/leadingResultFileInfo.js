@@ -27,7 +27,7 @@ module.exports = [
     {
     title: '代发结果文件',
     dataIndex: 'payretfilename',
-    width:150
+    width:200
     },
     {
     title: '结果文件上传日期',
@@ -38,10 +38,5 @@ module.exports = [
     title: '代发结果',
     dataIndex: 'status',
     width:100
-    },
-    {
-    title: '处理人',
-    dataIndex: 'updateby',
-    width:50
     }
 ]

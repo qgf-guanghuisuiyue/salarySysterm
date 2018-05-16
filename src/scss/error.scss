@@ -172,4 +172,13 @@
             }
         }
     }
+    .leadingDetail{
+        .ant-modal-body{
+            height: 750px;
+            .dataSwitch{
+                height: 100%;
+                overflow-y: auto;
+            }
+        }
+    }
 }

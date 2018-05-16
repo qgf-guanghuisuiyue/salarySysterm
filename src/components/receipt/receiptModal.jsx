@@ -13,7 +13,7 @@ export default class EditModal extends React.Component{
          oftheCompany:"",
          issuingamount:"",
          invoicedate:"",
-         rateList:"",
+         therate:"",
          earn:"",
          isUse:true
      }
@@ -25,7 +25,7 @@ export default class EditModal extends React.Component{
          const {searchReceiptList, calculateList, hideReceiptModal, record} = this.props,
             {batchNo,corpName,totalAmount,paymentTime,rate, netamount} = record,
             {invoiceAmount,grossAmount,actualAmount} = calculateList,
-            {oftheCompany,issuingamount,earn,invoicedate} = this.state;
+            {oftheCompany,issuingamount,earn,invoicedate,therate} = this.state;
          this.props.saveData({
             batchno:batchNo,//批次号
             paymentCompany:corpName,//付款公司
@@ -38,7 +38,8 @@ export default class EditModal extends React.Component{
             yieldpoints:earn,//收益点数
             invoicedate,//开票日期
             rate,//状态
-            paymentTime:moment(paymentTime).format("YYYY-MM-DD")//收款日期
+            therate,//税率
+            paymentTime:moment(paymentTime).format("YYYYMMDD")//收款日期
          },hideReceiptModal, searchReceiptList)
      }
      onCancel = () => {
@@ -63,7 +64,7 @@ export default class EditModal extends React.Component{
         const {netamount} = this.props.record
         if(field=="oftheCompany"){
             this.setState({
-                rateList:"",
+                therate:"",
                 earn:"",
                 isUse:false
             })
@@ -95,20 +96,19 @@ export default class EditModal extends React.Component{
         })
     }
     calculate= () => {
-        const {rateList,earn,issuingamount} = this.state;
+        const {therate,earn,issuingamount, invoicedate} = this.state;
         const {netamount}= this.props.record;
         if(!issuingamount){
             notification.warning({
-                message:"请输入本次代发金额"
+                message:"请计算本次代发金额"
             })
-            this.refs.issuingamount.focus()
             return false
         }else if(!netamount){
             notification.warning({
                 message:"请输入入账金额"
             })
             return false
-        }else if(!rateList){
+        }else if(!therate){
             notification.warning({
                 message:"请选择税率"
             })
@@ -119,7 +119,7 @@ export default class EditModal extends React.Component{
             })
             return false
         }else{
-            this.props.calculate({issuingamount,netamount,rate:rateList,yieldpoint:earn})
+            this.props.calculate({issuingamount,netamount,rate:therate,yieldpoint:earn})
         }
         
     }
@@ -131,13 +131,14 @@ export default class EditModal extends React.Component{
             companyList,
             rateAndEarnList,
             calculateList,
-            isCalLoading
+            isCalLoading,
+            isDisabled
         } = this.props,
             {invoiceAmount,grossAmount,actualAmount} = calculateList,
             {batchNo,corpName,totalAmount,applyDate,paymentTime,rate, netamount} = record;
         const {list=[]} = companyList;
         const {listEarn,listRate}= rateAndEarnList;
-        const {rateList,earn,issuingamount,oftheCompany,isUse} = this.state;
+        const {therate,earn,issuingamount,oftheCompany,isUse} = this.state;
         return(
                 <Modal
                     title={<h2>开票计算</h2>}
@@ -162,7 +163,7 @@ export default class EditModal extends React.Component{
                                     placeholder="请选择收款公司"
                                     value={oftheCompany} 
                                     onChange={this.companySelect.bind(this,"oftheCompany")}
-                                    
+                                    disabled={isDisabled}
                                 >
                                     <Option value='' disabled selected style={{color:"#CCCCCC"}}>请选择收款公司</Option>
                                     {
@@ -179,10 +180,10 @@ export default class EditModal extends React.Component{
                                 <a>
                                     <Select 
                                         style={{width:240}} 
-                                        value={rateList} 
+                                        value={therate} 
                                         disabled={isUse}
                                         placeholder="请先选择收款公司"
-                                        onChange={this.companySelect.bind(this,"rateList")}
+                                        onChange={this.companySelect.bind(this,"therate")}
                                     >
                                         {
                                             listRate && listRate.map((item,index)=>{
@@ -269,23 +270,27 @@ export default class EditModal extends React.Component{
                             </a>
                         </li>
                         <li>
-                            <a>开票日期：</a>
+                            <a><span style={{color:"red"}}>*</span>开票日期：</a>
                             <a>
                                 <DatePicker 
                                     style={{width:240}} 
+                                    disabled={isDisabled}
                                     onChange={this.dateChange.bind(this,"invoicedate")}
                                 />
                             </a>
                         </li>
                         <li>
-                            <Button 
-                                style={{marginLeft:50,width:80}} 
-                                onClick={this.calculate}
-                                loading={isCalLoading}
-                                type="primary"
-                            >
-                                计算
-                            </Button>
+                            {
+                                !isDisabled &&
+                                <Button 
+                                    style={{marginLeft:50,width:80}} 
+                                    onClick={this.calculate}
+                                    loading={isCalLoading}
+                                    type="primary"
+                                >
+                                    计算
+                                </Button>
+                            }
                         </li>
                     </ul>
                 </Modal>

@@ -16,7 +16,7 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
         this.state={
             batchNo:"",
             companyName:"",
-            status:"",
+            status:[],
             startDate:"",
             endDate:"",
             page:1,
@@ -25,7 +25,7 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
     }
     params = {
         skip:0,
-        count:10
+        count:10,
     }
     componentDidMount(){
         this.searchHandleList();
@@ -37,7 +37,7 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
     }
     onSelectChange = (value) => {
         this.setState({
-            status:value
+            status:[value]
         })
     }
     onDateChange = (date, dateString) => {
@@ -55,7 +55,12 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
     ]
     searchHandleList = () => {
         const { batchNo , companyName , status , startDate , endDate } = this.state;
-        this.props.getDataSwitchList({...this.params,...this.state})
+        if(status.length!==0){
+            this.props.getDataSwitchList({...this.params,batchNo , companyName ,status , startDate , endDate})
+        }else{
+            this.props.getDataSwitchList({...this.params,batchNo , companyName , startDate , endDate})
+        }
+        
     }
     getColumns = () => {
         const {page} = this.state;

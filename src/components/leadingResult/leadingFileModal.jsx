@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import {Link} from 'react-router';
 
-import columns from 'data/table-columns/leadingFileInfo';
+import columns from 'data/table-columns/leadingResultFileInfo';
 import { Table , Button , Tooltip , Input , DatePicker ,Icon , Modal} from 'antd';
 
 //redux
@@ -18,7 +18,7 @@ import * as Actions from 'actions';
     getColumns = () => {
       columns[0].render = (text,record,index)=>{
         return <a>{index+1}</a>;
-    }
+      }
       columns[columns.length-1].render = (text,record,index) => {
           return  <span>
                       {
@@ -39,7 +39,7 @@ import * as Actions from 'actions';
       return columns;
   }
     render(){
-        const {isLeadingFileModal , payFileCreate} = this.props;
+        const {isLeadingFileModal , payFileCreate, clearTableCheckbox} = this.props;
         const {tblPayApplyModel, tblPayInfoModel={}} = payFileCreate;        
         var data = [];
         if(tblPayInfoModel){
@@ -52,13 +52,12 @@ import * as Actions from 'actions';
                 visible={isLeadingFileModal}
                 width={1360}
                 footer={false}
-                onCancel={() => this.props.hideLeadingFileModal()}
+                onCancel={() => this.props.hideLeadingFileModal(clearTableCheckbox)}
           >
               <div className="leadingResult">
                   <ul className="data-info switchFileUl">
                       <li><span>批次号：</span><span>{tblPayApplyModel?tblPayApplyModel.batchno:""}</span></li>
                       <li><span>公司名称：</span><span>{tblPayApplyModel?tblPayApplyModel.corpname:""}</span></li>
-                      
                       <li><span>总笔数：</span><span>{tblPayApplyModel?tblPayApplyModel.totalcount:""}</span></li>
                       <li><span>总金额：</span><span>{tblPayApplyModel?tblPayApplyModel.totalamount:""}</span></li>
                       <li><span>申请日期：</span><span>{tblPayApplyModel?moment(tblPayApplyModel.applydate).format("YYYY-MM-DD"):""}</span></li>

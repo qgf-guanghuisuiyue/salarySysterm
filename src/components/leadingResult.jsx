@@ -21,14 +21,16 @@ import * as Actions from 'actions';
         batchno:"",
         fileList:[],
         page:1,
-        record:{}
+        record:{},
+        selectedRowKeys:[]
     }
     componentDidMount(){
         this.leadingResultQuery()
     }
     params ={
         skip:0,
-        count:10
+        count:10,
+        status:["2","3"]
     }
     showLeadingFileModal = () => {
         const {batchno} = this.state;
@@ -50,7 +52,11 @@ import * as Actions from 'actions';
                 title: '是否确认该批次的代发结果',
                 style:{top:'30%'},
                 onOk() {
-                    _this.props.resultConfirm({batchNo:batchno})
+                    _this.props.resultConfirm({batchNo:batchno},_this.leadingResultQuery)
+                    _this.clearTableCheckbox()
+                },
+                onCancel(){
+                    _this.clearTableCheckbox()
                 }
             });
         }else{
@@ -75,7 +81,7 @@ import * as Actions from 'actions';
             return  <a>{(index+1)+(page-1)*10}</a>
         }
         columns[3].render = (text,record,index) => { 
-            return  <a href={`${origin + url + record.payapplyfilename}`} title="点击下载文件">{record.payapplyfilename}}</a>
+            return  <a href={`${origin + url + record.payapplyfilename}`} title="点击下载文件">{record.payapplyfilename}</a>
         }
         columns[columns.length-2].render = (text,record,index) => {
             return  <span>
@@ -120,6 +126,15 @@ import * as Actions from 'actions';
             })
         } 
     }
+    //清空表格选择框
+    clearTableCheckbox = () => {
+        const {selectedRowKeys} = this.state;
+        if(selectedRowKeys.length === 0) return ;
+        this.setState({
+            selectedRowKeys:[],
+            batchno:""
+        })
+    }
     //页码回调
     onChangePagination = (page) => {
         this.setState({
@@ -127,13 +142,21 @@ import * as Actions from 'actions';
         })
         this.params.skip = page * 10 - 10;
         this.leadingResultQuery();
+        this.clearTableCheckbox()
         document.body.scrollTop = document.documentElement.scrollTop = 0;
+    }
+    //表格选择框选择
+    onSelectChange = (selectedRowKeys, selectedRows) => {
+        this.setState({selectedRowKeys});
     }
     rowSelection = () =>{
         const _this = this;
+        const {selectedRowKeys} = this.state;
        // 通过 rowSelection 对象表明需要行选择
         return {
            type:'radio',
+           selectedRowKeys,
+           onChange: this.onSelectChange,
            onSelect(record, selected, selectedRows) {
                    _this.setState({
                        batchno:record.batchno
@@ -147,7 +170,7 @@ import * as Actions from 'actions';
 
     // 文件上传之前的钩子函数
     onFilebeforeUpload = (file) => {
-        const matchName = /(\.xls|\.xlsx|\.xlsm)$/i,
+        const matchName = /(\.xls|\.xlsx|\.xlsm|\.csv)$/i,
             {error,fileList} = this.state,
             {name,size} = file;
         // 判断是否已经上传过文件(单次只能上传一个文件)
@@ -290,7 +313,10 @@ import * as Actions from 'actions';
                     </div>
                 </div>
 
-                <LeadingFileModal payFileCreate={payFileCreate}/>
+                <LeadingFileModal 
+                    payFileCreate={payFileCreate}
+                    clearTableCheckbox = {this.clearTableCheckbox}
+                />
 
                 <DetailModalComponent 
                     record={record}
@@ -310,6 +336,10 @@ import * as Actions from 'actions';
                     onCancel={() => this.props.hideUploadFileModal(this.cancelFile)}
                     onOk={this.upLoadFile}
                 >
+                    <div>
+                        <span>代发日期：</span>
+                        <DatePicker/>
+                    </div>
                     <div className="fileName">文件名：</div>
                     <Upload 
                         className="upLoadFile-btn"

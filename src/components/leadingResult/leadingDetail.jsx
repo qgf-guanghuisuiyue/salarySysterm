@@ -26,7 +26,7 @@ import * as Actions from 'actions';
         leadingColumns[0].render = (text,record,index)=>{
           return <a>{index+1}</a>;
       }
-      leadingColumns[leadingColumns.length-1].render = (text,record,index) => {
+      leadingColumns[leadingColumns.length-2].render = (text,record,index) => {
             return  <span>
                         {
                             record.status===0?"全部成功":
@@ -78,7 +78,7 @@ import * as Actions from 'actions';
         })
         this.params.skip = page * 10 - 10;
         payAgentApplyDetaillist({...this.params,batchNo: record.batchno});
-        document.body.scrollTop = document.documentElement.scrollTop = 0;
+        this.refs.dataSwitch.scrollTop = 0
     }
     render(){ 
         const {isDetailModal, record, detailList, payFileCreate} = this.props,
@@ -90,14 +90,15 @@ import * as Actions from 'actions';
             } 
         return(
                 <Modal
-                    title={<h2>列表</h2>}
+                    title={<h2>导入结果明细</h2>}
+                    wrapClassName = "leadingDetail"
                     visible={isDetailModal}
                     width={1350}
                     footer={false}
                     onCancel={ this.hideDetailModal}
                     maskClosable={false}
                 >
-                    <div className="dataSwitch">
+                    <div className="dataSwitch" ref="dataSwitch">
                         <ul className="data-info switchFileUl">
                             <li><span>批次号：</span><span>{record.batchno}</span></li>
                             <li><span>公司名称：</span><span>{record.corpname}</span></li>
@@ -113,12 +114,14 @@ import * as Actions from 'actions';
                                     record.status===-1 && "撤销"}
                                 </span>
                             </li>
-                            <li style={{marginTop: 0}}><span>总笔数：</span><span>{record.totalcount}</span></li>
+                            <li><span>总笔数：</span><span>{record.totalcount}</span></li>
                             <li style={{marginTop: 0}}><span>总金额：</span><span>{record.totalamount}</span></li>
                             <li style={{marginTop: 0}}><span>申请日期：</span><span>{record.applydate}</span></li>
                             
-                            <li style={{marginTop: 0,width:900}}><span>代发文件名：</span>
-                            <span style={{marginTop: 0,width:800}}>{record.payapplyfilename}</span></li>
+                            <li style={{marginTop: 0,width:600}}>
+                                <span>代发文件名：</span>
+                                <span style={{marginTop: 0,width:500}}>{record.payapplyfilename}</span>
+                            </li>
                         </ul>
                         <h2 style={{background:"#EEF1F6",marginTop:10,marginBottom:10}}>代发及结果文件</h2>
                         <Table 

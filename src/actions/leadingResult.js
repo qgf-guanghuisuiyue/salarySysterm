@@ -1,6 +1,6 @@
 import * as types from '../constants/leadingResult';
 import {AjaxByToken} from 'utils/ajax';
-import {Modal, Notification} from 'antd';
+import {Modal, notification} from 'antd';
 
 const SHOW_LEADINGFILE_MODAL = {type:types.SHOW_LEADINGFILE_MODAL};
 const HIDE_LEADINGFILE_MODAL = {type:types.HIDE_LEADINGFILE_MODAL};
@@ -15,8 +15,9 @@ const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
         dispatch({...SHOW_LEADINGFILE_MODAL})
         payFileMakeInfo({batchNo:batchno})
     }
-    export const hideLeadingFileModal = () => (dispatch,getState) => {
-        dispatch({...HIDE_LEADINGFILE_MODAL})
+    export const hideLeadingFileModal = (clearTableCheckbox) => (dispatch,getState) => {
+        dispatch({...HIDE_LEADINGFILE_MODAL});
+        clearTableCheckbox()
     }
     export const showUploadFileModal = () => (dispatch,getState) => {
         dispatch({...SHOW_UPLOAD_MODAL})
@@ -35,7 +36,7 @@ const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
         dispatch({...HIDE_DETAIL_MODAL})
     }
     //批次结果确认
-    export const resultConfirm = (data) => (dispatch,getState) => {
+    export const resultConfirm = (data,leadingResultQuery) => (dispatch,getState) => {
         AjaxByToken('api/accept/payagent_confirm',{
             head: {
                 transcode: 'C000013',
@@ -43,9 +44,10 @@ const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
             data: data
         })
         .then(res=>{
-            Notification.success({
+            notification.success({
                 message:res.msg
             })
+            leadingResultQuery()
         },err=>{
             console.log(err)
         });
@@ -58,7 +60,7 @@ const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
             data: data
         })
         .then(res=>{
-            Notification.success({
+            notification.success({
                 message:res.msg
             })
             hideUploadFileModal()

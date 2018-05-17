@@ -31,7 +31,8 @@ import * as Actions from 'actions';
         templateList: [],
         companyData: [], 
         templateData: {},
-        templateName:''
+        templateName:'',
+        firstCorp: ''
     }
 
     params = {
@@ -41,12 +42,13 @@ import * as Actions from 'actions';
     }
 
     componentDidMount() {
-        const {getApplyList, getCompanytemplate} = this.props;
+        const {getApplyList, getCompanytemplate, fileNameData} = this.props;
         getApplyList(this.params);
-        getCompanytemplate();
-        setTimeout(()=>{
-            this.getCompanytemplate()
-        }, 500)
+        let that = this;
+        new Promise(getCompanytemplate).then((fileNameData)=>{
+            that.getCompanytemplate(fileNameData)
+        })
+        
     }
 
     componentWillReceiveProps(nextProps) {//清空数组    
@@ -63,6 +65,47 @@ import * as Actions from 'actions';
             });
             this.props.resetPayagentFalse()
         }
+    }
+
+    getCompanytemplate = (fileNameData) => {
+        let fileNameList = fileNameData.companylist?fileNameData.companylist:[];
+        let companyData = [], templateData = {}, firstCorp='';
+        fileNameList.forEach((item, index) => {
+            companyData.push({
+                brief: item.corpcode,
+                name: item.corpname
+            });
+            templateData[item.corpcode] = item.templatelist
+        })
+        this.setState({
+            companyData,
+            templateData,
+            firstCorp: fileNameList[0].corpname
+        })
+    }
+
+    onCorpChange = (value) => {
+        const {companyData, templateData} = this.state;
+        // let name = '';
+        // companyData.forEach((item,key)=>{
+        //     if(item.brief == value){
+        //         name = item.name
+        //     }
+        // })
+        this.setState({
+            corpName: value.split('&')[1],
+            templateList: templateData[value.split('&')[0]],
+            templateName: ""
+        })
+        console.log(value)
+        
+    }
+
+    onTempChange = (value) => {
+        this.setState({
+            templateName: value.split('&')[0],
+            fileName: value.split('&')[1],
+        })
     }
 
     triggerError = (error,errorMsg='文件类型不支持！') => {
@@ -129,7 +172,6 @@ import * as Actions from 'actions';
             this.triggerError(true,'上传失败！');
             return ;
         }
-        console.log(corpName, templateName)
         if(!corpName||!templateName){
             this.triggerError(true,'请选择模板类型！');
             return ;
@@ -212,11 +254,14 @@ import * as Actions from 'actions';
         }    
     }
 
-    
+    showPayAgentDelModal = () => {
+        this.props.showPayAgentDelModal();
+    }
 
     handlePayAgentDel = () => {
         const {batchNoList, recordList} = this.state;
-        const {payAgentDel, getApplyList} = this.props;
+        const {payAgentDel,hidePayAgentDelModal, getApplyList} = this.props;
+        hidePayAgentDelModal()  
         if(batchNoList.length == 0) {
             notification.warning({
                 message: '请选择代发申请文件',
@@ -249,50 +294,26 @@ import * as Actions from 'actions';
         
     }
 
-    getCompanytemplate = () => {
-        const {fileNameData} = this.props;
-        let fileNameList = fileNameData.companylist?fileNameData.companylist:[];
-        let companyData = [], templateData = {};
-        fileNameList.forEach((item, index) => {
-            companyData.push({
-                brief: item.corpcode,
-                name: item.corpname
-            });
-            templateData[item.corpcode] = item.templatelist
-        })
-        this.setState({
-            companyData,
-            templateData
-        })
-    }
-
-    onCorpChange = (value) => {
-        console.log(value)
-        const {companyData, templateData} = this.state;
-        let name = '';
-        companyData.forEach((item,key)=>{
-            if(item.brief == value){
-                name = item.name
-            }
-        })
-        console.log(name)
-        this.setState({
-            corpName: name,
-            templateList: templateData[value],
-            // templateName: ""
-        })
-        
-    }
-
-    onTempChange = (value) => {
-        this.setState({
-            templateName: value,
-        })
-    }
-
     render(){
-        const {fileList,error,errorMsg, record,corpName, combineName, companyData, templateData,templateName,templateList} = this.state;
-        const {applyList, detailList, payAgentApplyDetaillist} = this.props;
+        const {
+            fileList,
+            error,
+            errorMsg, 
+            record,
+            corpName, 
+            combineName, 
+            companyData=[], 
+            templateData,
+            templateName,
+            templateList,
+            firstCorp
+        } = this.state;
+        const {
+            applyList, 
+            detailList, 
+            payAgentApplyDetaillist,
+            fileNameData
+        } = this.props;
         const {applyData} = applyList;
         // 通过 rowSelection 对象表明需要行选择
         const rowSelection = {
@@ -313,7 +334,7 @@ import * as Actions from 'actions';
                                 {
                                     companyData.map((item,index) => {
                                     
-                                    return <Option value={item.brief}>{item.name}</Option>}
+                                    return <Option value={`${item.brief}&${item.name}`}>{item.name}</Option>}
                                 
                                 )}
                             </Select>
@@ -329,7 +350,7 @@ import * as Actions from 'actions';
                             >
                                 {
                                     templateList.map((item,index)=>{
-                                        return(<Option value={item.templatename} >{item.templatefilename}</Option>)
+                                        return(<Option value={`${item.templatename}&${item.templatefilename}`} >{item.templatefilename}</Option>)
                                     })
                                     
                                 }
@@ -338,7 +359,7 @@ import * as Actions from 'actions';
                                 type="primary"
                                 style={{marginLeft: 20}}
                                 onClick={this.downloadExcel}
-                            >下载</Button>
+                            >下载模板文件</Button>
                         </div>
                     </div>
                     <div className="handle-block">
@@ -390,7 +411,7 @@ import * as Actions from 'actions';
                                 icon="delete" 
                                 type="primary"
                                 style={{marginRight: 50}}
-                                onClick={this.handlePayAgentDel}
+                                onClick={this.showPayAgentDelModal}
                             >删除</Button>
                             <Button 
                                 icon="check-circle"
@@ -417,11 +438,20 @@ import * as Actions from 'actions';
                 <Modal
                     title={<h2>确认提交</h2>}
                     wrapClassName="vertical-center-modal"
-                    visible={this.props.isVisiable}
+                    visible={this.props.isPayAgentCommitModalVisiable}
                     onCancel={() => this.props.hidePayAgentCommitModal()}
                     onOk={this.handleOk}
                 >
                   <p>请确认是否提交？</p>
+                </Modal>
+                <Modal
+                    title={<h2>确认删除</h2>}
+                    wrapClassName="vertical-center-modal"
+                    visible={this.props.isPayAgentDelModalVisiable}
+                    onCancel={() => this.props.hidePayAgentDelModal()}
+                    onOk={this.handlePayAgentDel}
+                >
+                  <p>请确认是否删除？</p>
                 </Modal>
             </div>
         )
@@ -431,7 +461,8 @@ const mapStateToProps = state => ({
     isUploadSucc: state.Apply.isUploadSucc,
     applyList: state.Apply.applyList,
     resetPayagent: state.Apply.resetPayagent,
-    isVisiable: state.Upload.isPayAgentCommitModalVisiable,
+    isPayAgentCommitModalVisiable: state.Upload.isPayAgentCommitModalVisiable,
+    isPayAgentDelModalVisiable: state.Upload.isPayAgentDelModalVisiable,
     fileNameData: state.Upload.fileNameData,
 })
 const mapDispatchToProps = dispatch => ({
@@ -446,6 +477,8 @@ const mapDispatchToProps = dispatch => ({
     removeUploadFIle: bindActionCreators(Actions.FileActions.removeUploadFIle, dispatch), 
     showPayAgentCommitModal: bindActionCreators(Actions.UploadActions.showPayAgentCommitModal, dispatch),
     hidePayAgentCommitModal: bindActionCreators(Actions.UploadActions.hidePayAgentCommitModal, dispatch),
+    showPayAgentDelModal: bindActionCreators(Actions.UploadActions.showPayAgentDelModal, dispatch),
+    hidePayAgentDelModal: bindActionCreators(Actions.UploadActions.hidePayAgentDelModal, dispatch),
     getCompanytemplate: bindActionCreators(Actions.UploadActions.getCompanytemplate, dispatch),  
 })
 

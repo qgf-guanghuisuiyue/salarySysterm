@@ -62,8 +62,7 @@ import * as Actions from 'actions';
                     title={<h2>列表</h2>}
                     wrapClassName="vertical-center-modal"
                     visible={detailList.visible}
-                    
-                    width={1000}
+                    width={1200}
                     footer={false}
                     onCancel={() => this.props.hideDetailModal()}
                     maskClosable={false}

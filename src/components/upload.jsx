@@ -417,7 +417,7 @@ import * as Actions from 'actions';
                                 icon="check-circle"
                                 type="primary"
                                 onClick={this.showPayAgentCommitModal}
-                            >申请提交</Button>
+                            >代为提交</Button>
                         </div>
                         <Table 
                             loading={applyList.isLoading}

@@ -87,12 +87,13 @@ import * as Actions from 'actions';
         const userInfo = store.get('userInfo');
         this.setState({
             name:userInfo.name,
-            role:userInfo.role
+            role:userInfo.role,
+            userType:userInfo.userType
         })
     }
     render(){
         const {page , article } = this.props;
-        const {applyBackground, handleBackground, systemBackground, name, role} = this.state;
+        const {applyBackground, handleBackground, systemBackground, name, role, userType} = this.state;
         return(
                 <div className="homeContent">
                     <div className="header">
@@ -105,7 +106,7 @@ import * as Actions from 'actions';
                                 className="menu"
                             >
                                 {
-                                    //(role ==="1" || role ==="2") &&
+                                    (userType ==="1" || role==="2" || role ==="0") &&
                                     <SubMenu key="apply" title={<a className="subMenuBk" style={{background:`${applyBackground}`}}>代发申请&nbsp;&nbsp;∨</a>}>
                                     {
                                         this.apply.map((item,index)=>{
@@ -118,7 +119,7 @@ import * as Actions from 'actions';
                                     </SubMenu>
                                 }
                                 {
-                                    (role ==="0" || role ==="2") &&
+                                    (userType==="2" || role==="2" || role ==="0") &&
                                     <SubMenu key="handle" title={<a className="subMenuBk" style={{background:`${handleBackground}`}}>代发薪受理&nbsp;&nbsp;∨</a>}>
                                         {
                                             this.salaryHandle.map((item,index)=>{
@@ -146,7 +147,7 @@ import * as Actions from 'actions';
                             </Menu>
                             <ul className="userInfo">
                                 <li>用户名：<span>{name}</span></li>
-                                <li>所属部门：<span>{role==="0"?"超级用户":role==="1"?"财务":role==="2" && "管理员"}</span></li>
+                                <li>所属角色：<span>{role==="0"?"超级用户":role==="1"?"财务":role==="2" && "管理员"}</span></li>
                                 <li onClick={this.userLoginout}>
                                     注销
                                 </li>

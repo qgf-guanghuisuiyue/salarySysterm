@@ -31,7 +31,7 @@ import * as Actions from 'actions';
     params = {
         skip: 0,
         count: 10,
-        status:['2,3']
+        status:['2','3']
     }
     onChange = (e) => {
         this.setState({

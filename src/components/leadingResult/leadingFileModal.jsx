@@ -34,7 +34,7 @@ import * as Actions from 'actions';
                   </span>
       }
       columns[3].render = (text,record,index)=>{
-          return <a>{record.paymode==1?"公对公":record.paymode==2 && "公对私"}</a>;
+          return <a>{record.paymode==1?"公对私":record.paymode==2 && "私对私"}</a>;
       }
       return columns;
   }

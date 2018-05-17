@@ -30,7 +30,7 @@ import * as Actions from 'actions';
     params ={
         skip:0,
         count:10,
-        status:["2","3"]
+        status:["3"]
     }
     showLeadingFileModal = () => {
         const {batchno} = this.state;
@@ -213,6 +213,9 @@ import * as Actions from 'actions';
         }
         return true;
     }
+    onChangeDate = (date) => {
+        console.log(moment(date).format("YYYY-MM-DD"))
+    }
     upLoadFile = () => {
         let {fileList, exptPayDate, batchno} = this.state,
             {upLoadFile, hideUploadFileModal} = this.props;
@@ -336,9 +339,12 @@ import * as Actions from 'actions';
                     onCancel={() => this.props.hideUploadFileModal(this.cancelFile)}
                     onOk={this.upLoadFile}
                 >
-                    <div>
+                    <div style={{marginBottom:20}}>
                         <span>代发日期：</span>
-                        <DatePicker/>
+                        <DatePicker 
+                            style={{width:240}}
+                            onChange={this.onChangeDate}
+                        />
                     </div>
                     <div className="fileName">文件名：</div>
                     <Upload 

@@ -27,6 +27,12 @@ export const payAgentApply = (data, getApplyList) => (dispatch, getState) => {
     }).then(res => {
         dispatch({...UPLOAD_DONE,isUploadSucc:true});
         getApplyList({skip: 0, count: 10, apply: 'Y'})
+        notification.success({
+           message: "提交成功",
+           description: '代发文件上传成功，请确认数据无后点击【代发提交】按钮',
+           duration: '5',
+           top: '40'
+        })
     }, err => {
         dispatch(UPLOAD_DONE);
         console.log(err)

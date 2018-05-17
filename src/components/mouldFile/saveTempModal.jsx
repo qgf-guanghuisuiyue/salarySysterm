@@ -62,7 +62,7 @@ import * as Actions from 'actions';
         } else {
             this.triggerError(false);
             this.setState({
-                [field]: e.target.value
+                [field]: e.target.value     
             })
         }
     }

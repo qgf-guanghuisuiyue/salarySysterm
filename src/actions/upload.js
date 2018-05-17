@@ -6,6 +6,8 @@ import FileSaver from 'file-saver';
 
 const SHOW_PAY_AGENT_COMMIT_MODAL = { type: types.SHOW_PAY_AGENT_COMMIT_MODAL };
 const HIDE_PAY_AGENT_COMMIT_MODAL = { type: types.HIDE_PAY_AGENT_COMMIT_MODAL };
+const SHOW_PAY_AGENT_DEL_MODAL = { type: types.SHOW_PAY_AGENT_DEL_MODAL };
+const HIDE_PAY_AGENT_DEL_MODAL = { type: types.HIDE_PAY_AGENT_DEL_MODAL };
 const GET_FILENAMES = { type: types.GET_FILENAMES };
 
 //模板下载
@@ -35,14 +37,22 @@ export const hidePayAgentCommitModal = () => (dispatch,getState) => {
     dispatch(HIDE_PAY_AGENT_COMMIT_MODAL);
 }
 
+export const showPayAgentDelModal = () => (dispatch,getState) => {
+    dispatch(SHOW_PAY_AGENT_DEL_MODAL);
+}
+export const hidePayAgentDelModal = () => (dispatch,getState) => {
+    dispatch(HIDE_PAY_AGENT_DEL_MODAL);
+}
+
 //代发申请-公司+模板选项列表
-export const getCompanytemplate = () => (dispatch, getState) => {
+export const getCompanytemplate = (resolve,reject) => (dispatch, getState) => {
     AjaxByToken('api/apply/companytemplate', {
         head: {
             transcode: 'A000007',
         },
     }).then(res => {
         dispatch({...GET_FILENAMES, fileNameData: res.data});
+        resolve(res.data)
     }, err => {
         console.log(err)
     })

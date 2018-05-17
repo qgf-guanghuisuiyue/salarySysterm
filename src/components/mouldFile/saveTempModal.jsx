@@ -56,9 +56,15 @@ import * as Actions from 'actions';
     }
 
     onHandleInput = (field, e) => {
-        this.setState({
-            [field]: e.target.value
-        })
+        let  regex=/^[0-9a-zA-Z_]{0,}$/
+        if(!(e.target.value).match(regex)){
+            this.triggerError(true,'只能输入字母数字下划线');
+        } else {
+            this.triggerError(false);
+            this.setState({
+                [field]: e.target.value
+            })
+        }
     }
 
     triggerError = (error,errorMsg='文件类型不支持！') => {

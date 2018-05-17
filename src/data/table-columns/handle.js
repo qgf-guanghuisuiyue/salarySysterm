@@ -10,11 +10,11 @@ module.exports = [
           }, {
             title: '公司名称',
             dataIndex: 'corpname',
-            width:150
+            width:100
           }, {
             title: '代发申请文件名称',
             dataIndex: 'payapplyfilename',
-            width:260
+            width:250
           }, {
             title: '总笔数',
             dataIndex: 'totalcount',

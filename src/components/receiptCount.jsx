@@ -43,6 +43,9 @@ import * as Actions from 'actions';
         columns[0].render = (text,record,index) => {           
             return  <a>{(index+1)+(page-1)*10}</a>
         }
+        columns[columns.length-4].render = (text,record,index) => { 
+            return  <span>{record.status==-1?"撤销":record.status==0?"全部成功":record.status==1?"部分成功":record.status==2?"待处理":record.status==3?"处理中":record.status==4?"拒绝处理":record.status==5?"待提交":record.status==6 && "代发失败"}</span>
+        }
         columns[columns.length-2].render = (text,record,index) => { 
             return  <span>{record.rate==0?"未核算":record.rate==1?"已核算未开票":record.rate==2 && "已开票"}</span>
         }

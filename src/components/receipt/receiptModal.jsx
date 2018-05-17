@@ -29,13 +29,14 @@ export default class EditModal extends React.Component{
         const {record, calculateList} = nextProps,
         {paytax, yieldpoints, invoicedate, rateamount, totalamount,therate,profits} = record,
          {invoiceAmount,actualAmount,grossAmount} = calculateList;
+         console.log(record)
         this.setState({
             yieldpoints,
             paytax,
             invoicedate,
             rateamount,
             invoiceAmount,
-            totalamount,
+            totalamount:totalamount?totalamount.toFixed(2):totalamount,
             actualAmount,
             shuie:therate,
             grossAmount,
@@ -105,7 +106,7 @@ export default class EditModal extends React.Component{
         }
         if(field=="earn"){
             this.setState({
-                issuingamount:netamount/(1+value)
+                issuingamount:(netamount/(1+value)).toFixed(2)
             })
         }
         this.setState({
@@ -302,12 +303,15 @@ export default class EditModal extends React.Component{
                             </a>
                         </li>
                         <li>
-                            <a><span style={{color:"red"}}>*</span>开票日期：</a>
+                            <a>
+                                <span style={{color:"red"}}>*</span>
+                                开票日期：
+                            </a>
                             <a>
                                 <DatePicker 
                                     style={{width:240}} 
                                     disabled={isDisabled}
-                                    value={moment(invoicedate, 'YYYY-MM-DD')}
+                                    value={invoicedate?moment(invoicedate, 'YYYY-MM-DD'):invoicedate}
                                     onChange={this.dateChange.bind(this,"invoicedate")}
                                 />
                             </a>

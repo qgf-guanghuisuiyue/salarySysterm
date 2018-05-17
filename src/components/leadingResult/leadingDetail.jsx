@@ -55,9 +55,9 @@ import * as Actions from 'actions';
             return  <span>
                         {
                             record.status===0?"成功":
-                            record.status===1?"未成功":
+                            record.status===1?"未处理":
                             record.status===2?"处理中":
-                            record.status===3 && "处理中"
+                            record.status===3 && "失败"
                         }
                     </span>
         }

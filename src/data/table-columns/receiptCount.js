@@ -21,6 +21,10 @@ module.exports = [
         dataIndex: 'applyDate',
     },
     {
+        title: '代发结果',
+        dataIndex: 'status',
+    },
+    {
         title: '收款日期',
         dataIndex: 'paymentTime',
     },

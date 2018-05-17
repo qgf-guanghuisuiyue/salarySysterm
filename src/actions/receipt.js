@@ -73,7 +73,7 @@ const CALCULATE_START = {type:types.CALCULATE_START};
     }
     //保存数据
     
-    export const saveData = (data,hideReceiptModal) => (dispatch,getState) => {
+    export const saveData = (data,hideReceiptModal,searchReceiptList) => (dispatch,getState) => {
         AjaxByToken('api/accept/payagent/rate/invoice',{
             head: {
                 transcode: 'C000018',
@@ -81,10 +81,12 @@ const CALCULATE_START = {type:types.CALCULATE_START};
             data: data
         })
         .then(res=>{
+            console.log(res)
             notification.success({
                 message:res.msg
             })
             hideReceiptModal()  
+            searchReceiptList()
         },err=>{
             console.log(err)
         });

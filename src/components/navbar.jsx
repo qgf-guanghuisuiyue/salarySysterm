@@ -106,7 +106,7 @@ import * as Actions from 'actions';
                                 className="menu"
                             >
                                 {
-                                    (userType ==="1" || role==="2" || role ==="0") &&
+                                    (userType ==="1" || role==="2" || role==="1" || role ==="0") &&
                                     <SubMenu key="apply" title={<a className="subMenuBk" style={{background:`${applyBackground}`}}>代发申请&nbsp;&nbsp;∨</a>}>
                                     {
                                         this.apply.map((item,index)=>{

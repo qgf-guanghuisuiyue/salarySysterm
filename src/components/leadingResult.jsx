@@ -30,7 +30,7 @@ import * as Actions from 'actions';
     params ={
         skip:0,
         count:10,
-        status:["3"]
+        status:["1","3","6"]
     }
     showLeadingFileModal = () => {
         const {batchno} = this.state;
@@ -241,7 +241,15 @@ import * as Actions from 'actions';
     }
     render(){
           const { companyName, fileList, error, errorMsg, record } = this.state;
-          const { isUpLoadModal, dataSwitchList, payFileCreate,isDetailModal, hideDetailModal, detailList, payAgentApplyDetaillist} = this.props,
+          const { 
+              isUpLoadModal, 
+              dataSwitchList, 
+              payFileCreate,
+              isDetailModal, 
+              hideDetailModal, 
+              detailList, 
+              payAgentApplyDetaillist
+            } = this.props,
                  data = dataSwitchList.list?dataSwitchList.list:[],//列表数据
                 count = dataSwitchList.count;//总条数 
         return(

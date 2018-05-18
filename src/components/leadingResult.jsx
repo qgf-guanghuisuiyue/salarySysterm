@@ -218,7 +218,7 @@ import * as Actions from 'actions';
     }
     upLoadFile = () => {
         let {fileList, exptPayDate, batchno} = this.state,
-            {upLoadFile, hideUploadFileModal} = this.props;
+            {upLoadFile, hideUploadFileModal,hideLeadingFileModal} = this.props;
         // 判断是否上传了文件
         if(fileList.length === 0){
             this.triggerError(true,'请选择上传文件！');
@@ -230,7 +230,7 @@ import * as Actions from 'actions';
             return ;
         }
         const {data} = response;
-        upLoadFile({fileName:data,batchNo:batchno},hideUploadFileModal)
+        upLoadFile({fileName:data,batchNo:batchno},hideUploadFileModal,hideLeadingFileModal)
     }
     //清空文件
     cancelFile = () => {

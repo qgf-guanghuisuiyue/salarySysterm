@@ -10,7 +10,7 @@ module.exports = [
     },
     {
         title: '公司名称',
-        dataIndex: 'corpName',
+        dataIndex: 'paymentCompany',
     }, 
     {
         title: '代发总金额',

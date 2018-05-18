@@ -17,7 +17,9 @@ const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
     }
     export const hideLeadingFileModal = (clearTableCheckbox) => (dispatch,getState) => {
         dispatch({...HIDE_LEADINGFILE_MODAL});
-        clearTableCheckbox()
+        if(clearTableCheckbox){
+            clearTableCheckbox()
+        } 
     }
     export const showUploadFileModal = () => (dispatch,getState) => {
         dispatch({...SHOW_UPLOAD_MODAL})
@@ -52,7 +54,7 @@ const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
             console.log(err)
         });
     }
-    export const upLoadFile = (data,hideUploadFileModal) => (dispatch,getState) => {
+    export const upLoadFile = (data,hideUploadFileModal,hideLeadingFileModal) => (dispatch,getState) => {
         AjaxByToken('api/accept/payagent_importFile',{
             head: {
                 transcode: 'C000007',
@@ -63,7 +65,8 @@ const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
             notification.success({
                 message:res.msg
             })
-            hideUploadFileModal()
+            hideUploadFileModal();
+            hideLeadingFileModal()
         },err=>{
             console.log(err)
         });

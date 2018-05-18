@@ -36,7 +36,7 @@ module.exports = [
         }, 
         {
             title: '交易日期',
-            dataIndex: 'updatedate',
+            dataIndex: 'transdate',
             width:80
         }, 
         {

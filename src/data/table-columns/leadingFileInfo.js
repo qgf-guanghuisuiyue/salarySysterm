@@ -32,16 +32,16 @@ module.exports = [
     {
     title: '结果文件上传日期',
     width:100,
-    dataIndex: 'remark',
+    dataIndex: '',
     },
     {
     title: '代发结果',
     dataIndex: 'status',
     width:100
     },
-    {
-    title: '处理人',
-    dataIndex: 'updateby',
-    width:50
-    }
+    // {
+    // title: '处理人',
+    // dataIndex: 'updateby',
+    // width:50
+    // }
 ]

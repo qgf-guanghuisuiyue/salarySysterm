@@ -27,8 +27,12 @@ module.exports = [
     }, {
         title: '申请结果',
         dataIndex: 'status',
+    },{
+        title: '备注',
+        dataIndex: 'remark',
     }, {
         title: '',
         dataIndex: 'detail',
+        width:"50"
     }
 ]

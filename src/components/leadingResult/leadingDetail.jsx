@@ -26,22 +26,16 @@ import * as Actions from 'actions';
         leadingColumns[0].render = (text,record,index)=>{
           return <a>{index+1}</a>;
       }
-      leadingColumns[leadingColumns.length-2].render = (text,record,index) => {
+      leadingColumns[leadingColumns.length-1].render = (text,record,index) => {
             return  <span>
                         {
-                            record.status===0?"全部成功":
-                            record.status===1?"部分成功":
-                            record.status===2?"待处理":
-                            record.status===3?"处理中":
-                            record.status===4? "拒绝处理":
-                            record.status===5? "待提交":
-                            record.status===6? "代发失败":
-                            record.status===-1 && "撤销"
+                            record.status===0?"成功":
+                            record.status===1 && "失败"
                         }
                     </span>
         }
         leadingColumns[3].render = (text,record,index)=>{
-            return <a>{record.paymode==1?"公对公":record.paymode==2 && "公对私"}</a>;
+            return <a>{record.paymode==1?"公对私":record.paymode==2 && "公对私"}</a>;
         }
         return leadingColumns;
     }
@@ -62,7 +56,7 @@ import * as Actions from 'actions';
                     </span>
         }
         columns[columns.length-3].render = (text,record,index) => {
-            return  <span>{moment(record.updatedate).format("YYYY-MM-DD")}</span>
+            return  <span>{record.transdate?moment(record.transdate).format("YYYY-MM-DD"):""}</span>
         }
         
         return columns;
@@ -95,6 +89,7 @@ import * as Actions from 'actions';
                     visible={isDetailModal}
                     width={1350}
                     footer={false}
+                    maskClosable={false}
                     onCancel={ this.hideDetailModal}
                     maskClosable={false}
                 >

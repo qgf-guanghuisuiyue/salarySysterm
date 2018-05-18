@@ -137,7 +137,7 @@ import * as Actions from 'actions';
         return(
             <div className="layout common">
                 <div className="error">
-                    <h2 className="File-title">失败交易查询</h2>
+                    <h2 className="File-title">失败查询</h2>
                     <ul className="data-info err-info">
                         <li>
                             <span>公司名称：</span>

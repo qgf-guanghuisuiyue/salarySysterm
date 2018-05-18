@@ -34,13 +34,13 @@ import * as Actions from 'actions';
     }
     showLeadingFileModal = () => {
         const {batchno} = this.state;
-        const {payFileMakeInfo} = this.props;
+        const {payFileMakeInfo,payAgentApplyDetaillist} = this.props;
         if(!batchno){
            notification.warning({
                message: '请先选择下列选项'
            });
         }else{
-           this.props.showLeadingFileModal(batchno,payFileMakeInfo)
+           this.props.showLeadingFileModal(batchno,payFileMakeInfo,payAgentApplyDetaillist)
            NProgress.done()
         }
     }
@@ -105,9 +105,7 @@ import * as Actions from 'actions';
     //明细查询
     showDetailModal = (record) => {
         const {showDetailModal,payAgentApplyDetaillist, payFileMakeInfo} = this.props;
-        showDetailModal({...this.params,
-            batchNo: record.batchno
-        }, payAgentApplyDetaillist, payFileMakeInfo);
+        showDetailModal({skip:0,count:10,batchNo: record.batchno}, payAgentApplyDetaillist, payFileMakeInfo);
         this.setState({record})
     }
     onChange = (e) => {
@@ -230,7 +228,7 @@ import * as Actions from 'actions';
             return ;
         }
         const {data} = response;
-        upLoadFile({fileName:data,batchNo:batchno},hideUploadFileModal,hideLeadingFileModal)
+        upLoadFile({fileName:data,batchNo:batchno},hideUploadFileModal,hideLeadingFileModal,this.leadingResultQuery)
     }
     //清空文件
     cancelFile = () => {
@@ -240,7 +238,7 @@ import * as Actions from 'actions';
         })
     }
     render(){
-          const { companyName, fileList, error, errorMsg, record } = this.state;
+          const { companyName, fileList, error, errorMsg, record,batchno } = this.state;
           const { 
               isUpLoadModal, 
               dataSwitchList, 
@@ -254,8 +252,8 @@ import * as Actions from 'actions';
                 count = dataSwitchList.count;//总条数 
         return(
             <div className="layout common">
-                <div className="error handle">
-                    <h2 className="File-title">导入结果处理</h2>
+                <div className="error handle"> 
+                    <h2 className="File-title">结果查询</h2>
                     <ul className="data-info handle-info">
                         <li style={{marginLeft:100,marginRight:20}}>
                             <span>公司名称：</span>
@@ -327,6 +325,9 @@ import * as Actions from 'actions';
                 <LeadingFileModal 
                     payFileCreate={payFileCreate}
                     clearTableCheckbox = {this.clearTableCheckbox}
+                    detailList = {detailList}
+                    payAgentApplyDetaillist={payAgentApplyDetaillist}
+                    batchno={batchno}
                 />
 
                 <DetailModalComponent 
@@ -344,6 +345,7 @@ import * as Actions from 'actions';
                     visible={isUpLoadModal}
                     style={{top:300}}
                     okText="上传"
+                    maskClosable={false}
                     onCancel={() => this.props.hideUploadFileModal(this.cancelFile)}
                     onOk={this.upLoadFile}
                 >

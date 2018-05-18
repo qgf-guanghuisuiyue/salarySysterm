@@ -44,7 +44,16 @@ import * as Actions from 'actions';
             return  <a>{(index+1)+(page-1)*10}</a>
         }
         columns[columns.length-4].render = (text,record,index) => { 
-            return  <span>{record.status==-1?"撤销":record.status==0?"全部成功":record.status==1?"部分成功":record.status==2?"待处理":record.status==3?"处理中":record.status==4?"拒绝处理":record.status==5?"待提交":record.status==6 && "代发失败"}</span>
+            return  <span>{
+                record.status==-1?"撤销":
+                record.status==0?"全部成功":
+                record.status==1?"部分成功":
+                record.status==2?"待处理":
+                record.status==3?"处理中":
+                record.status==4?"拒绝处理":
+                record.status==5?"待提交":
+                record.status==6 && "代发失败"
+                }</span>
         }
         columns[columns.length-2].render = (text,record,index) => { 
             return  <span>{record.rate==0?"未核算":record.rate==1?"已核算未开票":record.rate==2 && "已开票"}</span>
@@ -179,7 +188,11 @@ import * as Actions from 'actions';
                         </div> 
                         <div className="inline-block">
                             <span className="title">开票状态：</span>
-                            <Select style={{width: 200}} placeholder="请选择处理状态" onChange={this.onChangeSelect}>
+                            <Select 
+                                style={{width: 200}} 
+                                placeholder="请选择处理状态" 
+                                onChange={this.onChangeSelect}
+                            >
                                 <Option value={0}>未进行开票信息</Option>
                                 <Option value={1}>已开票未核算</Option>
                                 <Option value={2}>已开票</Option>

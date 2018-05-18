@@ -128,7 +128,7 @@ import * as Actions from 'actions';
         return(
             <div className=" layout common">
                 <div className="error handle">
-                    <h2 className="File-title">数据转换列表查询</h2>
+                    <h2 className="File-title">列表查询</h2>
                     <ul className="data-info handle-info">
                         <li style={{marginLeft:100,marginRight:20}}>
                             <span>公司名称：</span>

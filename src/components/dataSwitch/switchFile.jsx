@@ -108,12 +108,15 @@ import * as Actions from 'actions';
             <div className="layout common">
                 <div className="leadingResult">
                     <h2 className="File-title">生成银行代发文件</h2>
-                    <ul className="data-info switchFileUl">
+                    <ul className="data-info switchFileUl" style={{paddingTop:20}}>
                         <li><span>批次号：</span><span>{tblPayApplyModel?tblPayApplyModel.batchno:""}</span></li>
                         <li><span>公司名称：</span><span>{tblPayApplyModel?tblPayApplyModel.corpname:""}</span></li>
                         <li><span>总笔数：</span><span>{tblPayApplyModel?tblPayApplyModel.totalcount:""}</span></li>
                         <li><span>总金额：</span><span>{tblPayApplyModel?tblPayApplyModel.totalamount:""}</span></li>
-                        <li><span>申请日期：</span><span>{tblPayApplyModel?moment(tblPayApplyModel.applydate).format("YYYY-MM-DD"):""}</span></li>
+                        <li>
+                            <span>申请日期：</span>
+                            <span>{tblPayApplyModel?moment(tblPayApplyModel.applydate).format("YYYY-MM-DD"):""}</span>
+                        </li>
                         <li><span>处理状态：</span><span>{tblPayApplyModel?tblPayApplyModel.status===0?"全部成功":tblPayApplyModel.status===1?"部分成功":tblPayApplyModel.status===2?"待处理":tblPayApplyModel.status===3?"处理中":tblPayApplyModel.status===4 ? "拒绝处理":"暂无":""}</span></li>
                         <li style={{width:700}}>
                             <span>代发文件名：</span>

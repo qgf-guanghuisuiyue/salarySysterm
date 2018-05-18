@@ -70,14 +70,14 @@ import * as Actions from 'actions';
                     <div className="dataSwitch">
                         <ul className="data-info switchFileUl">
                             <li><span>批次号：</span><span>{record.batchno}</span></li>
-                            <li><span>公司名称：</span><span>{record.corpname}</span></li>
-                            <li ><span>总笔数：</span><span>{record.totalcount}</span></li>
-                            <li><span>总金额：</span><span>{record.totalamount}</span></li>
-                            <li><span>申请日期：</span><span>{record.applydate}</span></li>
-                            <li style={{width:800}}>
+                            <li style={{width:260}}><span>公司名称：</span><span style={{width:160}}>{record.corpname}</span></li>
+                            <li style={{width:550}}>
                                 <span>代发文件名：</span>
-                                <span style={{width:700}}>{record.payapplyfilename}</span>
+                                <span style={{width:450}}>{record.payapplyfilename}</span>
                             </li>
+                            <li><span>总金额：</span><span>{record.totalamount}</span></li>
+                            <li style={{width:260}}><span>申请日期：</span><span style={{width:160}}>{record.applydate}</span></li>
+                            <li ><span>总笔数：</span><span>{record.totalcount}</span></li>
                         </ul>
                             <Table 
                                 isLoading={detailList.isLoading}

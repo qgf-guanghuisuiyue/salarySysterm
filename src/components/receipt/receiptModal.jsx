@@ -27,9 +27,8 @@ export default class EditModal extends React.Component{
      }
      componentWillReceiveProps(nextProps){
         const {record, calculateList} = nextProps,
-        {paytax, yieldpoints, invoicedate, rateamount, totalamount,therate,profits} = record,
-         {invoiceAmount,actualAmount,grossAmount} = calculateList;
-         console.log(record)
+              {paytax, yieldpoints, invoicedate, rateamount, totalamount,therate,profits} = record,
+              {invoiceAmount,actualAmount,grossAmount} = calculateList;
         this.setState({
             yieldpoints,
             paytax,

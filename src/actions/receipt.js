@@ -81,12 +81,15 @@ const CALCULATE_START = {type:types.CALCULATE_START};
             data: data
         })
         .then(res=>{
-            console.log(res)
             notification.success({
                 message:res.msg
             })
-            hideReceiptModal()  
-            searchReceiptList()
+            if(hideReceiptModal){
+                hideReceiptModal()
+            }
+            if(searchReceiptList){
+                searchReceiptList()
+            } 
         },err=>{
             console.log(err)
         });

@@ -11,9 +11,14 @@ const SHOW_DETAIL_MODAL = {type:types.SHOW_DETAIL_MODAL};
 const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
 
 
-    export const showLeadingFileModal = (batchno,payFileMakeInfo) => (dispatch,getState) => {
+    export const showLeadingFileModal = (batchno,payFileMakeInfo,payAgentApplyDetaillist) => (dispatch,getState) => {
         dispatch({...SHOW_LEADINGFILE_MODAL})
-        payFileMakeInfo({batchNo:batchno})
+        if(payFileMakeInfo){
+            payFileMakeInfo({batchNo:batchno})
+        }
+        if(payAgentApplyDetaillist){
+            payAgentApplyDetaillist({skip:0,count:10,batchNo:batchno})
+        }
     }
     export const hideLeadingFileModal = (clearTableCheckbox) => (dispatch,getState) => {
         dispatch({...HIDE_LEADINGFILE_MODAL});
@@ -26,13 +31,19 @@ const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
     }
     export const hideUploadFileModal = (cancelFile) => (dispatch,getState) => {
         dispatch({...HIDE_UPLOAD_MODAL});
-        cancelFile()
+        if(cancelFile){
+            cancelFile()
+        }
     }
 
     export const showDetailModal = (data,payAgentApplyDetaillist,payFileMakeInfo) => (dispatch,getState) => {
         dispatch({...SHOW_DETAIL_MODAL})
-        payAgentApplyDetaillist(data);
-        payFileMakeInfo({batchNo:data.batchNo})
+        if(payAgentApplyDetaillist){
+            payAgentApplyDetaillist(data);
+        }
+        if(payFileMakeInfo){
+            payFileMakeInfo({batchNo:data.batchNo})
+        }
     }
     export const hideDetailModal = () => (dispatch,getState) => {
         dispatch({...HIDE_DETAIL_MODAL})
@@ -49,12 +60,14 @@ const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
             notification.success({
                 message:res.msg
             })
-            leadingResultQuery()
+            if(leadingResultQuery){
+                leadingResultQuery()
+            } 
         },err=>{
             console.log(err)
         });
     }
-    export const upLoadFile = (data,hideUploadFileModal,hideLeadingFileModal) => (dispatch,getState) => {
+    export const upLoadFile = (data,hideUploadFileModal,hideLeadingFileModal,leadingResultQuery) => (dispatch,getState) => {
         AjaxByToken('api/accept/payagent_importFile',{
             head: {
                 transcode: 'C000007',
@@ -65,8 +78,15 @@ const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
             notification.success({
                 message:res.msg
             })
-            hideUploadFileModal();
-            hideLeadingFileModal()
+            if(hideUploadFileModal){
+                hideUploadFileModal();
+            }
+            if(hideLeadingFileModal){
+                hideLeadingFileModal();
+            }
+            if(leadingResultQuery){
+                leadingResultQuery()
+            }  
         },err=>{
             console.log(err)
         });

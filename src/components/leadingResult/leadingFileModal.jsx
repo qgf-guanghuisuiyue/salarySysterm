@@ -3,6 +3,7 @@ import moment from 'moment';
 import {Link} from 'react-router';
 
 import columns from 'data/table-columns/leadingResultFileInfo';
+import columnsDetail from 'data/table-columns/leadingResultDetail';
 import { Table , Button , Tooltip , Input , DatePicker ,Icon , Modal} from 'antd';
 
 //redux
@@ -12,6 +13,12 @@ import * as Actions from 'actions';
 
 
  class LeadingFile extends React.Component{
+
+
+    params = {
+        skip:0,
+        count:10
+    }
     showUploadFileModal = () => {
       this.props.showUploadFileModal()
     }
@@ -22,14 +29,8 @@ import * as Actions from 'actions';
       columns[columns.length-1].render = (text,record,index) => {
           return  <span>
                       {
-                          record.status===0?"全部成功":
-                          record.status===1?"部分成功":
-                          record.status===2?"待处理":
-                          record.status===3?"处理中":
-                          record.status===4? "拒绝处理":
-                          record.status===5? "待提交":
-                          record.status===6? "代发失败":
-                          record.status===-1 && "撤销"
+                          record.status===0?"成功":
+                          record.status===1 && "失败"
                       }
                   </span>
       }
@@ -38,8 +39,19 @@ import * as Actions from 'actions';
       }
       return columns;
   }
+  //页码回调
+  onChangePagination = (page) => {
+    const {batchno, payAgentApplyDetaillist} = this.props;
+    this.setState({
+        page
+    })
+    this.params.skip = page * 10 - 10;
+    payAgentApplyDetaillist({...this.params,batchNo:batchno});
+    this.refs.dataSwitch.scrollTop = 0
+}
     render(){
-        const {isLeadingFileModal , payFileCreate, clearTableCheckbox} = this.props;
+        const {isLeadingFileModal,detailList , payFileCreate, clearTableCheckbox} = this.props,
+            {detailData} = detailList;
         const {tblPayApplyModel, tblPayInfoModel={}} = payFileCreate;        
         var data = [];
         if(tblPayInfoModel){
@@ -52,6 +64,7 @@ import * as Actions from 'actions';
                 visible={isLeadingFileModal}
                 width={1360}
                 footer={false}
+                maskClosable={false}
                 onCancel={() => this.props.hideLeadingFileModal(clearTableCheckbox)}
           >
               <div className="leadingResult">
@@ -73,13 +86,25 @@ import * as Actions from 'actions';
                       <Button type="primary" onClick={this.showUploadFileModal}>导入结果文件</Button>
                   </div>
                   <div className="result-table">
-                      <Table 
-                          columns={this.getColumns()} 
-                          dataSource={data} 
-                          bordered={true}
-                          style={{height:400}}
-                          pagination={false}
-                      />
+                        <h2 style={{background:"#EEF1F6",marginTop:10,marginBottom:10}}>代发及结果文件</h2>
+                        <Table 
+                            columns={this.getColumns()} 
+                            dataSource={data} 
+                            bordered={true}
+                            pagination={false}
+                        />
+                        <h2 style={{background:"#EEF1F6",marginTop:10,marginBottom:10}}>代发明细</h2>
+                        <Table 
+                            columns={columnsDetail} 
+                            dataSource={detailData.list} 
+                            bordered={true}
+                            pagination={{
+                                defaultPageSize: 10,
+                                total: detailData.sum,
+                                onChange:this.onChangePagination,
+                                showTotal:total => `共 ${detailData.sum} 条数据`
+                            }}
+                        />
                   </div>
               </div>
           </Modal>

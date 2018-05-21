@@ -20,6 +20,7 @@ import * as Actions from 'actions';
       corpName: '', //公司名称
       page: 1,
       selectedList: [],
+      selectedRowKeys: []
     }
 
     params = {
@@ -31,6 +32,17 @@ import * as Actions from 'actions';
         const  {getCorpList} = this.props;
         getCorpList();
         this.getTempList();
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps.isStatusStop){
+            console.log('是否变化')
+            this.setState({
+                selectedList: [],
+                selectedRowKeys: []
+            })
+            this.props.resetTempStatusFalse()
+        }
     }
 
     getTempList = () => {
@@ -45,6 +57,9 @@ import * as Actions from 'actions';
         }
         columns[columns.length-2].render = (text,record,index) => {           
             return  <span>{record.createdate == null ? '': moment(record.createdate).format('YYYYMMDD')}</span>
+        }
+        columns[columns.length-1].render = (text,record,index) => {           
+            return  <span>{record.status == 0 ? '无效': record.status == 1 && '有效'}</span>
         }
         return columns;
     }
@@ -62,7 +77,7 @@ import * as Actions from 'actions';
     }
 
     tempStop = () => {
-        const {selectedList, status} = this.state;
+        const {selectedList} = this.state;
         const {tempStop, getTempList} = this.props;
         if(selectedList.length == 0) {
             notification.warning({
@@ -73,10 +88,16 @@ import * as Actions from 'actions';
         }else if(selectedList.length > 1) {
             notification.warning({
                 message: '警告',
-                description: '一次只能删除一个参数',
+                description: '一次只能选择一个参数',
                 style:{top:40}
             });
-        } else {
+        } else if(selectedList[0].status == 0) {
+            notification.warning({
+                message: '警告',
+                description: '无效状态无法更改',
+                style:{top:40}
+            });
+        }else {
             tempStop({ID: selectedList[0].id, status: selectedList[0].status}, getTempList)
         }
     }
@@ -87,7 +108,7 @@ import * as Actions from 'actions';
         let selectedList = selectedRows.map((item,index) => {
             return item;
         })
-        this.setState({selectedList})
+        this.setState({selectedList, selectedRowKeys})
     }
 
     //页码回调
@@ -111,7 +132,8 @@ import * as Actions from 'actions';
         const {tempData} = temp;
           // 通过 rowSelection 对象表明需要行选择
           const rowSelection = {
-            onChange: this.rowSelection
+            onChange: this.rowSelection,
+            selectedRowKeys: this.state.selectedRowKeys
           };
         return(
             <div className="layout common">
@@ -173,12 +195,14 @@ import * as Actions from 'actions';
 const mapStateToProps = state => ({
       temp: state.System.temp,
       corpData: state.System.corpData,
+      isStatusStop: state.System.isStatusStop,
 })
 const mapDispatchToProps = dispatch => ({
       getTempList: bindActionCreators(Actions.SystemActions.getTempList, dispatch),
       showSaveTempModal: bindActionCreators(Actions.SystemActions.showSaveTempModal, dispatch),
       getCorpList: bindActionCreators(Actions.SystemActions.getCorpList, dispatch),
       tempStop: bindActionCreators(Actions.SystemActions.tempStop, dispatch),
+      resetTempStatusFalse: bindActionCreators(Actions.SystemActions.resetTempStatusFalse, dispatch),
 })
 
 export default connect(

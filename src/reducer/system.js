@@ -15,6 +15,8 @@ import {
     HIDE_SAVE_TEMP,
     SET_RESETTEMP_TRUE,
     SET_RESETTEMP_FALSE,
+    RESET_TEMPSTATUS_TRUE,
+    RESET_TEMPSTATUS_FALSE,
     GET_CORP_LIST,
     USERINFO_LIST_START,
     USERINFO_LIST_DONE,
@@ -46,6 +48,7 @@ const initialState = {
         saveTempVisible: false,
         resetForm: false
     },
+    isStatusStop: false,
     userInfoList: {
         isLoading: false,
         userInfoData: []
@@ -99,6 +102,10 @@ export default function upload(state = initialState,actions){
             return {...state, saveTempModal:{...state.saveTempModal,resetForm: false}};    
         case GET_CORP_LIST:  
             return {...state, corpData: actions.corpData };  
+        case RESET_TEMPSTATUS_TRUE: 
+            return {...state, isStatusStop: true };  
+        case RESET_TEMPSTATUS_FALSE:
+            return {...state, isStatusStop: false };       
         case USERINFO_LIST_START: 
             return {...state, userInfoList: {...state.userInfoList, isLoading: true}};
         case USERINFO_LIST_DONE: 

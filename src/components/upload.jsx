@@ -189,9 +189,9 @@ import * as Actions from 'actions';
  
     getColumns = () => {
         columns[0].render = (text,record,index) => {           
-            return  <Link>{index+1+(this.state.page-1)*10}</Link>
+            return  <span>{index+1+(this.state.page-1)*10}</span>
         }
-        columns[columns.length-2].render = (text,record,index) => {
+        columns[columns.length-3].render = (text,record,index) => {
             return  <span>{record.status===-1?"撤销":record.status===0?"全部成功":record.status===1?"部分处理":record.status===2?"待处理":record.status===3?"处理中":record.status===4?"退回":record.status===5?"待提交":record.status===6&&"代发失败"}</span>
         }
         columns[columns.length-1].render = (text,record,index)=>{

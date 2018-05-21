@@ -68,6 +68,9 @@ import * as Actions from 'actions';
         columns[0].render = (text,record,index) => {           
             return  <a>{(index+1)+(page-1)*10}</a>
         }
+        columns[columns.length-4].render = (text,record,index) => {           
+            return  <span>{record.updatedate?moment(record.updatedate).format("YYYY-MM-DD"):""}</span>
+        }
         return columns
     }
     onInputChange = (field,e) => {
@@ -137,7 +140,7 @@ import * as Actions from 'actions';
         return(
             <div className="layout common">
                 <div className="error">
-                    <h2 className="File-title">失败查询</h2>
+                    <h2 className="File-title"  style={{marginBottom:20}}>失败查询</h2>
                     <ul className="data-info err-info">
                         <li>
                             <span>公司名称：</span>

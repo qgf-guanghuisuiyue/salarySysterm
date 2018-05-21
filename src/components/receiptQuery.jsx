@@ -17,7 +17,8 @@ import * as Actions from 'actions';
         startDate: "",
         endDate: "",
         corpName:"",
-        page:1
+        page:1,
+        rate:['1','2']
     };
     params = {
         skip:0,
@@ -80,11 +81,10 @@ import * as Actions from 'actions';
         })
     }
     searchReceiptList = () => {
-        const { startDate, endDate, batchNo, corpName } = this.state;
+        const { startDate, endDate, batchNo, corpName,rate } = this.state;
         let startTime = startDate ? moment(startDate).format("YYYYMMDD") : '';
         let endTime = endDate ? moment(endDate).format("YYYYMMDD") : '';
-        console.log(startTime, endTime)
-        this.props.searchReceiptList({startDate: startTime, endDate: endTime, batchNo, corpName })
+        this.props.searchReceiptList({startDate: startTime, endDate: endTime, batchNo, corpName, rate})
     } 
     render(){
         const { startDate, endDate, batchNo, corpName } = this.state;

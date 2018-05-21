@@ -31,7 +31,7 @@ import * as Actions from 'actions';
                 return false
             }
         }
-        const activeKey = name==="上传文件"?"upload":name==="申请结果查询"?"apply":name==="数据转换"?"dataSwitch":name==="导入结果"?"leadingResult":name==="受理查询"?'handle':name==="开票查询"?'receiptQuery':name==="开票计算"?'receiptCount':name==="失败结果查询"?'errorResult':name==="基础管理"?'basicManage':name==="模板文件"?'mouldFile':name==="用户管理"?'userManage':name==='权限设置'?"accessPermission":name==="日志查询" && "log";
+        const activeKey = name==="上传文件"?"upload":name==="申请结果查询"?"apply":name==="数据转换"?"dataSwitch":name==="导入结果"?"leadingResult":name==="受理结果查询"?'handle':name==="开票结果查询"?'receiptQuery':name==="开票计算"?'receiptCount':name==="失败结果查询"?'errorResult':name==="基础管理"?'basicManage':name==="模板文件"?'mouldFile':name==="用户管理"?'userManage':name==='权限设置'?"accessPermission":name==="日志查询" && "log";
         panes.push({ title: name, key: activeKey });
         this.setState({ panes, activeKey });
     }
@@ -104,7 +104,7 @@ import * as Actions from 'actions';
             break;
             case "/handle":
                 this.setState({
-                    panes:[{ title: '受理查询', key: 'handle' }]
+                    panes:[{ title: '受理结果查询', key: 'handle' }]
                 });
             break;
             case "/errorResult":
@@ -144,7 +144,7 @@ import * as Actions from 'actions';
             break;
             case "/receiptQuery":
                 this.setState({
-                    panes:[{ title: '开票查询', key: 'receiptQuery' }]
+                    panes:[{ title: '开票结果查询', key: 'receiptQuery' }]
                 });
             break;
             case "/receiptCount":
@@ -223,8 +223,8 @@ import * as Actions from 'actions';
                                                 :pane.title==="申请结果查询"?"apply"
                                                 :pane.title==="数据转换"?"dataSwitch"
                                                 :pane.title==="导入结果"?"leadingResult"
-                                                :pane.title==="受理查询"?'handle'
-                                                :pane.title==="开票查询"?'receiptQuery'
+                                                :pane.title==="受理结果查询"?'handle'
+                                                :pane.title==="开票结果查询"?'receiptQuery'
                                                 :pane.title==="开票计算"?'receiptCount'
                                                 :pane.title==="失败结果查询"?'errorResult'
                                                 :pane.title==="基础管理"?'basicManage'

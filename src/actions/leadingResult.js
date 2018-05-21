@@ -9,15 +9,15 @@ const SHOW_UPLOAD_MODAL = {type:types.SHOW_UPLOAD_MODAL};
 const HIDE_UPLOAD_MODAL = {type:types.HIDE_UPLOAD_MODAL};
 const SHOW_DETAIL_MODAL = {type:types.SHOW_DETAIL_MODAL};
 const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
+const LEADING_RESULT_DETAIL = {type:types.LEADING_RESULT_DETAIL}
 
-
-    export const showLeadingFileModal = (batchno,payFileMakeInfo,payAgentApplyDetaillist) => (dispatch,getState) => {
+    export const showLeadingFileModal = (batchno,payFileMakeInfo,leadingResultDetail) => (dispatch,getState) => {
         dispatch({...SHOW_LEADINGFILE_MODAL})
         if(payFileMakeInfo){
             payFileMakeInfo({batchNo:batchno})
         }
-        if(payAgentApplyDetaillist){
-            payAgentApplyDetaillist({skip:0,count:10,batchNo:batchno})
+        if(leadingResultDetail){
+            leadingResultDetail({skip:0,count:10,batchNo:batchno})
         }
     }
     export const hideLeadingFileModal = (clearTableCheckbox) => (dispatch,getState) => {
@@ -36,10 +36,10 @@ const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
         }
     }
 
-    export const showDetailModal = (data,payAgentApplyDetaillist,payFileMakeInfo) => (dispatch,getState) => {
+    export const showDetailModal = (data,leadingResultDetail,payFileMakeInfo) => (dispatch,getState) => {
         dispatch({...SHOW_DETAIL_MODAL})
-        if(payAgentApplyDetaillist){
-            payAgentApplyDetaillist(data);
+        if(leadingResultDetail){
+            leadingResultDetail(data);
         }
         if(payFileMakeInfo){
             payFileMakeInfo({batchNo:data.batchNo})
@@ -87,6 +87,21 @@ const HIDE_DETAIL_MODAL = {type:types.HIDE_DETAIL_MODAL};
             if(leadingResultQuery){
                 leadingResultQuery()
             }  
+        },err=>{
+            console.log(err)
+        });
+    }
+
+    //导入结果代发明细
+    export const leadingResultDetail = (data) => (dispatch,getState) => {
+        AjaxByToken('api/accept/payagent/rate/paydetails',{
+            head: {
+                transcode: 'C000020',
+            },
+            data: data
+        })
+        .then(res=>{
+            dispatch({...LEADING_RESULT_DETAIL,resultDetailList:res.data})
         },err=>{
             console.log(err)
         });

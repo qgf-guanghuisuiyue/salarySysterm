@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import {Link} from 'react-router';
 
+import store from 'store';
 import { Table , Button , Tooltip , Select ,Modal} from 'antd';
 import {AjaxByToken} from 'utils/ajax';
 import columns from 'data/table-columns/leadingResultDetail';
@@ -23,19 +24,42 @@ import * as Actions from 'actions';
         count:10
     }
     leadingColumns = () => {
-        leadingColumns[0].render = (text,record,index)=>{
+        const token = store.get('token'),
+        origin = window.location.origin,
+        url = `/PayAgent/api/web/file/downloadFile?token=${token.token}&tokenKey=${token.tokenKey}&fileName=`;
+
+      leadingColumns[0].render = (text,record,index)=>{
           return <a>{index+1}</a>;
+      }
+      leadingColumns[1].render = (text,record,index)=>{
+        return <a href={`${origin + url + record.payfilename}`} title="点击下载文件">{record.payfilename}</a>;
+      }
+      leadingColumns[4].render = (text,record,index)=>{
+        return <span>{record.payfiledate?moment(record.payfiledate).format("YYYY-MM-DD"):record.payfiledate}</span>;
       }
       leadingColumns[leadingColumns.length-1].render = (text,record,index) => {
             return  <span>
                         {
-                            record.status===0?"成功":
-                            record.status===1 && "失败"
+                            record.status===0?"全部成功":
+                            record.status===1?"部分成功":
+                            record.status===2?"待处理":
+                            record.status===3?"处理中":
+                            record.status===4? "拒绝处理":
+                            record.status===5? "待提交":
+                            record.status===6? "代发失败":
+                            record.status===-1 && "撤销"
                         }
                     </span>
         }
         leadingColumns[3].render = (text,record,index)=>{
-            return <a>{record.paymode==1?"公对私":record.paymode==2 && "公对私"}</a>;
+            return <a>{record.paymode==1?"公对私":record.paymode==2 && "私对私"}</a>;
+        }
+        leadingColumns[leadingColumns.length-2].render = (text,record,index) => {
+            return  <span>{record.payretfiledate?moment(record.payretfiledate).format("YYYY-MM-DD"):record.payretfiledate}</span>
+          }
+        leadingColumns[leadingColumns.length-3].render = (text,record,index) => {
+            var fileName = record.payretfilename?record.payretfilename.split(',')[record.payretfilename.split(',').length-1]:"";
+          return  <a href={`${origin + url + fileName }`} title="点击下载文件">{fileName}</a>
         }
         return leadingColumns;
     }
@@ -45,7 +69,7 @@ import * as Actions from 'actions';
             return  <a>{(index+1)+(page-1)*10}</a>
         }
         
-        columns[columns.length-2].render = (text,record,index) => {
+        columns[columns.length-3].render = (text,record,index) => {
             return  <span>
                         {
                             record.status===0?"成功":
@@ -55,8 +79,8 @@ import * as Actions from 'actions';
                         }
                     </span>
         }
-        columns[columns.length-3].render = (text,record,index) => {
-            return  <span>{record.transdate?moment(record.transdate).format("YYYY-MM-DD"):""}</span>
+        columns[columns.length-4].render = (text,record,index) => {
+            return  <span>{record.updatedate?moment(record.updatedate).format("YYYY-MM-DD"):""}</span>
         }
         
         return columns;
@@ -66,18 +90,17 @@ import * as Actions from 'actions';
     }
     //页码回调
     onChangePagination = (page) => {
-        const {record, payAgentApplyDetaillist} = this.props;
+        const {record, leadingResultDetail} = this.props;
         this.setState({
             page
         })
         this.params.skip = page * 10 - 10;
-        payAgentApplyDetaillist({...this.params,batchNo: record.batchno});
+        leadingResultDetail({...this.params,batchNo: record.batchno});
         this.refs.dataSwitch.scrollTop = 0
     }
     render(){ 
-        const {isDetailModal, record, detailList, payFileCreate} = this.props,
-            {tblPayApplyModel, tblPayInfoModel={}} = payFileCreate,  
-            {detailData} = detailList;     
+        const {isDetailModal, record, resultDetailList, payFileCreate} = this.props,
+            {tblPayApplyModel, tblPayInfoModel={}} = payFileCreate;  
             var data = [];
             if(tblPayInfoModel){
                 data.push(tblPayInfoModel)
@@ -128,13 +151,13 @@ import * as Actions from 'actions';
                         <h2 style={{background:"#EEF1F6",marginTop:10,marginBottom:10}}>代发明细</h2>
                         <Table 
                             columns={this.getColumns()} 
-                            dataSource={detailData.list} 
+                            dataSource={resultDetailList.list} 
                             bordered={true}
                             pagination={{
                                 defaultPageSize: 10,
-                                total: detailData.sum,
+                                total: resultDetailList.count,
                                 onChange:this.onChangePagination,
-                                showTotal:total => `共 ${detailData.sum} 条数据`
+                                showTotal:total => `共 ${resultDetailList.count} 条数据`
                             }}
                         />
 

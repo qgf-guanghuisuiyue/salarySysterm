@@ -2,7 +2,7 @@ module.exports = [
     {
         title: '序号',
         dataIndex: 'key',
-        width: 100,
+        width: 50,
     }, 
     {
         title: '姓名',
@@ -17,8 +17,8 @@ module.exports = [
     {
         title: '开户行',
         dataIndex: 'bankname',
-        width: 350,
-    }, {
+    }, 
+    {
         title: '开户地',
         dataIndex: 'bankplace',
         width: 100,
@@ -26,11 +26,11 @@ module.exports = [
     {
         title: '金额',
         dataIndex: 'amount',
-        width: 150,
+        width: 100,
     }, 
     {
         title: '备注',
         dataIndex: 'remark',
-        width: 100,
+        width: 150,
     }
 ];

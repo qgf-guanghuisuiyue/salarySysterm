@@ -29,14 +29,10 @@ module.exports = [
             dataIndex: 'amount',
             width:100
         }, 
-        {
-            title: '备注',
-            dataIndex: 'remark',
-            width:100
-        }, 
+        
         {
             title: '交易日期',
-            dataIndex: 'transdate',
+            dataIndex: 'updatedate',
             width:80
         }, 
         {
@@ -47,6 +43,10 @@ module.exports = [
         {
             title: '失败原因',
             dataIndex: 'errmsg',
+            width:100
+        },{
+            title: '备注',
+            dataIndex: 'remark',
             width:100
         }
     ];

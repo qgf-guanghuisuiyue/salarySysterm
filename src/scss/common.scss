@@ -62,7 +62,6 @@
         &.switchFileUl{
             margin-bottom: 20px;
             li{
-                height: 50px;
                 span:nth-child(1){
                     display: inline-block;
                     float: left;
@@ -152,7 +151,7 @@
         padding-top: 10px;
     }
     .switchFileUl{
-        margin-bottom: 20px;
+        //margin-bottom: 20px;
         li{
             height: 30px;
             span:nth-child(1){
@@ -221,7 +220,8 @@
         th{
             background: #0086C9;
             color: white;
-            text-align: center
+            text-align: center;
+            font-size: 14px;
         }
         
     }

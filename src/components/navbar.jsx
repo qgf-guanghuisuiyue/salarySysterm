@@ -38,9 +38,9 @@ import * as Actions from 'actions';
     salaryHandle = [
         {name:'数据转换',path:'dataSwitch'},
         {name:'导入结果',path:'leadingResult'},
-        {name:'受理查询',path:'handle'},
-        {name:'开票查询',path:'receiptQuery'},
         {name:'开票计算',path:'receiptCount'},
+        {name:'受理结果查询',path:'handle'},
+        {name:'开票结果查询',path:'receiptQuery'},
         {name:'失败结果查询',path:'errorResult'}
     ];
     systemManage = [

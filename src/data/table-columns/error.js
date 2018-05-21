@@ -6,15 +6,15 @@ module.exports = [
     }, 
     {
     title: '批次号',
-    dataIndex: 'batchno',
+    dataIndex: 'batchNo',
     }, 
     {
     title: '代发申请日期',
-    dataIndex: 'age',
+    dataIndex: 'applyDate',
     }, 
     {
     title: '公司名称',
-    dataIndex: 'address',
+    dataIndex: 'corpName',
     },
     {
     title: '姓名',
@@ -22,15 +22,15 @@ module.exports = [
     },
     {
     title: '卡号',
-    dataIndex: 'cardno',
+    dataIndex: 'cardNo',
     }, 
     {
     title: '开户行',
-    dataIndex: 'bankname',
+    dataIndex: 'bankName',
     }, 
     {
     title: '交易日期',
-    dataIndex: 'date',
+    dataIndex: 'updatedate',
     }, 
     {
     title: '交易金额',

@@ -2,7 +2,9 @@ import React from 'react';
 import moment from 'moment';
 import {Link} from 'react-router';
 
+import store from 'store';
 import columns from 'data/table-columns/leadingResultFileInfo';
+import columnsDetail from 'data/table-columns/leadingResultDetail';
 import { Table , Button , Tooltip , Input , DatePicker ,Icon , Modal} from 'antd';
 
 //redux
@@ -12,39 +14,98 @@ import * as Actions from 'actions';
 
 
  class LeadingFile extends React.Component{
+    state= {
+        page:1
+    }
+
+    params = {
+        skip:0,
+        count:10
+    }
     showUploadFileModal = () => {
       this.props.showUploadFileModal()
     }
     getColumns = () => {
+        const token = store.get('token'),
+        origin = window.location.origin,
+        url = `/PayAgent/api/web/file/downloadFile?token=${token.token}&tokenKey=${token.tokenKey}&fileName=`;
+
       columns[0].render = (text,record,index)=>{
         return <a>{index+1}</a>;
+      }
+      columns[1].render = (text,record,index)=>{
+        return <a href={`${origin + url + record.payfilename}`} title="点击下载文件">{record.payfilename}</a>;
+      }
+      columns[4].render = (text,record,index)=>{
+        return <span>{record.payfiledate?moment(record.payfiledate).format("YYYY-MM-DD"):record.payfiledate}</span>;
       }
       columns[columns.length-1].render = (text,record,index) => {
           return  <span>
                       {
-                          record.status===0?"全部成功":
-                          record.status===1?"部分成功":
-                          record.status===2?"待处理":
-                          record.status===3?"处理中":
-                          record.status===4? "拒绝处理":
-                          record.status===5? "待提交":
-                          record.status===6? "代发失败":
-                          record.status===-1 && "撤销"
+                        record.status===0?"全部成功":
+                        record.status===1?"部分成功":
+                        record.status===2?"待处理":
+                        record.status===3?"处理中":
+                        record.status===4? "拒绝处理":
+                        record.status===5? "待提交":
+                        record.status===6? "代发失败":
+                        record.status===-1 && "撤销"
                       }
                   </span>
+      }
+      columns[columns.length-2].render = (text,record,index) => {
+        return  <span>{record.payretfiledate?moment(record.payretfiledate).format("YYYY-MM-DD"):record.payretfiledate}</span>
+      }
+      columns[columns.length-3].render = (text,record,index) => {
+          var fileName = record.payretfilename?record.payretfilename.split(',')[record.payretfilename.split(',').length-1]:"";
+        return  <a href={`${origin + url + fileName }`} title="点击下载文件">
+                    {fileName}
+                </a>
       }
       columns[3].render = (text,record,index)=>{
           return <a>{record.paymode==1?"公对私":record.paymode==2 && "私对私"}</a>;
       }
       return columns;
   }
+  columnsDetail = () => {
+    const {page} = this.state;
+    columnsDetail[0].render = (text,record,index) => {           
+        return  <a>{(index+1)+(page-1)*10}</a>
+    }
+    
+    columnsDetail[columnsDetail.length-3].render = (text,record,index) => {
+        return  <span>
+                    {
+                        record.status===0?"成功":
+                        record.status===1?"未处理":
+                        record.status===2?"处理中":
+                        record.status===3 && "失败"
+                    }
+                </span>
+    }
+    columnsDetail[columnsDetail.length-4].render = (text,record,index) => {
+        return  <span>{record.updatedate?moment(record.updatedate).format("YYYY-MM-DD"):""}</span>
+    }
+    
+    return columnsDetail;
+  }
+  //页码回调
+  onChangePagination = (page) => {
+    const {batchno, leadingResultDetail} = this.props;
+    this.setState({
+        page
+    })
+    this.params.skip = page * 10 - 10;
+    leadingResultDetail({...this.params,batchNo:batchno});
+    this.refs.dataSwitch.scrollTop = 0
+}
     render(){
-        const {isLeadingFileModal , payFileCreate, clearTableCheckbox} = this.props;
+        const {isLeadingFileModal,resultDetailList , payFileCreate, clearTableCheckbox} = this.props;
         const {tblPayApplyModel, tblPayInfoModel={}} = payFileCreate;        
         var data = [];
         if(tblPayInfoModel){
             data.push(tblPayInfoModel)
-        }          
+        } 
         return(
           <Modal
                 title={<h2>导入结果代发文件</h2>}
@@ -52,6 +113,7 @@ import * as Actions from 'actions';
                 visible={isLeadingFileModal}
                 width={1360}
                 footer={false}
+                maskClosable={false}
                 onCancel={() => this.props.hideLeadingFileModal(clearTableCheckbox)}
           >
               <div className="leadingResult">
@@ -73,13 +135,25 @@ import * as Actions from 'actions';
                       <Button type="primary" onClick={this.showUploadFileModal}>导入结果文件</Button>
                   </div>
                   <div className="result-table">
-                      <Table 
-                          columns={this.getColumns()} 
-                          dataSource={data} 
-                          bordered={true}
-                          style={{height:400}}
-                          pagination={false}
-                      />
+                        <h2 style={{background:"#EEF1F6",marginTop:10,marginBottom:10}}>代发及结果文件</h2>
+                        <Table 
+                            columns={this.getColumns()} 
+                            dataSource={data} 
+                            bordered={true}
+                            pagination={false}
+                        />
+                        <h2 style={{background:"#EEF1F6",marginTop:10,marginBottom:10}}>代发明细</h2>
+                        <Table 
+                            columns={this.columnsDetail()} 
+                            dataSource={resultDetailList.list} 
+                            bordered={true}
+                            pagination={{
+                                defaultPageSize: 10,
+                                total: resultDetailList.count,
+                                onChange:this.onChangePagination,
+                                showTotal:total => `共 ${resultDetailList.count} 条数据`
+                            }}
+                        />
                   </div>
               </div>
           </Modal>

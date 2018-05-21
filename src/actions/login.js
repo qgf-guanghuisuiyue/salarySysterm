@@ -42,7 +42,7 @@ export const userLogin = (userInfo={},context) => (dispatch,getState) => {
     .then(res=>{
         dispatch(LOGIN_DONE);
         const data = pick(res.data,['token','tokenKey']);
-        const userInfo = pick(res.data,['role','name','userType'])
+        const userInfo = pick(res.data,['role','name','userType','corpname'])
         store.set('token',data);
         store.set('userInfo',userInfo)
         context.router.push('/');

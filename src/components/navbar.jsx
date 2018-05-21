@@ -25,7 +25,8 @@ import * as Actions from 'actions';
         applyBackground:"",
         handleBackground:"",
         name:"",
-        role:""
+        role:"",
+        corpname:""
      }
     handleClick = (name) => { //cn
         this.props.handleClick(name)
@@ -37,9 +38,9 @@ import * as Actions from 'actions';
     salaryHandle = [
         {name:'数据转换',path:'dataSwitch'},
         {name:'导入结果',path:'leadingResult'},
-        {name:'受理查询',path:'handle'},
-        {name:'开票查询',path:'receiptQuery'},
         {name:'开票计算',path:'receiptCount'},
+        {name:'受理结果查询',path:'handle'},
+        {name:'开票结果查询',path:'receiptQuery'},
         {name:'失败结果查询',path:'errorResult'}
     ];
     systemManage = [
@@ -88,12 +89,21 @@ import * as Actions from 'actions';
         this.setState({
             name:userInfo.name,
             role:userInfo.role,
-            userType:userInfo.userType
+            userType:userInfo.userType,
+            corpname:userInfo.corpname
         })
     }
     render(){
         const {page , article } = this.props;
-        const {applyBackground, handleBackground, systemBackground, name, role, userType} = this.state;
+        const {
+            applyBackground, 
+            handleBackground, 
+            systemBackground, 
+            name, 
+            role, 
+            userType, 
+            corpname
+        } = this.state;
         return(
                 <div className="homeContent">
                     <div className="header">
@@ -147,10 +157,9 @@ import * as Actions from 'actions';
                             </Menu>
                             <ul className="userInfo">
                                 <li>用户名：<span>{name}</span></li>
+                                <li>所属公司：<span>{corpname}</span></li>
                                 <li>所属角色：<span>{role==="0"?"超级用户":role==="1"?"财务":role==="2" && "管理员"}</span></li>
-                                <li onClick={this.userLoginout}>
-                                    注销
-                                </li>
+                                <li onClick={this.userLoginout}>注销</li>
                             </ul>
                         </div>
                     </div>

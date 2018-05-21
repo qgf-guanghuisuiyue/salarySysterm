@@ -21,7 +21,7 @@ module.exports = [
     },
     {
     title: '代发文件生成日期',
-    dataIndex: 'payretfiledate',
+    dataIndex: 'payfiledate',
     width:100
     },
     {
@@ -32,16 +32,11 @@ module.exports = [
     {
     title: '结果文件上传日期',
     width:100,
-    dataIndex: 'remark',
+    dataIndex: 'payretfiledate',
     },
     {
     title: '代发结果',
     dataIndex: 'status',
     width:100
-    },
-    {
-    title: '处理人',
-    dataIndex: 'updateby',
-    width:50
     }
 ]

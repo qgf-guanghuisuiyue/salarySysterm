@@ -7,17 +7,17 @@ module.exports = [
         {
             title: '批次号',
             dataIndex: 'batchno',
-            width:100
+            width:120
         }, 
         {
             title: '公司名称',
             dataIndex: 'corpname',
-            width:150
+            width:100
         }, 
         {
             title: '代发申请文件名称',
             dataIndex: 'payapplyfilename',
-            width:150
+            width:200
         }, 
         {
             title: '总笔数',
@@ -47,7 +47,7 @@ module.exports = [
         {
             title: '处理状态',
             dataIndex: 'status',
-            width:100
+            width:80
         },
         {
             title: '',

@@ -127,7 +127,7 @@
         }
         li{
             float: left;
-            margin-top: 20px;
+            //margin-top: 20px;
             width: 300px;
             span{
                 font-size: 14px;
@@ -151,8 +151,9 @@
         padding-top: 10px;
     }
     .switchFileUl{
-        margin-bottom: 20px;
+        //margin-bottom: 20px;
         li{
+            height: 30px;
             span:nth-child(1){
                 display: inline-block;
                 float: left;
@@ -164,6 +165,24 @@
                 text-align: left
             }
         }
+    }
+    .ant-radio-inner {
+        width: 18px;
+        height: 18px;
+        background-color: #ebebeb;
+        border-radius: 0;
+        &:after {
+             border-radius: 0;
+             width: 10px;
+             height: 10px;
+             //content: &radic;
+        }
+    }
+    .ant-radio+span {
+        padding-right: 0px;
+        padding-left: 4px;
+        font-size: 16px;
+        color: #868686;
     }
 }
 
@@ -201,7 +220,8 @@
         th{
             background: #0086C9;
             color: white;
-            text-align: center
+            text-align: center;
+            font-size: 14px;
         }
         
     }

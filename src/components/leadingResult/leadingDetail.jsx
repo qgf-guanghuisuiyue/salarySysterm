@@ -120,16 +120,17 @@ import * as Actions from 'actions';
                         <ul className="data-info switchFileUl">
                             <li><span>批次号：</span><span>{record.batchno}</span></li>
                             <li><span>公司名称：</span><span>{record.corpname}</span></li>
-                            <li ><span>处理状态：</span>
+                            <li><span>处理状态：</span>
                                 <span>{
-                                    record.status===0?"全部成功":
-                                    record.status===1?"部分成功":
-                                    record.status===2?"待处理":
-                                    record.status===3?"处理中":
-                                    record.status===4? "拒绝处理":
-                                    record.status===5? "待提交":
-                                    record.status===6? "代发失败":
-                                    record.status===-1 && "撤销"}
+                                        record.status===0?"全部成功":
+                                        record.status===1?"部分成功":
+                                        record.status===2?"待处理":
+                                        record.status===3?"处理中":
+                                        record.status===4? "拒绝处理":
+                                        record.status===5? "待提交":
+                                        record.status===6? "代发失败":
+                                        record.status===-1 && "撤销"
+                                    }
                                 </span>
                             </li>
                             <li><span>总笔数：</span><span>{record.totalcount}</span></li>

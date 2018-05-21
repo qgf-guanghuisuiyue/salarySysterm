@@ -20,6 +20,8 @@ const HIDE_SAVE_TEMP = {type: types.HIDE_SAVE_TEMP};
 const SET_RESETTEMP_TRUE = {type: types.SET_RESETTEMP_TRUE};
 const SET_RESETTEMP_FALSE = {type: types.SET_RESETTEMP_FALSE};
 const GET_CORP_LIST = {type: types.GET_CORP_LIST};
+const RESET_TEMPSTATUS_TRUE = {type: types.RESET_TEMPSTATUS_TRUE};
+const RESET_TEMPSTATUS_FALSE = {type: types.RESET_TEMPSTATUS_FALSE};
 const USERINFO_LIST_START = {type: types.USERINFO_LIST_START};
 const USERINFO_LIST_DONE = {type: types.USERINFO_LIST_DONE};
 const GET_USERINFO_LIST = {type: types.GET_USERINFO_LIST};
@@ -80,32 +82,32 @@ export const hideSaveParameterModal = () => (dispatch,getState) => {
 
 //系统参数删除
 export const parameterDelete = (data, getParameterList) => (dispatch, getState) => {
+    dispatch(TEMP_LIST_START)
     AjaxByToken('api/system/parameter/delete', {
         head: {
             transcode: 'S000009',
         },
         data: data
     }).then(res => {
+        dispatch(TEMP_LIST_DONE);
         getParameterList({skip: 0,count: 10})
         console.log(res)
     }, err => {
+        dispatch(TEMP_LIST_DONE);
         console.log(err)
     })
 }
 
 //系统模板数据列表查询
 export const getTempList = (data) => (dispatch, getState) => {
-    dispatch(TEMP_LIST_START)
     AjaxByToken('api/system/template/list', {
         head: {
             transcode: 'S000010',
         },
         data: data
     }).then(res => {
-        dispatch(TEMP_LIST_DONE)
         dispatch({...GET_TEMP_LIST, tempData: res.data})
     }, err => {
-        dispatch(TEMP_LIST_DONE)
         console.log(err)
     })
 }
@@ -163,11 +165,16 @@ export const tempStop = (data, getTempList) => (dispatch, getState) => {
         },
         data: data
     }).then(res => {
+        dispatch(RESET_TEMPSTATUS_TRUE)
         getTempList()
         console.log(res)
     }, err => {
         console.log(err)
     })
+}
+
+export const resetTempStatusFalse = () => (dispatch, getState) => {
+    dispatch(RESET_TEMPSTATUS_FALSE)
 }
 
 //系统管理-用户列表查询

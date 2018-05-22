@@ -91,12 +91,6 @@ import * as Actions from 'actions';
                 description: '一次只能选择一个参数',
                 style:{top:40}
             });
-        } else if(selectedList[0].status == 0) {
-            notification.warning({
-                message: '警告',
-                description: '无效状态无法更改',
-                style:{top:40}
-            });
         }else {
             tempStop({ID: selectedList[0].id, status: selectedList[0].status}, getTempList)
         }

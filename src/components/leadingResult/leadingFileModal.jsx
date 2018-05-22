@@ -58,9 +58,8 @@ import * as Actions from 'actions';
       }
       columns[columns.length-3].render = (text,record,index) => {
           var fileName = record.payretfilename?record.payretfilename.split(',')[record.payretfilename.split(',').length-1]:"";
-        return  <a href={`${origin + url + fileName }`} title="点击下载文件">
-                    {fileName}
-                </a>
+          var file = fileName.substring(fileName.lastIndexOf('/')+1,fileName.length) ;
+        return  <a href={`${origin + url + fileName }`} title="点击下载文件">{file}</a>
       }
       columns[3].render = (text,record,index)=>{
           return <a>{record.paymode==1?"公对私":record.paymode==2 && "私对私"}</a>;

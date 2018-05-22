@@ -44,6 +44,10 @@ module.exports = [
             dataIndex: 'status',
             width:100
           },{
+            title: '确认标志',
+            dataIndex: 'confirm',
+            width:80
+        },{
             title: '',
             dataIndex: 'detail',
             width:50

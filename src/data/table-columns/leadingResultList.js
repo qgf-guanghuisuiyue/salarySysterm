@@ -50,6 +50,11 @@ module.exports = [
             width:80
         },
         {
+            title: '确认标志',
+            dataIndex: 'confirm',
+            width:80
+        },
+        {
             title: '',
             dataIndex: 'detail',
             width:50

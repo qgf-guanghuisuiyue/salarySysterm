@@ -15,7 +15,7 @@ import * as Actions from 'actions';
  class ReceiptCount extends React.Component{
     state = {
         batchNo: "",
-        rate: "",
+        rate: [],
         startDate: "",
         endDate: "",
         corpName:"",
@@ -35,7 +35,7 @@ import * as Actions from 'actions';
 
     onChangeSelect = (value) => {
         this.setState({
-            rate:value
+            rate:[value]
         })
     }
     getColumns = () => {
@@ -96,7 +96,12 @@ import * as Actions from 'actions';
     }
     searchReceiptList = () => {
         const { startDate, endDate, batchNo, corpName ,rate} = this.state;
-        this.props.searchReceiptList({startDate, endDate, batchNo, corpName ,rate})
+        if(rate.length!=0){
+            this.props.searchReceiptList({startDate, endDate, batchNo, corpName ,rate})
+        }else{
+            this.props.searchReceiptList({startDate, endDate, batchNo, corpName })
+        }
+        
     }
     //页码回调
     onChangePagination = (page) => {

@@ -104,6 +104,9 @@ export default class EditModal extends React.Component{
             this.props.getCompanyName({id:value})
         }
         if(field=="earn"){
+            !netamount && notification.warn({
+                message:"本次入账金额不能为空"
+            })
             this.setState({
                 issuingamount:(netamount/(1+value)).toFixed(2)
             })
@@ -138,7 +141,7 @@ export default class EditModal extends React.Component{
             return false
         }else if(!netamount){
             notification.warning({
-                message:"请输入入账金额"
+                message:"入账金额不能为空"
             })
             return false
         }else if(!therate){

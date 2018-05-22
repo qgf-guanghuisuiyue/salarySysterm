@@ -74,7 +74,7 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
         columns[3].render = (text,record,index) => { 
             return  <a href={`${origin + url + record.payapplyfilename}`} title="点击下载文件">{record.payapplyfilename}</a>
         }
-        columns[columns.length-2].render = (text,record,index) => {
+        columns[columns.length-3].render = (text,record,index) => {
             return  <span>
                         {
                             record.status===0?"全部成功":
@@ -85,6 +85,14 @@ import { Table , Button , Input , DatePicker , Icon , Select} from 'antd';
                             record.status===5? "待提交":
                             record.status===6? "代发失败":
                             record.status===-1 && "撤销"
+                        }
+                    </span>
+        }
+        columns[columns.length-2].render = (text,record,index) => {
+            return  <span>
+                        {
+                            record.confirm===0?"未确认":
+                            record.confirm===1 && "已确认"
                         }
                     </span>
         }

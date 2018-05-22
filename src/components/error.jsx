@@ -129,7 +129,7 @@ import * as Actions from 'actions';
            onChange: this.onSelectChange,
            onSelect(record, selected, selectedRows) {
                    _this.setState({
-                        detailID:record.detailid
+                        detailID:record.detailID
                    })
                }
        };

@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import * as Actions from 'actions';
 
 
- class LeadingDetailModalComponent extends React.Component{
+export default class LeadingDetailModalComponent extends React.Component{
      state = {
          page:1
      }
@@ -136,7 +136,6 @@ import * as Actions from 'actions';
                             <li><span>总笔数：</span><span>{record.totalcount}</span></li>
                             <li style={{marginTop: 0}}><span>总金额：</span><span>{record.totalamount}</span></li>
                             <li style={{marginTop: 0}}><span>申请日期：</span><span>{record.applydate}</span></li>
-                            
                             <li style={{marginTop: 0,width:600}}>
                                 <span>代发文件名：</span>
                                 <span style={{marginTop: 0,width:500}}>{record.payapplyfilename}</span>
@@ -161,20 +160,8 @@ import * as Actions from 'actions';
                                 showTotal:total => `共 ${resultDetailList.count} 条数据`
                             }}
                         />
-
                     </div>
                 </Modal>
         )
     }
 }
-const mapStateToProps = state => ({
-    
-})
-const mapDispatchToProps = dispatch => ({
-
-})
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(LeadingDetailModalComponent);

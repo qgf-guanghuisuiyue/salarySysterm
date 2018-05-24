@@ -5,6 +5,7 @@ import ReactDom from 'react-dom';
 import './scss/main.scss';
 
 import routes from './router';
+import 'babel-polyfill';
 
 // react-router
 import { Router , hashHistory } from 'react-router';

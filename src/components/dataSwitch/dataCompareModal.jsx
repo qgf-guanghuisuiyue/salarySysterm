@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table , Button , Tooltip , Select ,Modal, Icon ,Input , notification} from 'antd';
+import { Table , Button , Tooltip , Select ,Modal, Icon ,Input , notification, Pagination} from 'antd';
 const confirm = Modal.confirm;
 const { TextArea } = Input;
  
@@ -70,6 +70,7 @@ import * as Actions from 'actions';
             })
         }
     }
+    
     render(){ 
         const {
             isFileModal , 
@@ -92,6 +93,9 @@ import * as Actions from 'actions';
             sumPay , 
             tblPayApplyModel
         } = resultData;
+            $('.table-left .ant-table-body').scroll(function(){
+                $('.table-right .ant-table-body').scrollTop($(this).scrollTop());
+            })
         return(
                 <Modal
                     title={<h2>数据对比</h2>}
@@ -163,6 +167,7 @@ import * as Actions from 'actions';
                             editBankInfo={editBankInfo}
                         />
                     </div>
+                    {/* <div><Pagination/></div> */}
                 </Modal>
         )
     }

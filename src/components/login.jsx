@@ -104,23 +104,25 @@ export class LoginPage extends Component {
                                     <Input 
                                         style={{width:"60%"}} 
                                         placeholder="请输入手机号"
+                                        type="text"
                                         value={phone}
                                         onChange={this.onChange.bind(this,'phone')}
                                         onPressEnter={this.toLogin}
                                     />
                                 </label><br/>
                                 <label>
-                                    <span>登录密码：</span>
+                                    <span>密码：</span>
                                     <Input 
                                         style={{width:"60%"}} 
                                         placeholder="请输入密码"
+                                        type="password"
                                         value={pwd}
                                         onChange={this.onChange.bind(this,'pwd')}
                                         onPressEnter={this.toLogin}
                                     />
                                 </label><br/>
                                 <label>
-                                    <span>手机验证码：</span>
+                                    <span>验证码：</span>
                                     <Input  
                                         style={{width:"35%"}}
                                         placeholder="请输入验证码"

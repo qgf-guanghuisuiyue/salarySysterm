@@ -23,39 +23,57 @@ export default class EditModal extends React.Component{
          actualAmount:"",
          shuie:"",
          grossAmount:"",
-         profits:""
+         profits:"",
+         netamount:"",//本次入账金额
+         paymentCompany:"",//付款公司
+         paymentTime:"",//收款日期
+         rate:""
      }
      componentWillReceiveProps(nextProps){
         const {record, calculateList} = nextProps,
-              {paytax, yieldpoints, invoicedate, rateamount, totalamount,therate,profits} = record,
+              {paytax, yieldpoints, invoicedate, rateamount, totalamount,therate,profits,netamount, paymentCompany,paymentTime,rate} = record,
               {invoiceAmount,actualAmount,grossAmount} = calculateList;
-        this.setState({
-            yieldpoints,
-            paytax,
-            invoicedate,
-            rateamount,
-            invoiceAmount,
-            totalamount:totalamount?totalamount.toFixed(2):totalamount,
-            actualAmount,
-            shuie:therate,
-            grossAmount,
-            profits
-        })
+        const {oftheCompany} = this.state;
+                if(!oftheCompany){    
+                    this.setState({
+                        yieldpoints,
+                        paytax,
+                        invoicedate,
+                        rateamount,
+                        totalamount:totalamount?totalamount.toFixed(2):totalamount,
+                        shuie:therate,
+                        therate,
+                        profits,
+                        netamount,
+                        paymentCompany,
+                        paymentTime,
+                        earn:yieldpoints,
+                        rate,
+                        oftheCompany:record.oftheCompany
+                    })
+                }
+                if(invoiceAmount || actualAmount || grossAmount){
+                    this.setState({
+                        invoiceAmount,
+                        actualAmount,
+                        grossAmount,
+                    })
+                }
      }
      saveData = () => {
          const {searchReceiptList, calculateList, hideReceiptModal, record} = this.props,
-            {batchNo,paymentCompany,totalAmount,paymentTime,rate, netamount} = record,
-            {invoiceAmount,grossAmount,actualAmount} = calculateList,
-            {oftheCompany,issuingamount,earn,invoicedate,therate} = this.state;
+            {batchNo,totalAmount} = record,
+            {grossAmount} = calculateList,
+            {oftheCompany,issuingamount,earn,invoicedate,therate, netamount, paymentCompany, paymentTime, rate,invoiceAmount,actualAmount,rateamount,profits,paytax} = this.state;
          this.props.saveData({
             batchno:batchNo,//批次号
             paymentCompany,//付款公司
             oftheCompany,//收款公司
             netamount,//入账金额
-            totalamount:issuingamount,//代发总金额
-            rateamount:invoiceAmount,//开票金额
-            paytax:actualAmount,//纳税税额
-            profits:grossAmount,//本次利益
+            totalamount:issuingamount?issuingamount:totalAmount,//代发总金额
+            rateamount:invoiceAmount?invoiceAmount:rateamount,//开票金额
+            paytax:actualAmount?actualAmount:paytax,//纳税税额
+            profits:grossAmount?grossAmount:profits,//本次利益
             yieldpoints:earn,//收益点数
             invoicedate,//开票日期
             rate,//状态
@@ -67,7 +85,24 @@ export default class EditModal extends React.Component{
          this.props.hideReceiptModal()
          this.props.cancelRecord()
          this.setState({
-            issuingamount:""
+            oftheCompany:"",
+            issuingamount:"",
+            invoicedate:"",
+            therate:"",
+            earn:"",
+            isUse:true,
+            yieldpoints:"",
+            paytax:"",
+            invoiceAmount:"",
+            totalamount:"",
+            actualAmount:"",
+            shuie:"",
+            grossAmount:"",
+            profits:"",
+            netamount:"",//本次入账金额
+            paymentCompany:"",//付款公司
+            paymentTime:"",//收款日期
+            rate:""
          })
      }
      onChange = (e) => {
@@ -82,9 +117,10 @@ export default class EditModal extends React.Component{
     }
     
     companySelect = (field,value) => {
-        const {netamount} = this.props.record
+        //const {netamount} = this.props.record
+        const {netamount} = this.state;
         if(field=="oftheCompany"){
-            setTimeout(()=>{
+            //setTimeout(()=>{
                 this.setState({
                     therate:"",
                     earn:"",
@@ -100,7 +136,7 @@ export default class EditModal extends React.Component{
                     grossAmount:"",
                     profits:""
                 })
-            },200)
+            //},200)
             this.props.getCompanyName({id:value})
         }
         if(field=="earn"){
@@ -126,14 +162,20 @@ export default class EditModal extends React.Component{
             })
         }
     }
-    onChangeInput = (e) => {
+    onChangeInput = (field,e) => {
+        const {earn} = this.state;
+        if(field =="netamount"){
+            this.setState({
+                issuingamount:((e.target.value)/(1+earn)).toFixed(2)
+            })
+        }
         this.setState({
-            issuingamount:e.target.value
+            [field]:e.target.value
         })
     }
     calculate= () => {
-        const {therate,earn,issuingamount, invoicedate} = this.state;
-        const {netamount}= this.props.record;
+        const {therate,earn,issuingamount, invoicedate,netamount} = this.state;
+        //const {netamount}= this.props.record;
         if(!issuingamount){
             notification.warning({
                 message:"请计算本次代发金额"
@@ -170,10 +212,10 @@ export default class EditModal extends React.Component{
             isCalLoading,
             isDisabled
         } = this.props,
-            {batchNo,corpName,totalAmount,actPayDate,paymentTime,rate, netamount,paymentCompany} = record;
+            {batchNo,corpName,totalAmount,actPayDate} = record;
         const {list=[]} = companyList;
         const {listEarn,listRate}= rateAndEarnList;
-        const {therate,earn,issuingamount,oftheCompany,isUse, yieldpoints,paytax, invoicedate,invoiceAmount,rateamount,totalamount,actualAmount, shuie, grossAmount,profits} = this.state;
+        const {therate,earn,issuingamount,oftheCompany,isUse, yieldpoints,paytax, invoicedate,invoiceAmount,rateamount,totalamount,actualAmount, shuie, grossAmount,profits,netamount,paymentCompany,paymentTime, rate} = this.state;
         return(
                 <Modal
                     title={<h2>开票计算</h2>}
@@ -188,8 +230,28 @@ export default class EditModal extends React.Component{
                     cancelText="关闭"
                 >
                     <ul className="left-ul">
-                        <li><a>收款日期：</a><a><Input style={{width:240}} value={paymentTime} disabled/></a></li>
-                        <li><a>付款公司：</a><a><Input style={{width:240}} value={paymentCompany} disabled/></a></li>
+                        <li>
+                            <a><span style={{color:"red"}}>*</span>收款日期：</a>
+                            <a>
+                                <DatePicker 
+                                    style={{width:240}} 
+                                    disabled={isDisabled}
+                                    value={paymentTime?moment(paymentTime, 'YYYY-MM-DD'):paymentTime}
+                                    onChange={this.dateChange.bind(this,"paymentTime")}
+                                />
+                            </a>
+                        </li>
+                        <li>
+                            <a><span style={{color:"red"}}>*</span>付款公司：</a>
+                            <a>
+                                <Input 
+                                    style={{width:240}} 
+                                    disabled={isDisabled}
+                                    value={paymentCompany} 
+                                    onChange={this.onChangeInput.bind(this,"paymentCompany")} 
+                                />
+                            </a>
+                        </li>
                         <li>
                             <a><span style={{color:"red"}}>*</span>收款公司：</a>
                             <a>
@@ -210,7 +272,7 @@ export default class EditModal extends React.Component{
                             </a>
                         </li>
                         <li>
-                            <a>税率：</a>
+                            <a><span style={{color:"red"}}>*</span>税率：</a>
                             <Tooltip title="请先选择收款公司">
                                 <a>
                                     <Select 
@@ -230,7 +292,7 @@ export default class EditModal extends React.Component{
                             </Tooltip>
                         </li>
                         <li>
-                            <a>本次代发金额：</a>
+                            <a><span style={{color:"red"}}>*</span>本次代发金额：</a>
                             <a>
                                 <Input 
                                     ref="issuingamount"
@@ -242,20 +304,31 @@ export default class EditModal extends React.Component{
                             </a>
                         </li>
                         <li>
-                            <a>实际缴纳税额：</a>
+                            <a><span style={{color:"red"}}>*</span>实际缴纳税额：</a>
                             <a>
                                 <Input 
                                     style={{width:240}} 
-                                    value={actualAmount || shuie} 
+                                    value={actualAmount || paytax || shuie} 
                                     disabled
                                     placeholder="通过计算获得"
                                 />
                             </a>
                         </li>
                         <li>
-                            <a>开票状态：</a>
+                            <a><span style={{color:"red"}}>*</span>开票状态：</a>
                             <a>
-                                <Input style={{width:240}} value={rate==0?"未核算":rate==1?"已核算未开票":rate==2 && "已开票"} disabled/>
+                                <Select 
+                                    style={{width:240}} 
+                                    value={rate==0?"未核算":rate==1?"已核算未开票":rate==2 && "已开票"} 
+                                    disabled={isDisabled}
+                                    placeholder="请选择开票状态"
+                                    onChange={this.companySelect.bind(this,"rate")}
+                                >
+                                    <Option value={0}>未核算</Option>
+                                    <Option value={1}>已核算未开票</Option>
+                                    <Option value={2}>已开票</Option>
+                                </Select>
+                                {/* <Input style={{width:240}} value={rate==0?"未核算":rate==1?"已核算未开票":rate==2 && "已开票"} /> */}
                             </a>
                         </li>
                     </ul>
@@ -267,13 +340,21 @@ export default class EditModal extends React.Component{
                             </a>
                         </li>
                         <li>
-                            <a><span style={{color:"red"}}>*</span>本次入账金额：</a>
                             <a>
-                                <Input style={{width:240}} value={netamount} disabled/>
+                                <span style={{color:"red"}}>*</span>
+                                本次入账金额：
+                            </a>
+                            <a>
+                                <Input 
+                                    style={{width:240}} 
+                                    disabled={isDisabled}
+                                    value={netamount} 
+                                    onChange={this.onChangeInput.bind(this,"netamount")}
+                                />
                             </a>
                         </li>
                         <li>
-                            <a>收益点数：</a>
+                            <a><span style={{color:"red"}}>*</span>收益点数：</a>
                             <Tooltip title="请先选择收款公司">
                                 <a>
                                     <Select 
@@ -293,15 +374,25 @@ export default class EditModal extends React.Component{
                             </Tooltip>
                         </li>
                         <li>
-                            <a>本次开票金额：</a>
+                            <a><span style={{color:"red"}}>*</span>本次开票金额：</a>
                             <a>
-                                <Input style={{width:240}} value={invoiceAmount || rateamount} disabled placeholder="通过计算获得"/>
+                                <Input 
+                                    style={{width:240}} 
+                                    value={invoiceAmount || rateamount} 
+                                    disabled 
+                                    placeholder="通过计算获得"
+                                />
                             </a>
                         </li>
                         <li>
-                            <a>税后净收益：</a>
+                            <a><span style={{color:"red"}}>*</span>税后净收益：</a>
                             <a>
-                                <Input style={{width:240}} value={grossAmount || profits} disabled placeholder="通过计算获得"/>
+                                <Input 
+                                    style={{width:240}} 
+                                    value={grossAmount || profits} 
+                                    disabled 
+                                    placeholder="通过计算获得"
+                                />
                             </a>
                         </li>
                         <li>

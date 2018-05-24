@@ -1,8 +1,8 @@
 {
-  "name": "cloud-recruit",
+  "name": "salary-manage-system",
   "version": "1.0.0",
   "description": "A React.js project",
-  "author": "zhiyingzzhou <zhiyingzzhou@gmail.com>",
+  "author": "51jrq",
   "private": true,
   "scripts": {
     "local": "node build/local-server.js",

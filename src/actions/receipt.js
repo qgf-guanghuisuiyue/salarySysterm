@@ -82,7 +82,7 @@ const CALCULATE_START = {type:types.CALCULATE_START};
         })
         .then(res=>{
             notification.success({
-                message:res.msg
+                message:"保存成功"
             })
             if(hideReceiptModal){
                 hideReceiptModal()

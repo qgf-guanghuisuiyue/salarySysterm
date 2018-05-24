@@ -28,7 +28,7 @@ import * as Actions from 'actions';
             }
         }
     }
-
+    
 
     _getColumns() {
         columns[0].render = (text,record,index) => {           

@@ -91,9 +91,9 @@ export class LoginPage extends Component {
     render() {
         const {phone,pwd,code ,errMsg , loaddone} = this.state;
         return (
-            <div style={{width:"100%",height:"100%",background: 'linear-gradient( #176B90, #52A6C8)'}}>
+            <div style={{width:"100%",height:"100%",background: 'linear-gradient(#0086C9, #64B6DF)'}}>
                 <div className="login-page">
-                        <h1>91薪宝管理系统</h1>
+                        <h1>代发薪管理系统</h1>
                         <div className="login">
                             <div className="login-top">
                                 用户登录

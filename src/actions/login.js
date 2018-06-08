@@ -42,15 +42,14 @@ export const userLogin = (userInfo={},context) => (dispatch,getState) => {
     .then(res=>{
         dispatch(LOGIN_DONE);
         const data = pick(res.data,['token','tokenKey']);
-        const userInfo = pick(res.data,['role','name','userType','corpname'])
+        const userInfo = pick(res.data,['role','name','userType','corpname']);
         store.set('token',data);
-        store.set('userInfo',userInfo)
+        store.set('userInfo',userInfo);
         context.router.push('/');
         NProgress.done();
     },err=>{
         dispatch(LOGIN_DONE);
         NProgress.done();
-        //dispatch({...SEND_SUCCESSFUL,msg:err.data.msg})
     });
 }
 

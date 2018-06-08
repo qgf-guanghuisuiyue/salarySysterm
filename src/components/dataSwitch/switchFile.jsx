@@ -2,7 +2,7 @@ import React, {Component,PropTypes} from 'react';
 import moment from 'moment';
 import store from 'store';
 
-import { Table , Button , Tooltip , Select} from 'antd';
+import { Table , Button , Tooltip , Select, Menu, Dropdown, Icon} from 'antd';
 
 import DataCompareModal from './dataCompareModal';
 import RefuseModal from './refuseModal';
@@ -175,15 +175,21 @@ import * as Actions from 'actions';
                         <Button icon="rollback" type="primary" onClick={this.back}>返回</Button>
                     </div>
                     <div className="File">
-                        <span>银行代发文件：</span>
-                        {
-                            tblPayInfoModel && tblPayInfoModel.payfilename ?tblPayInfoModel.payfilename.split(",").map((item,index)=>{
-                                return (<Tooltip title="点击下载银行代发文件">
+                        <span style={{display:"inline-block",float:'left'}}>银行代发文件：</span>
+                        <div className="fileList">
+                            {
+                                tblPayInfoModel && tblPayInfoModel.payfilename && tblPayInfoModel.payfilename.split(",").length>2 &&<Icon className="icon" type="down"/>
+                            }
+                            {
+                                tblPayInfoModel && tblPayInfoModel.payfilename ? tblPayInfoModel.payfilename.split(",").map((item,index)=>{
+                                    return (<Tooltip title="点击下载银行代发文件">
                                             <a href={`${origin + url + item}`}>{item}</a>
-                                            {/* <a onClick={this.downLoadFile.bind(this,item)}>{item}</a> */}
-                                       </Tooltip>)
-                            }):"暂未生成代发文件"
-                        } 
+                                            {/* <a onClick={this.downLoadFile.bind(this,item)}>{item}</a>  */}
+                                        </Tooltip>)
+                                        
+                                    }):<a>暂未生成代发文件</a>
+                            } 
+                        </div>
                     </div>
                     <div className="result-table">
                         <Table 

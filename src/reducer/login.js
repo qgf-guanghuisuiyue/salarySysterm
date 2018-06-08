@@ -15,7 +15,7 @@ const initialState = {
 export default function login(state = initialState,actions){
     switch(actions.type){
         case LOGIN_START:
-            return {...state,loaddone: true};
+            return {...state,loaddone: true,msg:""};
         case LOGIN_DONE:
             return {...state,loaddone: false};
         case USER_LOGIN: 

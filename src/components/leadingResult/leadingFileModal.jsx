@@ -96,7 +96,7 @@ import * as Actions from 'actions';
     })
     this.params.skip = page * 10 - 10;
     leadingResultDetail({...this.params,batchNo:batchno});
-    this.refs.dataSwitch.scrollTop = 0
+    //this.refs.dataSwitch.scrollTop = 0
 }
     render(){
         const {isLeadingFileModal,resultDetailList , payFileCreate, clearTableCheckbox} = this.props;
